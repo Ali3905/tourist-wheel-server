@@ -3,7 +3,7 @@ const vehicleInspection = require("../models/vehicleInspection")
 async function handleCreateVehicleInspection(req, res) {
     try {
         const { name, vehicleNumber, departurePlace, destinationPlace, departureDate, returnDate, beforeJourneyNote, afterJourneyNote, beforeJourneyPhotos, afterJourneyPhotos } = req.body
-        if (!name || !vehicleNumber || !departurePlace || !destinationPlace || !departureDate || !returnDate || !beforeJourneyNote || !afterJourneyNote || beforeJourneyPhotos.length < 1 || afterJourneyPhotos.length < 1) {
+        if (!name || !vehicleNumber || !departurePlace || !destinationPlace || !departureDate || !returnDate || !beforeJourneyNote || !afterJourneyNote || !beforeJourneyPhotos || !afterJourneyPhotos ||  beforeJourneyPhotos.length < 1 || afterJourneyPhotos.length < 1) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
