@@ -1,0 +1,55 @@
+const mongoose = require('mongoose');  ///vehicle health
+
+
+const vehicleInspectionSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    
+    vehicleNumber: {
+        type: String,
+        required: true,
+    },
+    departurePlace: {
+        type: String,
+        required: true
+    },
+    destinationPlace: {
+        type: String,
+        required: true
+    },
+    departureDate: {
+        type: Date,
+        required: true
+    },
+    returnDate: {
+        type: Date,
+        required: true
+    },
+   beforeJourneyNote: {
+        type: String,
+        required: true
+    },
+   afterJourneyNote: {
+        type: String,
+        required: true
+    },
+    beforeJourneyPhotos: {    //max 5 photos
+        type: Array,
+        
+    },
+    afterJourneyPhotos: {    //max 5 photos
+        type: Array,
+    },
+
+  
+}, {
+    timestamps: true
+});
+
+const vehicleInspection = mongoose.model('vehicleInspection', vehicleInspectionSchema);
+
+module.exports = vehicleInspection;
+
+
