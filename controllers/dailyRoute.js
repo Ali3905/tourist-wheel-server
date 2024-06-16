@@ -13,7 +13,6 @@ async function handleCreateDailyRoute(req, res) {
             });
           }
         const { vehicleNumber, departurePlace, destinationPlace, primaryDriverId, secondaryDriverId, cleanerId, departureTime, instructions } = req.body
-        console.log({ vehicleNumber, departurePlace, destinationPlace, primaryDriverId, secondaryDriverId, cleanerId, departureTime, instructions });
         if (!vehicleNumber || !departurePlace || !destinationPlace || !primaryDriverId || !secondaryDriverId || !cleanerId || !departureTime || !instructions) {
             return res.status(400).json({
                 success: false,

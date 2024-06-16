@@ -9,6 +9,7 @@ const vehicleInspectionRoute = require("./routes/vehicleInspection")
 const authRoute = require("./routes/user")
 const technicianRoute = require("./routes/technician")
 const dailyRouteRoute = require("./routes/dailyRoute")
+const vehicleRoute = require("./routes/vehicle")
 
 const { connectToMongo } = require("./connections")
 
@@ -34,6 +35,7 @@ app.use("/api/vehicleInspection", vehicleInspectionRoute);
 app.use("/api/user", authRoute);
 app.use("/api/technician", technicianRoute);
 app.use("/api/dailyRoute", dailyRouteRoute);
+app.use("/api/vehicle", vehicleRoute);
 
 
 

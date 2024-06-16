@@ -1,24 +1,33 @@
+const vehicle = require("../models/vehicle");
 const vehicleInspection = require("../models/vehicleInspection")
 
 async function handleCreateVehicleInspection(req, res) {
     try {
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
-              if (req.files[key][0] && req.files[key][0].path) {
-                req.body[key] = req.files[key][0].path; // Add the URL to req.body
-              }
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+                }
             });
-          }
-        const { name, vehicleNumber, departurePlace, destinationPlace, departureDate, returnDate, beforeJourneyNote, afterJourneyNote, beforeJourneyPhotos, afterJourneyPhotos } = req.body
-        if (!name || !vehicleNumber || !departurePlace || !destinationPlace || !departureDate || !returnDate || !beforeJourneyNote || !afterJourneyNote || !beforeJourneyPhotos || !afterJourneyPhotos ||  beforeJourneyPhotos.length < 1 || afterJourneyPhotos.length < 1) {
+        }
+        const { name, vehicleId, departurePlace, destinationPlace, departureDate, returnDate, beforeJourneyNote, afterJourneyNote, beforeJourneyPhotos, afterJourneyPhotos } = req.body
+        if (!name || !vehicleId || !departurePlace || !destinationPlace || !departureDate || !returnDate || !beforeJourneyNote || !afterJourneyNote || !beforeJourneyPhotos || !afterJourneyPhotos ||  beforeJourneyPhotos.length < 1 || afterJourneyPhotos.length < 1) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
             })
         }
 
+        const foundVehicle = await vehicle.findById(vehicleId)
+        if (!foundVehicle) {
+            return res.status(400).json({
+                success : false,
+                message : "Provide a valid vehicle ID"
+            })
+        }
+
         const createdVehicleInspection = await vehicleInspection.create({
-            name, vehicleNumber, departurePlace, destinationPlace, departureDate, returnDate, beforeJourneyNote, afterJourneyNote, beforeJourneyPhotos, afterJourneyPhotos
+            name, vehicle : foundVehicle, departurePlace, destinationPlace, departureDate, returnDate, beforeJourneyNote, afterJourneyNote, beforeJourneyPhotos, afterJourneyPhotos
         })
         return res.status(201).json({
             success: true,
