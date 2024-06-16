@@ -2,8 +2,17 @@ const driver = require("../models/driver")
 
 async function handleCreateDriver(req, res) {
     try {
+
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+              if (req.files[key][0] && req.files[key][0].path) {
+                req.body[key] = req.files[key][0].path; // Add the URL to req.body
+              }
+            });
+          }
+
         const { name, email, password, driverType, mobileNumber, city, village, state, license, photo, aadharCard } = req.body
-        console.log({ name, email, password, driverType, mobileNumber, city, village, state, license, photo, aadharCard });
+        
         if (!name || !email || !password || !driverType || !mobileNumber || !city || !village || !state || !photo || !license || !aadharCard) {
             return res.status(400).json({
                 success: false,

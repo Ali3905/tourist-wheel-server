@@ -4,6 +4,14 @@ const cleaner = require("../models/cleaner")
 
 async function handleCreateDailyRoute(req, res) {
     try {
+
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+              if (req.files[key][0] && req.files[key][0].path) {
+                req.body[key] = req.files[key][0].path; // Add the URL to req.body
+              }
+            });
+          }
         const { vehicleNumber, departurePlace, destinationPlace, primaryDriverId, secondaryDriverId, cleanerId, departureTime, instructions } = req.body
         console.log({ vehicleNumber, departurePlace, destinationPlace, primaryDriverId, secondaryDriverId, cleanerId, departureTime, instructions });
         if (!vehicleNumber || !departurePlace || !destinationPlace || !primaryDriverId || !secondaryDriverId || !cleanerId || !departureTime || !instructions) {

@@ -4,6 +4,14 @@ async function handleCreateEmployee(req, res) {
 
     try {
 
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+              if (req.files[key][0] && req.files[key][0].path) {
+                req.body[key] = req.files[key][0].path; // Add the URL to req.body
+              }
+            });
+          }
+
         const { name, mobileNumber, employeeType, photo, aadharCard, password } = req.body
 
         if (!name || !mobileNumber || !employeeType || !photo || !aadharCard || !password) {

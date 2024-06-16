@@ -2,6 +2,13 @@ const vehicleInspection = require("../models/vehicleInspection")
 
 async function handleCreateVehicleInspection(req, res) {
     try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+              if (req.files[key][0] && req.files[key][0].path) {
+                req.body[key] = req.files[key][0].path; // Add the URL to req.body
+              }
+            });
+          }
         const { name, vehicleNumber, departurePlace, destinationPlace, departureDate, returnDate, beforeJourneyNote, afterJourneyNote, beforeJourneyPhotos, afterJourneyPhotos } = req.body
         if (!name || !vehicleNumber || !departurePlace || !destinationPlace || !departureDate || !returnDate || !beforeJourneyNote || !afterJourneyNote || !beforeJourneyPhotos || !afterJourneyPhotos ||  beforeJourneyPhotos.length < 1 || afterJourneyPhotos.length < 1) {
             return res.status(400).json({
