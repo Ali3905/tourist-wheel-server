@@ -29,6 +29,14 @@ async function handleGetAllCleaners(req, res) {
 async function handleCreateCleaner(req, res) {
     try {
 
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+              if (req.files[key][0] && req.files[key][0].path) {
+                req.body[key] = req.files[key][0].path; // Add the URL to req.body
+              }
+            });
+          }
+
         const { name, email, password, city, state, cleanerType, mobileNumber, photo, aadharCard } = req.body
 
         if (!name || !email || !password || !city || !state || !cleanerType || !mobileNumber || !photo || !aadharCard) {
