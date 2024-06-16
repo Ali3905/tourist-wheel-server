@@ -7,8 +7,9 @@ const vehicleInspectionSchema = mongoose.Schema({
         required: true
     },
     
-    vehicleNumber: {
-        type: String,
+    vehicle: {
+        type: mongoose.Types.ObjectId,
+        ref : "vehicle",
         required: true,
     },
     departurePlace: {
@@ -44,9 +45,7 @@ const vehicleInspectionSchema = mongoose.Schema({
     },
 
   
-}, {
-    timestamps: true
-});
+}, { timestamps: true });
 
 const vehicleInspection = mongoose.model('vehicleInspection', vehicleInspectionSchema);
 
