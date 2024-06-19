@@ -6,11 +6,11 @@ async function handleCreateEmployee(req, res) {
 
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
-              if (req.files[key][0] && req.files[key][0].path) {
-                req.body[key] = req.files[key][0].path; // Add the URL to req.body
-              }
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+                }
             });
-          }
+        }
 
         const { name, mobileNumber, employeeType, photo, aadharCard, password } = req.body
 
@@ -98,11 +98,48 @@ async function handleDeleteEmployee(req, res) {
     }
 }
 
+async function handleUpdateEmployee(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key][0].path;
+                }
+            });
+        }
+
+        const { employeeId } = req.query
+        if (!employeeId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the ID of employee to update"
+            })
+        }
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the updated employee"
+            })
+        }
+        await employee.findByIdAndUpdate(employeeId, req.body)
+        return res.status(200).json({
+            success: true,
+            message: "Employee updated",
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     handleCreateEmployee,
     handleGetAllEmployees,
-    handleDeleteEmployee
+    handleDeleteEmployee,
+    handleUpdateEmployee
 }
 
 

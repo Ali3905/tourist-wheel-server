@@ -93,8 +93,38 @@ async function handleDeleteTechnician(req, res) {
     }
 }
 
+async function handleUpdateTechnician(req, res) {
+    try {
+
+        const { technicianId } = req.query
+        if (!technicianId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the ID of technician to update"
+            })
+        }
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the updated technician"
+            })
+        }
+        await technician.findByIdAndUpdate(technicianId, req.body)
+        return res.status(200).json({
+            success: true,
+            message: "Technician updated",
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleGetAllTechnicians,
     handleCreateTechnician,
-    handleDeleteTechnician
+    handleDeleteTechnician,
+    handleUpdateTechnician
 }

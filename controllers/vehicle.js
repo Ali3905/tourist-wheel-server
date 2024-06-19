@@ -97,8 +97,45 @@ async function handleDeleteVehicle(req, res) {
     }
 }
 
+async function handleUpdateVehicle(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key].map(el => el.path); 
+                }
+            });
+        }
+
+        const { vehicleId } = req.query
+        if (!vehicleId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the ID of vehicle to update"
+            })
+        }
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the updated vehicle"
+            })
+        }
+        await vehicle.findByIdAndUpdate(vehicleId, req.body)
+        return res.status(200).json({
+            success: true,
+            message: "Vehicle updated",
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleCreateVehicle,
     handleGetAllVehicles,
-    handleDeleteVehicle
+    handleDeleteVehicle,
+    handleUpdateVehicle
 }
