@@ -108,11 +108,50 @@ async function handleDeleteCleaner(req, res) {
     }
 }
 
+async function handleUpdateCleaner(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key][0].path; 
+                }
+            });
+        }
+
+        const { cleanerId } = req.query
+        // const { updatedDriver } = req.body
+        console.log({bo : req.body});
+        if (!cleanerId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the ID of clenaer to update"
+            })
+        }
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the updated cleaner"
+            })
+        }
+        await cleaner.findByIdAndUpdate(cleanerId, req.body)
+        return res.status(200).json({
+            success: true,
+            message: "Cleaner updated",
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     handleCreateCleaner,
     handleGetAllCleaners,
-    handleDeleteCleaner
+    handleDeleteCleaner,
+    handleUpdateCleaner
 }
 
 

@@ -7,11 +7,11 @@ async function handleCreateDailyRoute(req, res) {
 
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
-              if (req.files[key][0] && req.files[key][0].path) {
-                req.body[key] = req.files[key][0].path; // Add the URL to req.body
-              }
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+                }
             });
-          }
+        }
         const { vehicleNumber, departurePlace, destinationPlace, primaryDriverId, secondaryDriverId, cleanerId, departureTime, instructions } = req.body
         if (!vehicleNumber || !departurePlace || !destinationPlace || !primaryDriverId || !secondaryDriverId || !cleanerId || !departureTime || !instructions) {
             return res.status(400).json({
@@ -94,8 +94,8 @@ async function handleDeleteDailyRoute(req, res) {
         const foundDailyRoute = await cleaner.findById(dailyRouteId)
         if (!foundDailyRoute) {
             return res.status(400).json({
-                success : false,
-                message : "Provide a valid route ID"
+                success: false,
+                message: "Provide a valid route ID"
             })
         }
 
@@ -112,8 +112,47 @@ async function handleDeleteDailyRoute(req, res) {
     }
 }
 
+async function handleUpdateDailyRoute(req, res) {
+    try {
+        // if (req.files) {
+        //     Object.keys(req.files).forEach((key) => {
+        //         if (req.files[key][0] && req.files[key][0].path) {
+        //             // console.log(req.files);
+        //             // console.log(req.files[key]);
+        //             req.body[key] = req.files[key][0].path; 
+        //         }
+        //     });
+        // }
+
+        const { routeId } = req.query
+        if (!routeId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the ID of route to update"
+            })
+        }
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the updated route"
+            })
+        }
+        await dailyRoute.findByIdAndUpdate(routeId, req.body)
+        return res.status(200).json({
+            success: true,
+            message: "Daily Route updated",
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleGetAllDailyRoutes,
     handleCreateDailyRoute,
-    handleDeleteDailyRoute
+    handleDeleteDailyRoute,
+    handleUpdateDailyRoute
 }
