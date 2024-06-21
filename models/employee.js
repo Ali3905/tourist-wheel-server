@@ -18,13 +18,17 @@ const employeeSchema = mongoose.Schema({
         type: String,
         enum: ["MANAGER", "CLEANER", "OFFICE-BOY", "ACCOUNTANT", "TELECALLER"]
     },
+    state: {
+        type: String,
+        required : true
+    },
     aadharCard: {
         type: String
     },
     photo: {
         type: String
     }
-    
+
 }, { timestamps: true })
 
 const employee = mongoose.model("employee", employeeSchema)

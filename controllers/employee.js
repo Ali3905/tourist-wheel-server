@@ -12,15 +12,22 @@ async function handleCreateEmployee(req, res) {
             });
         }
 
-        const { name, mobileNumber, employeeType, photo, aadharCard, password } = req.body
+        const { name, mobileNumber, employeeType, state, photo, aadharCard, password } = req.body
 
-        if (!name || !mobileNumber || !employeeType || !photo || !aadharCard || !password) {
+        if (!name || !mobileNumber || !employeeType || !state || !photo || !aadharCard || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
             })
         }
 
+        if (!["MANAGER", "CLEANER", "OFFICE-BOY", "ACCOUNTANT", "TELECALLER"].includes(employeeType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid employee type"
+
+            })
+        }
 
 
         if (mobileNumber.length < 10 || mobileNumber.length > 11) {
@@ -32,7 +39,7 @@ async function handleCreateEmployee(req, res) {
         }
 
         const createdEmployee = await employee.create({
-            name, mobileNumber, employeeType, photo, password, aadharCard
+            name, mobileNumber, employeeType, state, photo, password, aadharCard
         })
 
         return res.status(201).json({

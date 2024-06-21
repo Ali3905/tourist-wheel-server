@@ -5,17 +5,12 @@ const driverSchema = mongoose.Schema({
         type: String,
         required: true
     },
-
-    email : {
-        type : String,
-        required : true
-    },
     
     password: {
         type: String,
         required: true
     },
-    driverType: {
+    vehicleType: {
         type: String,
         enum: ["ALL", "CAR", "BUS", "TRUCK"]
     },
@@ -31,10 +26,7 @@ const driverSchema = mongoose.Schema({
     state: {
         type: String
     },
-    village : {
-        type : String,
-        required : true
-    },
+    
     aadharCard: {
         type: String
     },

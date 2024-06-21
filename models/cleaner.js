@@ -2,7 +2,6 @@ const mongoose = require("mongoose")
 
 
 const cleanerSchema = mongoose.Schema({
-
     name: {
         type: String,
         required: true
@@ -15,20 +14,14 @@ const cleanerSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    
-    cleanerType: {
-        type: String,
-        enum: ["ALL", "CAR", "BUS", "TRUCK"]
-    },
     city: {
         type: String,
         required: true
     },
-    
     state: {
         type: String
     },
-   
+
     aadharCard: {
         type: String
     },
@@ -39,7 +32,7 @@ const cleanerSchema = mongoose.Schema({
 
 
 
-}, { timestamps: true } )
+}, { timestamps: true })
 
 
 

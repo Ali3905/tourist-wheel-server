@@ -37,22 +37,14 @@ async function handleCreateCleaner(req, res) {
             });
           }
 
-        const { name, email, password, city, state, cleanerType, mobileNumber, photo, aadharCard } = req.body
+        const { name, password, city, state, mobileNumber, photo, aadharCard } = req.body
 
-        if (!name || !email || !password || !city || !state || !cleanerType || !mobileNumber || !photo || !aadharCard) {
+        if (!name || !password || !city || !state || !mobileNumber || !photo || !aadharCard) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
             })
         }
-        if (!email.includes("@")) {
-            return res.status(400).json({
-                success: false,
-                message: "Provide a valid Email"
-            })
-        }
-
-
         if (mobileNumber.length < 10 || mobileNumber.length > 11) {
             return res.status(400).json({
                 success: false,
@@ -62,7 +54,7 @@ async function handleCreateCleaner(req, res) {
         }
 
         const createdCleaner = await cleaner.create({
-            name, email, password, city, state, cleanerType, mobileNumber, photo, aadharCard
+            name, password, city, state, mobileNumber, photo, aadharCard
         })
         return res.status(201).json({
             success: true,
