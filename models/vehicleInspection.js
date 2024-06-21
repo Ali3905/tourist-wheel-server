@@ -36,11 +36,11 @@ const vehicleInspectionSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    beforeJourneyPhotos: {    //max 5 photos
+    beforeJourneyPhotos: {
         type: Array,
         
     },
-    afterJourneyPhotos: {    //max 5 photos
+    afterJourneyPhotos: {
         type: Array,
     },
 

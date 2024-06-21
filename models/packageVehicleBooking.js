@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
 
 
-const dailyRouteVehicleSchema = new Schema({
-    vehicleNumber: {
-        type: String,
+const packageBookingSchema = mongoose.Schema({
+    vehicle: {
+        type: mongoose.Types.ObjectId,
+        ref: "vehicle",
         required: true,
-        unique: true
     },
-    otherVehicleNumber: {
-        type: String,
+    otherVehicle: {
+        type: mongoose.Types.ObjectId,
+        ref: "vehicle",
         required: true,
-        unique: true
     },
     customerName: {
         type: String,
@@ -26,20 +26,20 @@ const dailyRouteVehicleSchema = new Schema({
         required: true
     },
 
-    kmStarting :{
+    kmStarting: {
         type: String,
         required: true
     },
-    perKmRateInINR :{
+    perKmRateInINR: {
         type: Number,
         required: true
     },
-    advanceAmountInINR :{
+    advanceAmountInINR: {
         type: Number,
         required: true
     },
 
-    remainingAmountInINR :{         //both no and string
+    remainingAmountInINR: {
         type: Number,
         required: true
     },
@@ -48,7 +48,7 @@ const dailyRouteVehicleSchema = new Schema({
         type: String,
         required: true
     },
-    
+
     departurePlace: {
         type: String,
         required: true
@@ -57,34 +57,32 @@ const dailyRouteVehicleSchema = new Schema({
         type: String,
         required: true
     },
-    departureTime: { 
+    departureTime: {
         type: Date,
         required: true
     },
-    returnTime: {   
+    returnTime: {
         type: Date,
         required: true
     },
-    TollInINR :{
+    tollInINR: {
         type: Number,
         required: true
     },
-    otherStateTaxInINR :{  
+    otherStateTaxInINR: {
         type: Number,
-        required: true  
+        required: true
     },
-    
-    Note :{  
+
+    note: {
         type: String,
-        required: true  
-    },  
+        required: true
+    },
     instructions: {
         type: String
     }
-}, {
-    timestamps: true
-});
+}, { timestamps: true });
 
-const dailyRouteVehicle = mongoose.model('dailyRouteVehicle', dailyRouteVehicleSchema);
+const packageBooking = mongoose.model('packageBooking', packageBookingSchema);
 
-module.exports = dailyRouteVehicle;
+module.exports = packageBooking;

@@ -10,6 +10,7 @@ const authRoute = require("./routes/user")
 const technicianRoute = require("./routes/technician")
 const dailyRouteRoute = require("./routes/dailyRoute")
 const vehicleRoute = require("./routes/vehicle")
+const packageBookingRoute = require("./routes/packageBooking")
 
 const { connectToMongo } = require("./connections")
 
@@ -36,6 +37,7 @@ app.use("/api/user", authRoute);
 app.use("/api/technician", technicianRoute);
 app.use("/api/dailyRoute", dailyRouteRoute);
 app.use("/api/vehicle", vehicleRoute);
+app.use("/api/packageBooking", packageBookingRoute)
 
 
 

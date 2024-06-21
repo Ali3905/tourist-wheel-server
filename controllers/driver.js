@@ -11,24 +11,25 @@ async function handleCreateDriver(req, res) {
             });
         }
 
-        const { name, email, password, driverType, mobileNumber, city, village, state, license, photo, aadharCard } = req.body
+        const { name, password, vehicleType, mobileNumber, city, state, license, photo, aadharCard } = req.body
 
-        if (!name || !email || !password || !driverType || !mobileNumber || !city || !village || !state || !photo || !license || !aadharCard) {
+        if (!name || !password || !vehicleType || !mobileNumber || !city || !state || !photo || !license || !aadharCard) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
-            })
-        }
-        if (!email.includes("@")) {
-            return res.status(400).json({
-                success: false,
-                message: "Provide a valid Email"
             })
         }
         if (password.length < 5) {
             return res.status(400).json({
                 success: false,
                 message: "Password must contain atleast 5 Characters"
+            })
+        }
+        
+        if (!["ALL", "CAR", "BUS", "TRUCK"].includes(vehicleType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid Vehicle Type"
             })
         }
         if (mobileNumber.length < 10 || mobileNumber.length > 11) {
@@ -39,7 +40,7 @@ async function handleCreateDriver(req, res) {
             })
         }
         const createdDriver = await driver.create({
-            name, email, password, driverType, mobileNumber, city, village, state, license, photo, aadharCard
+            name, password, vehicleType, mobileNumber, city, state, license, photo, aadharCard
         })
         return res.status(201).json({
             success: true,

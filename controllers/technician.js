@@ -2,8 +2,8 @@ const technician = require("../models/technician");
 
 async function handleCreateTechnician(req, res) {
     try {
-        const { technicianType, name, city, mobileNumber, alternateNumber, vehicleType } = req.body
-        if (!technicianType || !name || !city || !mobileNumber || !alternateNumber || !vehicleType) {
+        const { technicianType, name, mobileNumber, alternateNumber, vehicleType } = req.body
+        if (!technicianType || !name || !mobileNumber || !alternateNumber || !vehicleType) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -30,7 +30,7 @@ async function handleCreateTechnician(req, res) {
             })
         }
 
-        const createdTechnician = await technician.create({ technicianType, name, city, mobileNumber, alternateNumber, vehicleType })
+        const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType })
         return res.status(201).json({
             success: true,
             data: createdTechnician
