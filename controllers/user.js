@@ -12,6 +12,30 @@ async function handleSignUp(req, res) {
                 message: "Please provide all the fields"
             })
         }
+        if (!email.includes("@")) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter a valid email"
+            })
+        }
+        if (mobileNumber.length < 10 || mobileNumber.length > 11) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter a valid mobile NUmber"
+            })
+        }
+        if (whatsappNumber.length < 10 || whatsappNumber.length > 11) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter a valid whatsapp NUmber"
+            })
+        }
+        if (password.length < 5) {
+            return res.status(400).json({
+                success: false,
+                message: "Password must contain atleast 5 characters"
+            })
+        }
         const alreadyUserWithThisUserName = await user.findOne({ userName })
         if (alreadyUserWithThisUserName) {
             return res.status(400).json({
