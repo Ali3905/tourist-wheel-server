@@ -74,6 +74,30 @@ async function handleGetAllPackageBookings(req, res) {
         })
     }
 }
+async function handleGetPackageBookingByID(req, res) {
+    try {
+        const { bookingId } = req.params
+        console.log(bookingId);
+        const foundPackageBooking = await packageBooking.findById(bookingId)
+
+        if (!foundPackageBooking) {
+            return res.status(400).json({
+                success: false,
+                message: "Could find package bookings"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: foundPackageBooking
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
 
 
 async function handleDeletePackageBooking(req, res) {
@@ -109,5 +133,6 @@ async function handleDeletePackageBooking(req, res) {
 module.exports = {
     handleCreatePackageBooking,
     handleGetAllPackageBookings,
-    handleDeletePackageBooking
+    handleDeletePackageBooking,
+    handleGetPackageBookingByID
 }
