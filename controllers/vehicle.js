@@ -30,7 +30,7 @@ async function handleCreateVehicle(req, res) {
             })
         }
 
-        const alreadyVehicleWithNumber = await vehicle.find({number})
+        const alreadyVehicleWithNumber = await vehicle.findOne({number})
         if (alreadyVehicleWithNumber) {
             return res.status(400).json({
                 success : false,
