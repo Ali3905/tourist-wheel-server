@@ -14,11 +14,11 @@ const vehicleSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    bodyName: {
+    bodyType: {
         type: String,
         required: true
     },
-    chassIsBrand: {
+    chassisBrand: {
         type: String,
         required: true
     },
@@ -52,5 +52,24 @@ const vehicleSchema = mongoose.Schema({
     }
 }, { timestamps: true })
 
+const truckSchema = mongoose.Schema({
+    noOfTyres : {
+        type : Number,
+    },
+    vehicleWeightInKGS : {
+        type : Number,
+    }
+})
+
+vehicleSchema.set("discriminatorKey", "type")
+
 const vehicle = mongoose.model("vehicle", vehicleSchema)
-module.exports = vehicle
+const truck = vehicle.discriminator("TRUCK", truckSchema)
+const car = vehicle.discriminator("CAR", vehicleSchema)
+const bus = vehicle.discriminator("BUS", vehicleSchema)
+const tampo = vehicle.discriminator("TAMPO", vehicleSchema)
+
+module.exports = {
+    vehicle,
+    truck
+}
