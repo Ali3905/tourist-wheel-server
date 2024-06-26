@@ -1,5 +1,5 @@
 const packageBooking = require("../models/packageVehicleBooking")
-const vehicle = require("../models/vehicle")
+const { vehicle } = require("../models/vehicle")
 
 async function handleCreatePackageBooking(req, res) {
     try {

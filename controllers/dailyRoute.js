@@ -1,7 +1,7 @@
 const dailyRoute = require("../models/dailyRoute");
 const driver = require("../models/driver")
 const cleaner = require("../models/cleaner")
-const vehicle = require("../models/vehicle")
+const { vehicle } = require("../models/vehicle")
 
 async function handleCreateDailyRoute(req, res) {
     try {
@@ -12,18 +12,70 @@ async function handleCreateDailyRoute(req, res) {
                 }
             });
         }
-        const { vehicleId, departurePlace, destinationPlace, primaryDriverId, secondaryDriverId, cleanerId, departureTime, instructions, beforeJourneyPhotos, afterJourneyPhotos } = req.body
-        if (!vehicleId || !departurePlace || !destinationPlace || !primaryDriverId || !secondaryDriverId || !cleanerId || !departureTime || !instructions || !beforeJourneyPhotos || !afterJourneyPhotos) {
+        const { vehicleId, departurePlace, destinationPlace, departureTime } = req.body
+        console.log({vehicleId, departurePlace, destinationPlace, departureTime});
+        if (!vehicleId || !departurePlace || !destinationPlace || !departureTime) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all the fields"
+            })
+        }
+
+        const foundVehicle = await vehicle.findById(vehicleId)
+
+        if (!foundVehicle) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid Vehicle ID"
+            })
+        }
+
+        const createdDailyRoute = await dailyRoute.create({
+            vehicle: foundVehicle, departurePlace, destinationPlace, departureTime, status : "CREATED"
+        })
+
+        return res.status(400).json({
+            success: true,
+            data: createdDailyRoute
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+
+async function handleStartDailyRoute(req, res) {
+    try {
+        const { routeId } = req.query
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+                }
+            });
+        }
+        const { primaryDriverId, secondaryDriverId, cleanerId, instructions } = req.body
+        if (!primaryDriverId || !secondaryDriverId || !cleanerId || !instructions) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the details"
             })
         }
 
+        if (!routeId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the ID of route to update"
+            })
+        }
+
         const primaryDriver = await driver.findById(primaryDriverId)
         const secondaryDriver = await driver.findById(secondaryDriverId)
         const foundCleaner = await cleaner.findById(cleanerId)
-        const foundVehicle = await vehicle.findById(vehicleId)
 
         if (!primaryDriver) {
             return res.status(400).json({
@@ -43,20 +95,13 @@ async function handleCreateDailyRoute(req, res) {
                 message: "Provide a valid Cleaner ID"
             })
         }
-        if (!foundVehicle) {
-            return res.status(400).json({
-                success: false,
-                message: "Provide a valid Vehicle ID"
-            })
-        }
+       
 
-        const createdDailyRoute = await dailyRoute.create({
-            vehicle: foundVehicle, departurePlace, destinationPlace, primaryDriver, secondaryDriver, cleaner: foundCleaner, departureTime, instructions, beforeJourneyPhotos, afterJourneyPhotos
-        })
+        const updatedDailyRoute = await dailyRoute.findByIdAndUpdate(routeId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status : "FINALIZED" }, { new: true })
 
         return res.status(400).json({
             success: true,
-            data: createdDailyRoute
+            data: updatedDailyRoute
         })
 
     } catch (error) {
@@ -159,5 +204,6 @@ module.exports = {
     handleGetAllDailyRoutes,
     handleCreateDailyRoute,
     handleDeleteDailyRoute,
-    handleUpdateDailyRoute
+    handleUpdateDailyRoute,
+    handleStartDailyRoute
 }
