@@ -30,11 +30,11 @@ async function handleCreateVehicle(req, res) {
             })
         }
 
-        const alreadyVehicleWithNumber = await vehicle.findOne({number})
+        const alreadyVehicleWithNumber = await vehicle.findOne({ number })
         if (alreadyVehicleWithNumber) {
             return res.status(400).json({
-                success : false,
-                message : "Vehicle with this number already exists"
+                success: false,
+                message: "Vehicle with this number already exists"
             })
         }
 
@@ -58,7 +58,7 @@ async function handleCreateVehicle(req, res) {
 async function handleGetAllVehiclesByVehicleType(req, res) {
     try {
         const { vehicleType } = req.params
-        const foundVehicles = await vehicle.find({type : vehicleType})
+        const foundVehicles = await vehicle.find({ type: vehicleType })
         if (!foundVehicles) {
             return res.status(400).json({
                 success: false,
@@ -90,6 +90,40 @@ async function handleGetAllVehicles(req, res) {
             success: true,
             data: foundVehicles
         })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleGetRentVehicles(req, res) {
+    try {
+
+        const foundRentVehicles = await vehicle.find({ isForRent: true })
+        return res.status(200).json({
+            success: true,
+            data: foundRentVehicles
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleGetSellVehicles(req, res) {
+    try {
+
+        const foundSellVehicles = await vehicle.find({ isForSell: true })
+        return res.status(200).json({
+            success: true,
+            data: foundSellVehicles
+        })
+
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -132,7 +166,7 @@ async function handleUpdateVehicle(req, res) {
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
                 if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); 
+                    req.body[key] = req.files[key].map(el => el.path);
                 }
             });
         }
@@ -168,7 +202,7 @@ async function handleUpdateTruck(req, res) {
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
                 if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); 
+                    req.body[key] = req.files[key].map(el => el.path);
                 }
             });
         }
@@ -186,11 +220,11 @@ async function handleUpdateTruck(req, res) {
                 message: "Provide the updated vehicle"
             })
         }
-        const udpatedTruck = await truck.findByIdAndUpdate(vehicleId, req.body, {new : true})
+        const udpatedTruck = await truck.findByIdAndUpdate(vehicleId, req.body, { new: true })
         return res.status(200).json({
             success: true,
             message: "Vehicle updated",
-            data : udpatedTruck 
+            data: udpatedTruck
         })
     } catch (error) {
         return res.status(500).json({
@@ -206,5 +240,7 @@ module.exports = {
     handleDeleteVehicle,
     handleUpdateVehicle,
     handleUpdateTruck,
-    handleGetAllVehiclesByVehicleType
+    handleGetAllVehiclesByVehicleType,
+    handleGetRentVehicles,
+    handleGetSellVehicles
 }

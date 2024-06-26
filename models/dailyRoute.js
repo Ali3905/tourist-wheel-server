@@ -18,17 +18,17 @@ const dailyRouteSchema = mongoose.Schema({
     primaryDriver: {
         type: mongoose.Types.ObjectId,
         ref: "driver",
-        required: true
+        // required: true
     },
     secondaryDriver: {
         type: mongoose.Types.ObjectId,
         ref: "driver",
-        required: true
+        // required: true
     },
     cleaner: {
         type: mongoose.Types.ObjectId,
         ref: "cleaner",
-        required: true
+        // required: true
     },
     departureTime: {
         type: Date,
@@ -45,6 +45,10 @@ const dailyRouteSchema = mongoose.Schema({
     afterJourneyPhotos: {
         type: Array,
     },
+    status : {
+        type: String,
+        enum: ["CREATED", "FINALIZED", "COMPLETED"]
+    }
     
 }, { timestamps: true });
 
