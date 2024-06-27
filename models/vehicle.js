@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 
 const vehicleSchema = mongoose.Schema({
+    
     number: {
         type: String,
         required: true,
@@ -61,15 +62,22 @@ const truckSchema = mongoose.Schema({
     }
 })
 
+const carSchema = mongoose.Schema({
+    name: {
+        type: String,
+    },
+})
+
 vehicleSchema.set("discriminatorKey", "type")
 
 const vehicle = mongoose.model("vehicle", vehicleSchema)
 const truck = vehicle.discriminator("TRUCK", truckSchema)
-const car = vehicle.discriminator("CAR", vehicleSchema)
+const car = vehicle.discriminator("CAR", carSchema)
 const bus = vehicle.discriminator("BUS", vehicleSchema)
 const tampo = vehicle.discriminator("TAMPO", vehicleSchema)
 
 module.exports = {
     vehicle,
-    truck
+    truck,
+    car
 }
