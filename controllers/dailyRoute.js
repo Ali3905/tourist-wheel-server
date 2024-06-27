@@ -13,7 +13,6 @@ async function handleCreateDailyRoute(req, res) {
             });
         }
         const { vehicleId, departurePlace, destinationPlace, departureTime } = req.body
-        console.log({vehicleId, departurePlace, destinationPlace, departureTime});
         if (!vehicleId || !departurePlace || !destinationPlace || !departureTime) {
             return res.status(400).json({
                 success: false,
@@ -114,7 +113,7 @@ async function handleStartDailyRoute(req, res) {
 
 async function handleGetAllDailyRoutes(req, res) {
     try {
-        const foundRoutes = await dailyRoute.find({})
+        const foundRoutes = await dailyRoute.find({}).populate("primaryDriver secondaryDriver cleaner")
         if (!foundRoutes) {
             return res.status(400).json({
                 success: false,
@@ -128,7 +127,7 @@ async function handleGetAllDailyRoutes(req, res) {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
         })
     }
 }
