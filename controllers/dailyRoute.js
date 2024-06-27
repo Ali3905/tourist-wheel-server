@@ -113,7 +113,7 @@ async function handleStartDailyRoute(req, res) {
 
 async function handleGetAllDailyRoutes(req, res) {
     try {
-        const foundRoutes = await dailyRoute.find({}).populate("primaryDriver secondaryDriver cleaner")
+        const foundRoutes = await dailyRoute.find({}).populate("primaryDriver secondaryDriver cleaner vehicle")
         if (!foundRoutes) {
             return res.status(400).json({
                 success: false,
