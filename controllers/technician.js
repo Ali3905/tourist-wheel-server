@@ -1,4 +1,5 @@
 const technician = require("../models/technician");
+const user = require("../models/user");
 
 async function handleCreateTechnician(req, res) {
     try {
@@ -31,6 +32,8 @@ async function handleCreateTechnician(req, res) {
         }
 
         const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType })
+        const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { technicians: createdTechnician } }, { new: true })
+
         return res.status(201).json({
             success: true,
             data: createdTechnician
@@ -38,24 +41,41 @@ async function handleCreateTechnician(req, res) {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
         })
     }
 }
 
 async function handleGetAllTechnicians(req, res) {
     try {
-        const foundTechnicians = await technician.find({})
-        if (!foundTechnicians) {
-            return res.status(400).json({
-                success: false,
-                message: "Could not find technicians"
+        if (req.data.role === "AGENCY") {
+            const foundTechnicians = await user.findById(req.data._id).populate("technicians")
+
+            if (!foundTechnicians) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find technicians"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundTechnicians.technicians
             })
         }
-        return res.status(200).json({
-            success: true,
-            data: foundTechnicians
-        })
+        else {
+            const foundTechnicians = await technician.find({})
+
+            if (!foundTechnicians) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find technicians"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundTechnicians
+            })
+        }
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -81,6 +101,7 @@ async function handleDeleteTechnician(req, res) {
             })
         }
         await technician.findByIdAndDelete(technicianId)
+        await user.findByIdAndUpdate(req.data._id, { $pull: { technician: technicianId } }, { new: true })
         return res.status(200).json({
             success: true,
             message: "Technician Deleted"

@@ -1,4 +1,5 @@
-const driver = require("../models/driver")
+const driver = require("../models/driver");
+const user = require("../models/user");
 
 async function handleCreateDriver(req, res) {
     try {
@@ -25,7 +26,7 @@ async function handleCreateDriver(req, res) {
                 message: "Password must contain atleast 5 Characters"
             })
         }
-        
+
         if (!["ALL", "CAR", "BUS", "TRUCK"].includes(vehicleType)) {
             return res.status(400).json({
                 success: false,
@@ -42,6 +43,9 @@ async function handleCreateDriver(req, res) {
         const createdDriver = await driver.create({
             name, password, vehicleType, mobileNumber, city, state, license, photo, aadharCard
         })
+
+        const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { drivers: createdDriver } }, { new: true })
+
         return res.status(201).json({
             success: true,
             data: createdDriver
@@ -49,7 +53,7 @@ async function handleCreateDriver(req, res) {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
         })
     }
 }
@@ -57,19 +61,35 @@ async function handleCreateDriver(req, res) {
 async function handleGetAllDrivers(req, res) {
     try {
         // const { } = req.body
-        const foundDrivers = await driver.find({})
+        if (req.data.role === "AGENCY") {
+            const foundDrivers = await user.findById(req.data._id).populate("drivers")
 
-        if (!foundDrivers) {
-            return res.status(400).json({
-                success: false,
-                message: "Could find drivers"
+            if (!foundDrivers) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find drivers"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundDrivers.drivers
+            })
+        }
+        else {
+            const foundDrivers = await driver.find({})
+
+            if (!foundDrivers) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find drivers"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundDrivers
             })
         }
 
-        return res.status(200).json({
-            success: true,
-            data: foundDrivers
-        })
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -96,6 +116,7 @@ async function handleDeleteDriver(req, res) {
             })
         }
         await driver.findByIdAndDelete(driverId)
+        await user.findByIdAndUpdate(req.data._id, { $pull: { drivers: driverId } }, { new: true })
         return res.status(200).json({
             success: true,
             message: "Driver Deleted"
@@ -115,14 +136,14 @@ async function handleUpdateDriver(req, res) {
                 if (req.files[key][0] && req.files[key][0].path) {
                     // console.log(req.files);
                     // console.log(req.files[key]);
-                    req.body[key] = req.files[key][0].path; 
+                    req.body[key] = req.files[key][0].path;
                 }
             });
         }
 
         const { driverId } = req.query
         // const { updatedDriver } = req.body
-        console.log({bo : req.body});
+        console.log({ bo: req.body });
         if (!driverId) {
             return res.status(400).json({
                 success: false,

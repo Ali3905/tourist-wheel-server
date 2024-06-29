@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken")
 
 async function handleSignUp(req, res) {
     try {
-        const { userName, companyName, mobileNumber, whatsappNumber, state, city, email, password } = req.body
-        if (!userName || !companyName || !mobileNumber || !whatsappNumber || !state || !city || !email || !password) {
+        const { userName, companyName, mobileNumber, whatsappNumber, state, city, email, password, type } = req.body
+        if (!userName || !companyName || !mobileNumber || !whatsappNumber || !state || !city || !email || !password || !type) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -36,6 +36,12 @@ async function handleSignUp(req, res) {
                 message: "Password must contain atleast 5 characters"
             })
         }
+        if(!["ADMIN", "AGENCY"].includes(type)){
+            return res.status(400).json({
+                success : false,
+                message : "Provide a valid user type"
+            })
+        }
         const alreadyUserWithThisUserName = await user.findOne({ userName })
         if (alreadyUserWithThisUserName) {
             return res.status(400).json({
@@ -44,10 +50,11 @@ async function handleSignUp(req, res) {
             })
         }
         const hashedPassword = await bcrypt.hash(password, 10)
-        const createdUser = await user.create({ userName, companyName, mobileNumber, whatsappNumber, state, city, email, password: hashedPassword })
+        const createdUser = await user.create({ userName, companyName, mobileNumber, whatsappNumber, state, city, email, password: hashedPassword, type })
 
         const payload = {
-            _id : createdUser._id
+            _id: createdUser._id,
+            role: createdUser.type
         }
 
         const authToken = jwt.sign(payload, process.env.JWT_SECRET)
@@ -89,7 +96,8 @@ async function handleLogin(req, res) {
             })
         }
         const payload = {
-            _id : foundUser._id
+            _id: foundUser._id,
+            role: foundUser.type
         }
 
         const authToken = jwt.sign(payload, process.env.JWT_SECRET)
