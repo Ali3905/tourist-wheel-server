@@ -1,4 +1,5 @@
-const employee = require('../models/employee')
+const employee = require('../models/employee');
+const user = require('../models/user');
 
 async function handleCreateEmployee(req, res) {
 
@@ -42,6 +43,8 @@ async function handleCreateEmployee(req, res) {
             name, mobileNumber, employeeType, state, photo, password, aadharCard
         })
 
+        const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { employees: createdEmployee } }, { new: true })
+
         return res.status(201).json({
             success: true,
             createdEmployee
@@ -57,21 +60,38 @@ async function handleCreateEmployee(req, res) {
 
 async function handleGetAllEmployees(req, res) {
     try {
-        const foundEmployees = await employee.find({})
-        if (!foundEmployees) {
-            return res.status(400).json({
-                success: false,
-                message: "Could not find employees"
+        if (req.data.role === "AGENCY") {
+            const foundEmployees = await user.findById(req.data._id).populate("employees")
+
+            if (!foundEmployees) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find drivers"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundEmployees.employees
             })
         }
-        return res.status(200).json({
-            success: false,
-            data: foundEmployees
-        })
+        else {
+            const foundEmployees = await employee.find({})
+            if (!foundEmployees) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could not find employees"
+                })
+            }
+            return res.status(200).json({
+                success: false,
+                data: foundEmployees
+            })
+        }
+        
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
         })
     }
 }
@@ -93,6 +113,7 @@ async function handleDeleteEmployee(req, res) {
             })
         }
         await employee.findByIdAndDelete(employeeId)
+        await user.findByIdAndUpdate(req.data._id, { $pull: { employees: employeeId } }, { new: true })
         return res.status(200).json({
             success: true,
             message: "Employee Deleted"

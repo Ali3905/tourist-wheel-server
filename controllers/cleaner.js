@@ -1,20 +1,37 @@
 const cleaner = require('../models/cleaner')
+const user = require('../models/user')
 
 async function handleGetAllCleaners(req, res) {
 
     try {
 
-        const foundCleaners = await cleaner.find({})
-        if (!foundCleaners) {
-            return res.status(400).json({
-                sucess: false,
-                message: "Could not find cleaners"
+        if (req.data.role === "AGENCY") {
+            const foundCleaners = await user.findById(req.data._id).populate("cleaners")
+
+            if (!foundCleaners) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find cleaners"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundCleaners.cleaners
             })
         }
-        return res.status(201).json({
-            success: true,
-            data: foundCleaners
-        })
+        else {
+            const foundCleaners = await cleaner.find({})
+            if (!foundCleaners) {
+                return res.status(400).json({
+                    sucess: false,
+                    message: "Could not find cleaners"
+                })
+            }
+            return res.status(201).json({
+                success: true,
+                data: foundCleaners
+            })
+        }
 
     } catch (error) {
         return res.status(500).json({
@@ -31,11 +48,11 @@ async function handleCreateCleaner(req, res) {
 
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
-              if (req.files[key][0] && req.files[key][0].path) {
-                req.body[key] = req.files[key][0].path; // Add the URL to req.body
-              }
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+                }
             });
-          }
+        }
 
         const { name, password, city, state, mobileNumber, photo, aadharCard } = req.body
 
@@ -56,6 +73,8 @@ async function handleCreateCleaner(req, res) {
         const createdCleaner = await cleaner.create({
             name, password, city, state, mobileNumber, photo, aadharCard
         })
+        const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { cleaners: createdCleaner } }, { new: true })
+
         return res.status(201).json({
             success: true,
             createdCleaner
@@ -82,12 +101,13 @@ async function handleDeleteCleaner(req, res) {
         const foundCleaner = await cleaner.findById(cleanerId)
         if (!foundCleaner) {
             return res.status(400).json({
-                success : false,
-                message : "Provide a valid cleaner ID"
+                success: false,
+                message: "Provide a valid cleaner ID"
             })
         }
 
         await cleaner.findByIdAndDelete(cleanerId)
+        await user.findByIdAndUpdate(req.data._id, { $pull: { cleaners: cleanerId } }, { new: true })
         return res.status(200).json({
             success: true,
             message: "Cleaner Deleted"
@@ -105,14 +125,14 @@ async function handleUpdateCleaner(req, res) {
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
                 if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path; 
+                    req.body[key] = req.files[key][0].path;
                 }
             });
         }
 
         const { cleanerId } = req.query
         // const { updatedDriver } = req.body
-        console.log({bo : req.body});
+        console.log({ bo: req.body });
         if (!cleanerId) {
             return res.status(400).json({
                 success: false,

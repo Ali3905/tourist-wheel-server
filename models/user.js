@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const userSchema = mongoose.Schema({
     userName: {
         type: String,
-        unique : true,
+        unique: true,
         required: true
     },
     companyName: {
@@ -33,6 +33,28 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    type: {
+        type: String,
+        enum: ["ADMIN", "AGENCY"]
+    },
+    drivers: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "driver" }],
+    },
+    employees: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "employee" }],
+    },
+    technicians: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "technician" }],
+    },
+    cleaners: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "cleaner" }],
+    },
+    vehicles: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "vehicle" }],
+    },
+    dailyRoutes: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "dailyRoute" }],
     }
 }, { timestamps: true })
 

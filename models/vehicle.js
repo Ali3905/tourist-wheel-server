@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const vehicleSchema = mongoose.Schema({
-    
+
     number: {
         type: String,
         required: true,
@@ -50,15 +50,36 @@ const vehicleSchema = mongoose.Schema({
     type: {
         type: String,
         enum: ["CAR", "TRUCK", "BUS", "TAMPO"]
+    },
+    RC: {
+        type: String
+    },
+    insurance: {
+        type: String
+    },
+    permit: {
+        type: String
+    },
+    fitness: {
+        type: String
+    },
+    tax: {
+        type: String
+    },
+    PUC: {
+        type: String
+    },
+    services: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "service" }]
     }
 }, { timestamps: true })
 
 const truckSchema = mongoose.Schema({
-    noOfTyres : {
-        type : Number,
+    noOfTyres: {
+        type: Number,
     },
-    vehicleWeightInKGS : {
-        type : Number,
+    vehicleWeightInKGS: {
+        type: Number,
     }
 })
 
