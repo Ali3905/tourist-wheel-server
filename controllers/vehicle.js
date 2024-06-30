@@ -308,6 +308,29 @@ async function handleAddDocuments(req, res) {
     }
 }
 
+async function handleDeleteDocuments(req, res) {
+    try {
+        const { vehicleId } = req.query
+        if (!vehicleId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the ID of vehicle to update"
+            })
+        }
+
+        const a = await vehicle.findByIdAndUpdate(vehicleId, { RC : null, permit: null, insurance: null, fitness: null, tax: null, PUC: null }, { new: true })
+        return res.status(200).json({
+            success: true,
+            message: "Documents deleted",
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 async function handleUpdateTruck(req, res) {
     try {
         if (req.files) {
@@ -345,6 +368,8 @@ async function handleUpdateTruck(req, res) {
     }
 }
 
+
+
 async function handleGetVehicleById(req, res) {
     try {
         const { vehicleId } = req.params
@@ -377,5 +402,6 @@ module.exports = {
     handleGetRentVehicles,
     handleGetSellVehicles,
     handleAddDocuments,
-    handleGetVehicleById
+    handleGetVehicleById,
+    handleDeleteDocuments
 }
