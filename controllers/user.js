@@ -1,4 +1,5 @@
 const user = require("../models/user")
+const driver = require("../models/driver")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
@@ -36,10 +37,10 @@ async function handleSignUp(req, res) {
                 message: "Password must contain atleast 5 characters"
             })
         }
-        if(!["ADMIN", "AGENCY"].includes(type)){
+        if (!["ADMIN", "AGENCY"].includes(type)) {
             return res.status(400).json({
-                success : false,
-                message : "Provide a valid user type"
+                success: false,
+                message: "Provide a valid user type"
             })
         }
         const alreadyUserWithThisUserName = await user.findOne({ userName })
@@ -74,8 +75,8 @@ async function handleSignUp(req, res) {
 
 async function handleLogin(req, res) {
     try {
-        const { userName, password } = req.body
-        if (!userName || !password) {
+        const { userName, password, mobileNumber } = req.body
+        if ((!userName && !mobileNumber) || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -83,6 +84,24 @@ async function handleLogin(req, res) {
         }
         const foundUser = await user.findOne({ userName })
         if (!foundUser) {
+
+            const foundDriver = await driver.findOne({ mobileNumber, password })
+
+            if (foundDriver) {
+                const payload = {
+                    _id: foundDriver._id,
+                    role: "DRIVER"
+                }
+
+                const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+
+                return res.status(200).json({
+                    success: true,
+                    data: foundDriver,
+                    authToken
+                })
+            }
+
             return res.status(400).json({
                 success: false,
                 message: "Please provide correct creds"
@@ -95,6 +114,8 @@ async function handleLogin(req, res) {
                 message: "Please provide correct creds"
             })
         }
+
+
         const payload = {
             _id: foundUser._id,
             role: foundUser.type
