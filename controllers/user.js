@@ -136,7 +136,64 @@ async function handleLogin(req, res) {
 
 }
 
+async function handleGetUserById(req, res) {
+    try {
+        if (!req.data._id) {
+            return res.status(400).json({
+                success: false,
+                message: "Login with correct creds"
+            })
+        }
+        const userId = req.data._id
+        const foundUser = await user.findById(userId)
+        if (!foundUser) {
+            res.status(400).json({
+                success: false,
+                message: "Login with correct creds"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: foundUser
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+async function handleUpdateUser(req, res) {
+    try {
+        if (!req.data._id) {
+            return res.status(400).json({
+                success: false,
+                message: "Login with correct creds"
+            })
+        }
+        const userId = req.data._id
+        const updatedUser = await user.findByIdAndUpdate(userId, req.body, { new: true })
+        if (!updatedUser) {
+            res.status(400).json({
+                success: false,
+                message: "Login with correct creds"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: updatedUser
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
 module.exports = {
     handleSignUp,
-    handleLogin
+    handleLogin,
+    handleGetUserById,
+    handleUpdateUser
 }
