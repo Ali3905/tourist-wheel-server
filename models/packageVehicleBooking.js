@@ -12,6 +12,18 @@ const packageBookingSchema = mongoose.Schema({
         ref: "vehicle",
         required: true,
     },
+    primaryDriver: {
+        type: mongoose.Types.ObjectId,
+        ref: "driver",
+    },
+    secondaryDriver: {
+        type: mongoose.Types.ObjectId,
+        ref: "driver",
+    },
+    cleaner: {
+        type: mongoose.Types.ObjectId,
+        ref: "cleaner",
+    },
     customerName: {
         type: String,
         required: true
@@ -80,6 +92,10 @@ const packageBookingSchema = mongoose.Schema({
     },
     instructions: {
         type: String
+    },
+    status: {
+        type: String,
+        enum: ["CREATED", "FINALIZED", "COMPLETED"]
     }
 }, { timestamps: true });
 
