@@ -191,6 +191,7 @@ async function handleUpdateUser(req, res) {
     }
 }
 
+
 module.exports = {
     handleSignUp,
     handleLogin,

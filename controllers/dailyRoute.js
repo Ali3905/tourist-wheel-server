@@ -101,7 +101,7 @@ async function handleStartDailyRoute(req, res) {
 
         const updatedDailyRoute = await dailyRoute.findByIdAndUpdate(routeId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED" }, { new: true })
 
-        return res.status(400).json({
+        return res.status(200).json({
             success: true,
             data: updatedDailyRoute
         })
