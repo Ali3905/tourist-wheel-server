@@ -379,7 +379,7 @@ async function handleGetVehicleById(req, res) {
                 message : "Provide vehicle ID"
             })
         }
-        const foundVehicle = await vehicle.findById(vehicleId).populate("services")
+        const foundVehicle = await vehicle.findById(vehicleId)
         return res.status(200).json({
             success : true,
             data : foundVehicle

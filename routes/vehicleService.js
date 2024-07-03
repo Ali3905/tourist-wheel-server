@@ -1,8 +1,12 @@
 const express = require("express")
 const { upload } = require("../middlewares/upload")
-const { handleCreateService } = require("../controllers/vehicleService")
+const { handleCreateService, handleUpdateService, handleGetAllServices, handleDeleteService } = require("../controllers/vehicleService")
+const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("../middlewares/auth")
 const router = express.Router()
 
-router.post("/", upload.fields([{ name: "bill", maxCount: 1 }]), handleCreateService)
+router.post("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), upload.fields([{ name: "bill", maxCount: 1 }]), handleCreateService)
+router.get("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleGetAllServices)
+router.delete("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), handleDeleteService)
+router.patch("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), upload.fields([{ name: "bill", maxCount: 1 }]), handleUpdateService)
 
 module.exports = router

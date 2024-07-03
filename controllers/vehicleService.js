@@ -1,3 +1,4 @@
+const user = require("../models/user");
 const { vehicle } = require("../models/vehicle")
 const service = require("../models/vehicleService")
 
@@ -10,7 +11,6 @@ async function handleCreateService(req, res) {
                 }
             });
         }
-        console.log(req.files);
         const { garageName, garageNumber, date, workDescription, bill, vehicleNumeber } = req.body
         if (!vehicleNumeber) {
             return res.status(400).json({
@@ -18,15 +18,23 @@ async function handleCreateService(req, res) {
                 message: "Provide vehicleNumber to add service"
             })
         }
-        console.log({garageName, garageNumber, date, workDescription, bill});
         if (!garageName || !garageNumber || !date || !workDescription || !bill) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
             })
         }
-        const createdService = await service.create({ garageName, garageNumber, date, workDescription, bill })
-        await vehicle.findOneAndUpdate({ number: vehicleNumeber }, { $push: { services: createdService } }, { new: true })
+        const foundVehicle = await vehicle.findOne({ number: vehicleNumeber })
+
+        if (!foundVehicle) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter a valid vehicle number that exists"
+            })
+        }
+        const createdService = await service.create({ garageName, garageNumber, date, workDescription, bill, vehicle: foundVehicle })
+        await user.findByIdAndUpdate(req.data._id, { $push: { services: createdService } }, { new: true })
+
         return res.status(201).json({
             success: true,
             data: createdService
@@ -39,6 +47,115 @@ async function handleCreateService(req, res) {
     }
 }
 
+async function handleGetAllServices(req, res) {
+    try {
+        if (req.data.role === "AGENCY") {
+            const foundUser = await user.findById(req.data._id).populate("services")
+
+            if (!foundUser) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find user"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundUser.services
+            })
+        }
+        else {
+            const foundServices = await service.find({})
+            if (!foundServices) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could not find services"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundServices
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleDeleteService(req, res) {
+    try {
+        const { serviceId } = req.query
+        if (!serviceId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide service ID to delete it"
+            })
+        }
+
+        const foundService = await service.findById(serviceId)
+        if (!foundService) {
+            return res.status(400).json({
+                success: false,
+                message: "Service with this id do not exists. Provide a valid ID"
+            })
+        }
+
+        await user.findByIdAndUpdate(req.data._id, { $pull: { services: serviceId } })
+        await service.findByIdAndDelete(serviceId)
+
+        return res.status(200).json({
+            success: true,
+            message: "Service Deleted"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleUpdateService(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+                }
+            });
+        }
+        const { serviceId } = req.query
+        if (!serviceId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide service ID to delete it"
+            })
+        }
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the updated service to update"
+            })
+        }
+        const updatedService = await service.findByIdAndUpdate(serviceId, req.body, { new: true })
+        return res.status(200).json({
+            success: true,
+            data: updatedService
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
-    handleCreateService
+    handleCreateService,
+    handleGetAllServices,
+    handleDeleteService,
+    handleUpdateService
 }

@@ -58,6 +58,9 @@ const userSchema = mongoose.Schema({
     },
     packageBookings: {
         type: [{ type: mongoose.Types.ObjectId, ref: "packageBooking" }],
+    },
+    services: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "service" }],
     }
 }, { timestamps: true })
 

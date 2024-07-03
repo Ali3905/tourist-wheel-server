@@ -36,7 +36,7 @@ async function handleCreateDailyRoute(req, res) {
 
         await user.findByIdAndUpdate(req.data._id, { $push: { dailyRoutes: createdDailyRoute } }, { new: true })
 
-        return res.status(400).json({
+        return res.status(200).json({
             success: true,
             data: createdDailyRoute
         })

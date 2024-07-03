@@ -5,7 +5,8 @@ const serviceSchema = mongoose.Schema({
     garageNumber: String,
     date: Date,
     workDescription: String,
-    bill: String
+    bill: String,
+    vehicle: { type: mongoose.Types.ObjectId, ref: "vehicle" }
 }, { timestamps: true })
 
 const service = mongoose.model("service", serviceSchema)
