@@ -22,6 +22,7 @@ connectToMongo(process.env.MONGO_URL)
     .then(console.log("Mongo Connected"))
     .catch(err => console.log(err.message))
 
+
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())

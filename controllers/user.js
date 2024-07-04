@@ -191,10 +191,35 @@ async function handleUpdateUser(req, res) {
     }
 }
 
+async function handleGetUserByType(req, res) {
+    try {
+        const { userType } = req.query
+        if (!userType) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the user type you want to get"
+            })
+        }
+        const foundUsers = await user.find({ type: userType })
+
+        return res.status(200).json({
+            success: true,
+            data: foundUsers
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
 
 module.exports = {
     handleSignUp,
     handleLogin,
     handleGetUserById,
-    handleUpdateUser
+    handleUpdateUser,
+    handleGetUserByType
 }
