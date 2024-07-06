@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const dailyRouteSchema = mongoose.Schema({
     vehicle: {
         type: mongoose.Types.ObjectId,
-        ref : "vehicle",
+        ref: "vehicle",
         required: true,
     },
     departurePlace: {
@@ -42,14 +42,21 @@ const dailyRouteSchema = mongoose.Schema({
         type: Array,
 
     },
+    beforeJourneyNote: {
+        type: String,
+
+    },
     afterJourneyPhotos: {
         type: Array,
     },
-    status : {
+    afterJourneyNote: {
         type: String,
-        enum: ["CREATED", "FINALIZED", "COMPLETED"]
+    },
+    status: {
+        type: String,
+        enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
     }
-    
+
 }, { timestamps: true });
 
 const dailyRoute = mongoose.model('dailyRoute', dailyRouteSchema);

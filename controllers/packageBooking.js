@@ -274,6 +274,83 @@ async function handleDeletePackageBooking(req, res) {
     }
 }
 
+async function handleStartPackageBooking(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+                }
+            });
+        }
+        const { beforeJourneyPhotos, beforeJourneyNote } = req.body
+        const { bookingId } = req.query
+        if (!beforeJourneyPhotos || !beforeJourneyNote) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide All the fields"
+            })
+        }
+
+        const foundBooking = await packageBooking.findById(bookingId)
+        if (foundBooking.status !== "FINALIZED") {
+            return res.status(400).json({
+                success: false,
+                message: "The selected booking is not in a state to start. It is either completed, started or not finalized yet"
+            })
+        }
+
+        const updatedBooking = await packageBooking.findByIdAndUpdate(bookingId, { beforeJourneyPhotos, beforeJourneyNote, status: "STARTED" }, { new: true })
+        return res.status(200).json({
+            success: true,
+            data: updatedBooking
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleCompletePackageBooking(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+                }
+            });
+        }
+        const { afterJourneyPhotos, afterJourneyNote } = req.body
+        const { bookingId } = req.query
+        if (!afterJourneyPhotos || !afterJourneyNote) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide All the fields"
+            })
+        }
+        const foundBooking = await packageBooking.findById(bookingId)
+        if (foundBooking.status !== "STARTED") {
+            return res.status(400).json({
+                success : false,
+                message: "The selected booking is not in a state to end. It is either completed, created or not finalized yet"
+            })
+        }
+
+        const updatedBooking = await packageBooking.findByIdAndUpdate(bookingId, { afterJourneyPhotos, afterJourneyNote, status: "COMPLETED" }, { new: true })
+        return res.status(200).json({
+            success: true,
+            data: updatedBooking
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     handleCreatePackageBooking,
@@ -281,5 +358,7 @@ module.exports = {
     handleUpdatePackageBooking,
     handleGetAllPackageBookings,
     handleDeletePackageBooking,
-    handleGetPackageBookingByID
+    handleGetPackageBookingByID,
+    handleStartPackageBooking,
+    handleCompletePackageBooking
 }

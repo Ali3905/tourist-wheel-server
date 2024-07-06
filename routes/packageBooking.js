@@ -1,6 +1,7 @@
 const express = require("express")
-const { handleCreatePackageBooking, handleGetAllPackageBookings, handleDeletePackageBooking, handleGetPackageBookingByID, handleFinalizePackageBookings, handleUpdatePackageBooking } = require("../controllers/packageBooking")
+const { handleCreatePackageBooking, handleGetAllPackageBookings, handleDeletePackageBooking, handleGetPackageBookingByID, handleFinalizePackageBookings, handleUpdatePackageBooking, handleStartPackageBooking, handleCompletePackageBooking } = require("../controllers/packageBooking")
 const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("../middlewares/auth")
+const { upload } = require("../middlewares/upload")
 const router = express.Router()
 
 router.post("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), handleCreatePackageBooking)
@@ -9,6 +10,8 @@ router.patch("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]
 router.get("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleGetAllPackageBookings)
 router.get("/:bookingId", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleGetPackageBookingByID)
 router.delete("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), handleDeletePackageBooking)
+router.patch("/start", handleGetUserByAuthToken, handleAuthorizeUserByRole(["DRIVER"]), upload.fields([{ name: "beforeJourneyPhotos", maxCount: 5 }]), handleStartPackageBooking)
+router.patch("/complete", handleGetUserByAuthToken, handleAuthorizeUserByRole(["DRIVER"]), upload.fields([{ name: "afterJourneyPhotos", maxCount: 5 }]), handleCompletePackageBooking)
 
 
 module.exports = router

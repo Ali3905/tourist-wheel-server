@@ -85,17 +85,26 @@ const packageBookingSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-
-    note: {
-        type: String,
-        required: true
-    },
     instructions: {
         type: String
     },
+    beforeJourneyPhotos: {
+        type: Array,
+
+    },
+    beforeJourneyNote: {
+        type: String,
+
+    },
+    afterJourneyPhotos: {
+        type: Array,
+    },
+    afterJourneyNote: {
+        type: String,
+    },
     status: {
         type: String,
-        enum: ["CREATED", "FINALIZED", "COMPLETED"]
+        enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
     }
 }, { timestamps: true });
 

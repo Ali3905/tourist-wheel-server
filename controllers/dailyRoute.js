@@ -50,7 +50,7 @@ async function handleCreateDailyRoute(req, res) {
 }
 
 
-async function handleStartDailyRoute(req, res) {
+async function handleFinalizeDailyRoute(req, res) {
     try {
         const { routeId } = req.query
         if (req.files) {
@@ -124,7 +124,7 @@ async function handleGetAllDailyRoutes(req, res) {
                     path: "cleaner",
                     model: "cleaner"
                 }
-               
+
             }).populate({
                 path: "dailyRoutes",
                 populate: {
@@ -243,10 +243,89 @@ async function handleUpdateDailyRoute(req, res) {
     }
 }
 
+async function handleStartDailyRoute(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+                }
+            });
+        }
+        const { beforeJourneyPhotos, beforeJourneyNote } = req.body
+        const { routeId } = req.query
+        if (!beforeJourneyPhotos || !beforeJourneyNote) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide All the fields"
+            })
+        }
+
+        const foundRoute = await dailyRoute.findById(routeId)
+        if (foundRoute.status !== "FINALIZED") {
+            return res.status(400).json({
+                success: false,
+                message: "The selected route is not in a state to start. It is either completed, started or not finalized yet"
+            })
+        }
+
+        const updatedRoute = await dailyRoute.findByIdAndUpdate(routeId, { beforeJourneyPhotos, beforeJourneyNote, status: "STARTED" }, { new: true })
+        return res.status(200).json({
+            success: true,
+            data: updatedRoute
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleCompleteDailyRoute(req, res) {
+    try {
+        if (req.files) {
+            Object.keys(req.files).forEach((key) => {
+                if (req.files[key][0] && req.files[key][0].path) {
+                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+                }
+            });
+        }
+        const { afterJourneyPhotos, afterJourneyNote } = req.body
+        const { routeId } = req.query
+        if (!afterJourneyPhotos || !afterJourneyNote) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide All the fields"
+            })
+        }
+        const foundRoute = await dailyRoute.findById(routeId)
+        if (foundRoute.status !== "STARTED") {
+            return res.status(400).json({
+                success : false,
+                message: "The selected route is not in a state to end. It is either completed, created or not finalized yet"
+            })
+        }
+
+        const updatedRoute = await dailyRoute.findByIdAndUpdate(routeId, { afterJourneyPhotos, afterJourneyNote, status: "COMPLETED" }, { new: true })
+        return res.status(200).json({
+            success: true,
+            data: updatedRoute
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleGetAllDailyRoutes,
     handleCreateDailyRoute,
     handleDeleteDailyRoute,
     handleUpdateDailyRoute,
-    handleStartDailyRoute
+    handleFinalizeDailyRoute,
+    handleStartDailyRoute,
+    handleCompleteDailyRoute
 }
