@@ -333,7 +333,7 @@ async function handleCompletePackageBooking(req, res) {
         const foundBooking = await packageBooking.findById(bookingId)
         if (foundBooking.status !== "STARTED") {
             return res.status(400).json({
-                success : false,
+                success: false,
                 message: "The selected booking is not in a state to end. It is either completed, created or not finalized yet"
             })
         }
@@ -351,6 +351,39 @@ async function handleCompletePackageBooking(req, res) {
     }
 }
 
+async function handleGetDriverPackageBookings(req, res) {
+    try {
+        const { driverId } = req.params
+
+        if (!driverId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the driver ID"
+            })
+        }
+
+        const foundBookings = await packageBooking.find({
+            $or: [
+                { primaryDriver: driverId },
+                { secondaryDriver: driverId }
+            ]
+        })
+
+        return res.status(200).json({
+            success: true,
+            data: foundBookings
+        })
+
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     handleCreatePackageBooking,
@@ -360,5 +393,6 @@ module.exports = {
     handleDeletePackageBooking,
     handleGetPackageBookingByID,
     handleStartPackageBooking,
-    handleCompletePackageBooking
+    handleCompletePackageBooking,
+    handleGetDriverPackageBookings
 }
