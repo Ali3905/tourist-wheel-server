@@ -193,7 +193,7 @@ async function handleUpdateUser(req, res) {
 
 async function handleGetUserByType(req, res) {
     try {
-        const { userType } = req.query
+        const { userType } = req.params
         if (!userType) {
             return res.status(400).json({
                 success: false,
