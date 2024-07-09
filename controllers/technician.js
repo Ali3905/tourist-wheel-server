@@ -130,10 +130,10 @@ async function handleUpdateTechnician(req, res) {
                 message: "Provide the updated technician"
             })
         }
-        await technician.findByIdAndUpdate(technicianId, req.body)
+        const updatedTechnician = await technician.findByIdAndUpdate(technicianId, req.body, { new: true })
         return res.status(200).json({
             success: true,
-            message: "Technician updated",
+            data: updatedTechnician,
         })
     } catch (error) {
         return res.status(500).json({
