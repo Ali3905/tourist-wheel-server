@@ -143,9 +143,40 @@ async function handleUpdateTechnician(req, res) {
     }
 }
 
+async function handleGetTechnicianById(req, res) {
+    try {
+        const { technicianId } = req.params
+        if (!technicianId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide the technician Id to find the technician"
+            })
+        }
+        if (req.data.role === "AGENCY") {
+            const foundUser = await user.findById(req.data._id).populate("technicians")
+            const filteredTechnician = foundUser?.technicians.filter(technician => technician._id.toString() === technicianId)[0]
+            return res.status(200).json({
+                success: true,
+                data: filteredTechnician
+            })
+        }
+        const foundTechnician = await technician.findById(technicianId)
+        return res.status(200).json({
+            success: true,
+            data: foundTechnician
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleGetAllTechnicians,
     handleCreateTechnician,
     handleDeleteTechnician,
-    handleUpdateTechnician
+    handleUpdateTechnician,
+    handleGetTechnicianById
 }

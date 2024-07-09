@@ -11,7 +11,7 @@ async function handleCreateVehicle(req, res) {
             });
         }
         const { name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, type, noOfTyres, vehicleWeightInKGS } = req.body
-        if (!number || !seatingCapacity || !model || !bodyType || !chassisBrand || !location || !contactNumber || !photos || !isAC || !isForRent || !isForSell || !type) {
+        if (!number || !model || !location || !contactNumber || !photos || !isAC || !isForRent || !isForSell || !type) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"

@@ -9,7 +9,6 @@ const vehicleSchema = mongoose.Schema({
     },
     seatingCapacity: {
         type: Number,
-        required: true
     },
     model: {
         type: String,
@@ -17,11 +16,9 @@ const vehicleSchema = mongoose.Schema({
     },
     bodyType: {
         type: String,
-        required: true
     },
     chassisBrand: {
         type: String,
-        required: true
     },
     location: {
         type: String,
