@@ -9,7 +9,14 @@ const technicianSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    
+    state: {
+        type: String,
+        required: true
+    },
+    city: {
+        type: String,
+        required: true
+    },
     mobileNumber: {
         type: String,
         required: true
@@ -18,7 +25,7 @@ const technicianSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    vehicleType:{
+    vehicleType: {
         type: String,
         enum: ["ALL", "CAR", "BUS", "TRUCK"],
         required: true

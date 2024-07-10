@@ -77,6 +77,12 @@ const packageBookingSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    returnDate: {
+        type: Date,
+    },
+    departureDate: {
+        type: Date,
+    },
     tollInINR: {
         type: Number,
         required: true

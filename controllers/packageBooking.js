@@ -6,7 +6,7 @@ const { vehicle } = require("../models/vehicle")
 
 async function handleCreatePackageBooking(req, res) {
     try {
-        const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, returnTime, tollInINR, otherStateTaxInINR, note } = req.body
+        const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note } = req.body
         // console.log({ vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, returnTime, tollInINR, otherStateTaxInINR, note, instructions });
         if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR || !note) {
             return res.status(400).json({
@@ -41,7 +41,7 @@ async function handleCreatePackageBooking(req, res) {
             })
         }
 
-        const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, returnTime, tollInINR, otherStateTaxInINR, note, status: "CREATED" })
+        const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note, status: "CREATED" })
         await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
         return res.status(201).json({
             success: true,

@@ -3,8 +3,8 @@ const user = require("../models/user");
 
 async function handleCreateTechnician(req, res) {
     try {
-        const { technicianType, name, mobileNumber, alternateNumber, vehicleType } = req.body
-        if (!technicianType || !name || !mobileNumber || !alternateNumber || !vehicleType) {
+        const { technicianType, name, mobileNumber, alternateNumber, vehicleType, state, city } = req.body
+        if (!technicianType || !name || !mobileNumber || !alternateNumber || !vehicleType || !state || !city) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -31,7 +31,7 @@ async function handleCreateTechnician(req, res) {
             })
         }
 
-        const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType })
+        const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType, state, city })
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { technicians: createdTechnician } }, { new: true })
 
         return res.status(201).json({
