@@ -4,7 +4,7 @@ const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("../midd
 const { upload } = require("../middlewares/upload")
 const router = express.Router()
 
-router.post("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), handleCreatePackageBooking)
+router.post("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "MANAGER", "OFFICE-BOY"]), handleCreatePackageBooking)
 router.patch("/finalize", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleFinalizePackageBookings)
 router.patch("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), handleUpdatePackageBooking)
 router.get("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleGetAllPackageBookings)

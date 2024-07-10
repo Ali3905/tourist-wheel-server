@@ -1,5 +1,6 @@
 const cleaner = require("../models/cleaner")
 const driver = require("../models/driver")
+const employee = require("../models/employee")
 const packageBooking = require("../models/packageVehicleBooking")
 const user = require("../models/user")
 const { vehicle } = require("../models/vehicle")
@@ -7,7 +8,7 @@ const { vehicle } = require("../models/vehicle")
 async function handleCreatePackageBooking(req, res) {
     try {
         const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note } = req.body
-        // console.log({ vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, returnTime, tollInINR, otherStateTaxInINR, note, instructions });
+        // console.log({ vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note });
         if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR || !note) {
             return res.status(400).json({
                 success: false,
@@ -41,6 +42,16 @@ async function handleCreatePackageBooking(req, res) {
             })
         }
 
+        if (req.data.role === "MANAGER" || req.data.role === "OFFICE-BOY") {
+            const foundEmployee = await employee.findById(req.data.employeeId)
+            const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note, status: "CREATED", createdBy: foundEmployee })
+            await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
+            return res.status(201).json({
+                success: true,
+                data: createdPackageBooking
+            })
+        }
+
         const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note, status: "CREATED" })
         await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
         return res.status(201).json({
@@ -58,7 +69,6 @@ async function handleCreatePackageBooking(req, res) {
 async function handleFinalizePackageBookings(req, res) {
     try {
         const { bookingId } = req.query
-        console.log(req.query, "booking");
         const { primaryDriverId, secondaryDriverId, cleanerId, instructions } = req.body
         if (!primaryDriverId || !secondaryDriverId || !cleanerId || !instructions) {
             return res.status(400).json({
@@ -250,10 +260,7 @@ async function handleDeletePackageBooking(req, res) {
                 message: "Provide the ID of booking to delete"
             })
         }
-        console.log({ bookingId });
-        // console.log(req.query)
         const foundPackageBooking = await packageBooking.findById(bookingId)
-        console.log(foundPackageBooking);
         if (!foundPackageBooking) {
             return res.status(400).json({
                 success: false,

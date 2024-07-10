@@ -108,6 +108,10 @@ const packageBookingSchema = mongoose.Schema({
     afterJourneyNote: {
         type: String,
     },
+    createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref: "employee"
+    },
     status: {
         type: String,
         enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
