@@ -7,7 +7,7 @@ async function handleCreateService(req, res) {
         if (req.files) {
             Object.keys(req.files).forEach((key) => {
                 if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
                 }
             });
         }

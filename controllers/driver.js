@@ -27,7 +27,7 @@ async function handleCreateDriver(req, res) {
             })
         }
 
-        if (!["ALL", "CAR", "BUS", "TRUCK"].includes(vehicleType)) {
+        if (!["ALL", "CAR", "BUS", "TRUCK", "TAMPO"].includes(vehicleType)) {
             return res.status(400).json({
                 success: false,
                 message: "Provide a valid Vehicle Type"

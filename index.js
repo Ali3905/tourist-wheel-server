@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 require("dotenv").config()
+const data = require("./data")
 
 const driverRoute = require("./routes/driver")
 const cleanerRoute = require("./routes/cleaner")
@@ -15,6 +16,7 @@ const serviceRoute = require("./routes/vehicleService")
 
 const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("./middlewares/auth")
 const { connectToMongo } = require("./connections")
+const technician = require("./models/technician")
 
 const PORT = process.env.PORT || 5000
 const app = express()
@@ -28,8 +30,21 @@ app.use(express.json())
 app.use(cors())
 
 // For Testing
-app.get("/", (req, res) => {
-    res.send("Home page of tourist wheel")
+app.get("/", async (req, res) => {
+    try {
+        const bulkOps = data.map(doc => ({
+            insertOne: {
+                document: doc
+            }
+        }));
+
+        const result = await technician.bulkWrite(bulkOps);
+        res.send(`Inserted ${result.insertedCount} documents successfully`);
+    } catch (err) {
+        console.error('Error inserting data:', err);
+        res.status(500).json({error: err.message});
+    }
+    // res.send("Home page of tourist wheel")
 })
 
 // Routes

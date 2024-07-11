@@ -12,7 +12,7 @@ const driverSchema = mongoose.Schema({
     },
     vehicleType: {
         type: String,
-        enum: ["ALL", "CAR", "BUS", "TRUCK"]
+        enum: ["ALL", "CAR", "BUS", "TRUCK", "TAMPO"]
     },
     mobileNumber: {
         type: String,

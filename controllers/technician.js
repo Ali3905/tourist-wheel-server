@@ -18,13 +18,13 @@ async function handleCreateTechnician(req, res) {
             })
         }
 
-        if (!["MECHANIC", "ELECTICIAN", "SPAREPARTSHOP", "SPRINGWORK", "BATTERYSERVICES", "VEHICLEBODYREPAIR"].includes(technicianType)) {
+        if (!["MECHANIC", "ELECTICIAN", "SPAREPARTSHOP", "SPRINGWORK", "BATTERYSERVICES", "VEHICLEBODYREPAIR", "CRANESERVICES"].includes(technicianType)) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid technician type"
             })
         }
-        if (!["ALL", "CAR", "BUS", "TRUCK"].includes(vehicleType)) {
+        if (!["ALL", "CAR", "BUS", "TRUCK", "TAMPO"].includes(vehicleType)) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid vehicle type"
