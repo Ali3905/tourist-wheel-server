@@ -53,7 +53,7 @@ app.use("/api/cleaner", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AG
 app.use("/api/employee", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), employeeRoute);
 app.use("/api/vehicleInspection", vehicleInspectionRoute);
 app.use("/api/user", authRoute);
-app.use("/api/technician", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), technicianRoute);
+app.use("/api/technician", handleGetUserByAuthToken, technicianRoute);
 app.use("/api/dailyRoute", dailyRouteRoute);
 app.use("/api/vehicle", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), vehicleRoute);
 app.use("/api/packageBooking", packageBookingRoute)

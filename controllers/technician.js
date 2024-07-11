@@ -48,34 +48,19 @@ async function handleCreateTechnician(req, res) {
 
 async function handleGetAllTechnicians(req, res) {
     try {
-        if (req.data.role === "AGENCY") {
-            const foundTechnicians = await user.findById(req.data._id).populate("technicians")
+        const foundTechnicians = await technician.find({})
 
-            if (!foundTechnicians) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Could find technicians"
-                })
-            }
-            return res.status(200).json({
-                success: true,
-                data: foundTechnicians.technicians
+        if (!foundTechnicians) {
+            return res.status(400).json({
+                success: false,
+                message: "Could find technicians"
             })
         }
-        else {
-            const foundTechnicians = await technician.find({})
+        return res.status(200).json({
+            success: true,
+            data: foundTechnicians
+        })
 
-            if (!foundTechnicians) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Could find technicians"
-                })
-            }
-            return res.status(200).json({
-                success: true,
-                data: foundTechnicians
-            })
-        }
     } catch (error) {
         return res.status(500).json({
             success: false,
