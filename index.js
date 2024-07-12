@@ -31,20 +31,7 @@ app.use(cors())
 
 // For Testing
 app.get("/", async (req, res) => {
-    try {
-        const bulkOps = data.map(doc => ({
-            insertOne: {
-                document: doc
-            }
-        }));
-
-        const result = await technician.bulkWrite(bulkOps);
-        res.send(`Inserted ${result.insertedCount} documents successfully`);
-    } catch (err) {
-        console.error('Error inserting data:', err);
-        res.status(500).json({error: err.message});
-    }
-    // res.send("Home page of tourist wheel")
+        res.send("Home page of tourist wheel")
 })
 
 // Routes
