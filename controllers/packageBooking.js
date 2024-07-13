@@ -110,7 +110,7 @@ async function handleFinalizePackageBookings(req, res) {
 
         const updatedPackageBooking = await packageBooking.findByIdAndUpdate(bookingId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED" }, { new: true })
 
-        return res.status(400).json({
+        return res.status(200).json({
             success: true,
             data: updatedPackageBooking
         })
