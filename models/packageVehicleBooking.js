@@ -43,16 +43,16 @@ const packageBookingSchema = mongoose.Schema({
         required: true
     },
     perKmRateInINR: {
-        type: Number,
+        type: String,
         required: true
     },
     advanceAmountInINR: {
-        type: Number,
+        type: String,
         required: true
     },
 
     remainingAmountInINR: {
-        type: Number,
+        type: String,
         required: true
     },
 
@@ -84,11 +84,11 @@ const packageBookingSchema = mongoose.Schema({
         type: Date,
     },
     tollInINR: {
-        type: Number,
+        type: String,
         required: true
     },
     otherStateTaxInINR: {
-        type: Number,
+        type: String,
         required: true
     },
     instructions: {
