@@ -29,10 +29,34 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())
 
+const SMARTPING_API_KEY = 'your-smartping-api-key';
+const SMARTPING_API_URL = 'https://api.smartping.io/send-otp';
+
 // For Testing
 app.get("/", async (req, res) => {
         res.send("Home page of tourist wheel")
 })
+
+app.post('/send-otp', async (req, res) => {
+    const { phoneNumber } = req.body;
+
+    try {
+        const response = await axios.post(SMARTPING_API_URL, {
+            apiKey: SMARTPING_API_KEY,
+            phone: phoneNumber
+        });
+
+        if (response.data.success) {
+            res.status(200).json({ message: 'OTP sent successfully.' });
+        } else {
+            res.status(500).json({ message: 'Failed to send OTP.' });
+        }
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        res.status(500).json({ message: 'Error sending OTP.' });
+    }
+});
+
 
 // Routes
 app.use("/api/driver", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), driverRoute);

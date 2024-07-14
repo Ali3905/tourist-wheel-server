@@ -109,8 +109,7 @@ const packageBookingSchema = mongoose.Schema({
         type: String,
     },
     createdBy: {
-        type: mongoose.Types.ObjectId,
-        ref: "employee"
+        type: String
     },
     status: {
         type: String,
