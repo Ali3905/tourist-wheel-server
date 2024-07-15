@@ -224,16 +224,26 @@ async function handleUpdateDailyRoute(req, res) {
                 message: "Provide the ID of route to update"
             })
         }
-        if (!req.body) {
+        const { vehicleId, departurePlace, destinationPlace, departureTime } = req.body
+        if (!vehicleId || !departurePlace || !destinationPlace || !departureTime) {
             return res.status(400).json({
                 success: false,
-                message: "Provide the updated route"
+                message: "Please provide all the fields"
             })
         }
-        await dailyRoute.findByIdAndUpdate(routeId, req.body)
+
+        const foundVehicle = await vehicle.findById(vehicleId)
+
+        if (!foundVehicle) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid Vehicle ID"
+            })
+        }
+        const updatedRoute = await dailyRoute.findByIdAndUpdate(routeId, { vehicle: foundVehicle, departurePlace, destinationPlace, departureTime }, { new: true })
         return res.status(200).json({
             success: true,
-            message: "Daily Route updated",
+            data: updatedRoute,
         })
     } catch (error) {
         return res.status(500).json({

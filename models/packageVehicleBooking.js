@@ -111,6 +111,7 @@ const packageBookingSchema = mongoose.Schema({
     createdBy: {
         type: String
     },
+    invoiceId: String,
     status: {
         type: String,
         enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
