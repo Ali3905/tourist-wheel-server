@@ -1,4 +1,4 @@
-const user = require("../models/user")
+const { user } = require("../models/user")
 const driver = require("../models/driver")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
@@ -96,7 +96,7 @@ async function handleLogin(req, res) {
 
                 const authToken = jwt.sign(payload, process.env.JWT_SECRET)
 
-                
+
                 return res.status(200).json({
                     success: true,
                     data: foundDriver,
@@ -105,7 +105,7 @@ async function handleLogin(req, res) {
             }
 
             const foundEmployee = await employee.findOne({ mobileNumber, password })
-            const foundAgency = await user.findOne({ employees : foundEmployee._id })
+            const foundAgency = await user.findOne({ employees: foundEmployee._id })
             if (foundEmployee && (foundEmployee.employeeType === "MANAGER" || foundEmployee.employeeType === "OFFICE-BOY")) {
                 const payload = {
                     _id: foundAgency._id,
@@ -115,7 +115,7 @@ async function handleLogin(req, res) {
 
                 const authToken = jwt.sign(payload, process.env.JWT_SECRET)
 
-                
+
                 return res.status(200).json({
                     success: true,
                     data: foundEmployee,
@@ -151,7 +151,7 @@ async function handleLogin(req, res) {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
         })
     }
 
