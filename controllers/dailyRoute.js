@@ -2,7 +2,7 @@ const dailyRoute = require("../models/dailyRoute");
 const driver = require("../models/driver")
 const cleaner = require("../models/cleaner")
 const { vehicle } = require("../models/vehicle");
-const user = require("../models/user");
+const {user} = require("../models/user");
 
 async function handleCreateDailyRoute(req, res) {
     try {

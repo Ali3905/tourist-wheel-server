@@ -64,5 +64,25 @@ const userSchema = mongoose.Schema({
     }
 }, { timestamps: true })
 
+const agencySchema = mongoose.Schema({
+    isSubsciptionValid: {
+        type: Boolean,
+        default: false
+    },
+    subscription: {
+        type: mongoose.Types.ObjectId,
+        ref: 'subscription',
+    },
+    // razorpayCustomerId: String,
+})
+
+userSchema.set("discriminatorKey", "type")
+
 const user = mongoose.model("user", userSchema);
-module.exports = user;
+const agency = user.discriminator("AGENCY", agencySchema)
+const admin = user.discriminator("ADMIN", userSchema)
+
+module.exports = {
+    user,
+    agency
+}

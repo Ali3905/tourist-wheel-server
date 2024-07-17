@@ -1,4 +1,4 @@
-const user = require("../models/user");
+const {user} = require("../models/user");
 const { vehicle } = require("../models/vehicle")
 const service = require("../models/vehicleService")
 

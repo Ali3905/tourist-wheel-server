@@ -1,5 +1,5 @@
 const driver = require("../models/driver");
-const user = require("../models/user");
+const {user} = require("../models/user");
 
 async function handleCreateDriver(req, res) {
     try {

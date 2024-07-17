@@ -1,4 +1,4 @@
-const user = require("../models/user");
+const {user} = require("../models/user");
 const { vehicle, truck, car } = require("../models/vehicle")
 
 async function handleCreateVehicle(req, res) {

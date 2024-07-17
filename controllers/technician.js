@@ -1,5 +1,5 @@
 const technician = require("../models/technician");
-const user = require("../models/user");
+const {user} = require("../models/user");
 
 async function handleCreateTechnician(req, res) {
     try {

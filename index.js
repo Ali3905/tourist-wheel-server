@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 require("dotenv").config()
 const data = require("./data")
+const subscriptionCronJob = require("./cron/subscription")
 
 const driverRoute = require("./routes/driver")
 const cleanerRoute = require("./routes/cleaner")
@@ -13,6 +14,7 @@ const dailyRouteRoute = require("./routes/dailyRoute")
 const vehicleRoute = require("./routes/vehicle")
 const packageBookingRoute = require("./routes/packageBooking")
 const serviceRoute = require("./routes/vehicleService")
+const subscriptionRoute = require("./routes/subscription")
 
 const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("./middlewares/auth")
 const { connectToMongo } = require("./connections")
@@ -69,11 +71,14 @@ app.use("/api/dailyRoute", dailyRouteRoute);
 app.use("/api/vehicle", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), vehicleRoute);
 app.use("/api/packageBooking", packageBookingRoute)
 app.use("/api/service", serviceRoute)
+app.use("/api/subscription", subscriptionRoute)
+
 
 
 
 app.listen(PORT, () => {
     console.log("Server is running on " + PORT);
+    subscriptionCronJob()
 })
 
 

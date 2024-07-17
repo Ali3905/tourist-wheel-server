@@ -2,7 +2,7 @@ const cleaner = require("../models/cleaner")
 const driver = require("../models/driver")
 const employee = require("../models/employee")
 const packageBooking = require("../models/packageVehicleBooking")
-const user = require("../models/user")
+const {user} = require("../models/user")
 const { vehicle } = require("../models/vehicle")
 
 async function handleCreatePackageBooking(req, res) {
