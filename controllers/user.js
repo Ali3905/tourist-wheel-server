@@ -3,6 +3,35 @@ const driver = require("../models/driver")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const employee = require("../models/employee")
+const axios = require("axios")
+
+
+async function handleSendOtp(number, otp, type) {
+    try {
+        const res = await axios({
+            method: "get",
+            url: process.env.SMS_HOST,
+            params: {
+                APIKey: process.env.DLT_API_KEY,
+                senderid: process.env.DLT_SENDER_ID,
+                channel: 2,
+                DCS: 0,
+                flashsms: 0,
+                number: number,
+                text: `You number verification OTP for Tourist Junction is ${otp}`,
+                route: "clickhere",
+                EntityId: process.env.DLT_ENTITY_ID,
+                dlttemplateid: process.env.DLT_TEMPLATE_ID
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 
 async function handleSignUp(req, res) {
@@ -20,13 +49,13 @@ async function handleSignUp(req, res) {
                 message: "Enter a valid email"
             })
         }
-        if (mobileNumber.length < 10 || mobileNumber.length > 11) {
+        if (mobileNumber.length < 10 || mobileNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid mobile NUmber"
             })
         }
-        if (whatsappNumber.length < 10 || whatsappNumber.length > 11) {
+        if (whatsappNumber.length < 10 || whatsappNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid whatsapp NUmber"
@@ -45,31 +74,208 @@ async function handleSignUp(req, res) {
             })
         }
         const alreadyUserWithThisUserName = await user.findOne({ userName })
+        const alreadyUserWithThisMobileNumber = await user.findOne({ mobileNumber })
         if (alreadyUserWithThisUserName) {
             return res.status(400).json({
                 success: false,
                 message: "This username is taken"
             })
         }
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const createdUser = await user.create({ userName, companyName, mobileNumber, whatsappNumber, state, city, email, password: hashedPassword, type })
-
-        const payload = {
-            _id: createdUser._id,
-            role: createdUser.type
+        if (alreadyUserWithThisMobileNumber) {
+            return res.status(400).json({
+                success: false,
+                message: "This mobile number is already in use"
+            })
         }
+        const otp = Math.floor(1000 + Math.random() * 9000).toString()
+        const hashedPassword = await bcrypt.hash(password, 10)
+        const createdUser = await user.create({ userName, companyName, mobileNumber, whatsappNumber, state, city, email, password: hashedPassword, type, verificationOtp: otp, isVerified: false })
 
-        const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+        createdUser.verificationOtp = undefined
+
+        handleSendOtp(mobileNumber, otp)
 
         return res.status(201).json({
             success: true,
             data: createdUser,
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleVerifyOtp(req, res) {
+    try {
+        const { mobileNumber, otp } = req.body
+        if (!mobileNumber || !otp) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Provide all the fields"
+            })
+        }
+        const foundUser = await user.findOne({ mobileNumber })
+        if (!foundUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid phone number"
+            })
+        }
+        const isOtpCorrect = foundUser.verificationOtp === otp
+        if (!isOtpCorrect) {
+            return res.status(400).json({
+                success: false,
+                message: "Incorrect otp"
+            })
+        }
+        foundUser.isVerified = true
+        foundUser.verificationOtp = undefined
+        await foundUser.save()
+        const payload = {
+            _id: foundUser._id,
+            role: foundUser.type
+        }
+
+        const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+        return res.status(200).json({
+            success: true,
+            data: foundUser,
             authToken
         })
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
+        })
+    }
+}
+
+async function handleSendOtpForResetPassword(req, res) {
+    try {
+        const { mobileNumber } = req.body
+        if (!mobileNumber) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide all the fields"
+            })
+        }
+        const foundUser = await user.findOne({ mobileNumber })
+        if (!foundUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid mobile number"
+            })
+        }
+        const otp = Math.floor(1000 + Math.random() * 9000).toString()
+        foundUser.resetPasswordOtp = otp
+        foundUser.isResetPasswordOtpVerified = false
+        foundUser.save()
+
+        handleSendOtp(foundUser.mobileNumber, otp)
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Otp for password reset is sent"
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleVerifyOtpForResetPassword(req, res) {
+    try {
+        const { mobileNumber, otp } = req.body
+        if (!mobileNumber || !otp) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Provide all the fields"
+            })
+        }
+        const foundUser = await user.findOne({ mobileNumber })
+        if (!foundUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid phone number"
+            })
+        }
+        const isOtpCorrect = foundUser.resetPasswordOtp === otp
+        if (!isOtpCorrect) {
+            return res.status(400).json({
+                success: false,
+                message: "Incorrect otp"
+            })
+        }
+        foundUser.resetPasswordOtp = undefined
+        foundUser.isResetPasswordOtpVerified = true
+        await foundUser.save()
+        // const payload = {
+        //     _id: foundUser._id,
+        //     role: foundUser.type
+        // }
+
+        // const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+        return res.status(200).json({
+            success: true,
+            message: "OTP verified now you can change you password"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleResetPassword(req, res) {
+    try {
+        const { mobileNumber, newPassword } = req.body
+        if (!mobileNumber || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Provide all the fields"
+            })
+        }
+        const foundUser = await user.findOne({ mobileNumber })
+        if (!foundUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a valid phone number"
+            })
+        }
+
+        if (!foundUser.isResetPasswordOtpVerified) {
+            return res.status(400).json({
+                success: false,
+                message: "Verify your OTP first"
+            })
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        foundUser.resetPasswordOtp = undefined
+        foundUser.isResetPasswordOtpVerified = false
+        foundUser.password = hashedPassword
+        await foundUser.save()
+        const payload = {
+            _id: foundUser._id,
+            role: foundUser.type
+        }
+
+        const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+        return res.status(200).json({
+            success: true,
+            data: foundUser
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
         })
     }
 }
@@ -126,6 +332,12 @@ async function handleLogin(req, res) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide correct creds"
+            })
+        }
+        if (!foundUser.isVerified) {
+            return res.status(400).json({
+                success: false,
+                message: "Your account is not verified yet"
             })
         }
         const isPasswordCorrect = await bcrypt.compare(password, foundUser.password)
@@ -242,5 +454,9 @@ module.exports = {
     handleLogin,
     handleGetUserById,
     handleUpdateUser,
-    handleGetUserByType
+    handleGetUserByType,
+    handleVerifyOtp,
+    handleSendOtpForResetPassword,
+    handleVerifyOtpForResetPassword,
+    handleResetPassword
 }

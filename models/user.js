@@ -61,7 +61,19 @@ const userSchema = mongoose.Schema({
     },
     services: {
         type: [{ type: mongoose.Types.ObjectId, ref: "service" }],
-    }
+    },
+    isVerified: {
+        type: Boolean,
+    },
+    verificationOtp: {
+        type: String,
+    },
+    resetPasswordOtp: {
+        type: String,
+    },
+    isResetPasswordOtpVerified: {
+        type: Boolean,
+    },
 }, { timestamps: true })
 
 const agencySchema = mongoose.Schema({

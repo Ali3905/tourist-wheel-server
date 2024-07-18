@@ -11,7 +11,7 @@ async function handleCreateTechnician(req, res) {
             })
         }
 
-        if (mobileNumber.length < 10 || mobileNumber.length > 11 || alternateNumber.length < 10 || alternateNumber.length > 11) {
+        if (mobileNumber.length < 10 || mobileNumber.length > 12 || alternateNumber.length < 10 || alternateNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid Number"

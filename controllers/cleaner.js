@@ -62,7 +62,7 @@ async function handleCreateCleaner(req, res) {
                 message: "Provide all the fields"
             })
         }
-        if (mobileNumber.length < 10 || mobileNumber.length > 11) {
+        if (mobileNumber.length < 10 || mobileNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "number should be less than 10 and greater than 11"

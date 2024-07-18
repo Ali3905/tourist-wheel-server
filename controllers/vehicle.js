@@ -24,7 +24,7 @@ async function handleCreateVehicle(req, res) {
             })
         }
 
-        if (contactNumber.length < 10 || contactNumber.length > 11) {
+        if (contactNumber.length < 10 || contactNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid contact Number"

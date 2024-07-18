@@ -15,13 +15,13 @@ async function handleCreatePackageBooking(req, res) {
                 message: "Provide all the fields"
             })
         }
-        if (mobileNumber.length < 10 || mobileNumber.length > 11) {
+        if (mobileNumber.length < 10 || mobileNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid mobile number"
             })
         }
-        if (alternateNumber.length < 10 || alternateNumber.length > 11) {
+        if (alternateNumber.length < 10 || alternateNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid alternate number"
@@ -149,13 +149,13 @@ async function handleUpdatePackageBooking(req, res) {
                 message: "Provide all the fields"
             })
         }
-        if (mobileNumber.length < 10 || mobileNumber.length > 11) {
+        if (mobileNumber.length < 10 || mobileNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid mobile number"
             })
         }
-        if (alternateNumber.length < 10 || alternateNumber.length > 11) {
+        if (alternateNumber.length < 10 || alternateNumber.length > 12) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid alternate number"
