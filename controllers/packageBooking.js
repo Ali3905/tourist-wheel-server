@@ -7,9 +7,9 @@ const { vehicle } = require("../models/vehicle")
 
 async function handleCreatePackageBooking(req, res) {
     try {
-        const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR } = req.body
+        const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, instructions } = req.body
         // console.log({ vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note });
-        if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR) {
+        if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR || !instructions) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
@@ -44,7 +44,7 @@ async function handleCreatePackageBooking(req, res) {
 
         if (req.data.role === "MANAGER" || req.data.role === "OFFICE-BOY") {
             const foundEmployee = await employee.findById(req.data.employeeId)
-            const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundEmployee.name })
+            const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundEmployee.name, instructions })
             await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
             return res.status(201).json({
                 success: true,

@@ -13,8 +13,8 @@ async function handleCreateDailyRoute(req, res) {
                 }
             });
         }
-        const { vehicleId, departurePlace, destinationPlace, departureTime } = req.body
-        if (!vehicleId || !departurePlace || !destinationPlace || !departureTime) {
+        const { vehicleId, departurePlace, destinationPlace, departureTime, instructions } = req.body
+        if (!vehicleId || !departurePlace || !destinationPlace || !departureTime || !instructions) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -31,7 +31,7 @@ async function handleCreateDailyRoute(req, res) {
         }
 
         const createdDailyRoute = await dailyRoute.create({
-            vehicle: foundVehicle, departurePlace, destinationPlace, departureTime, status: "CREATED"
+            vehicle: foundVehicle, departurePlace, destinationPlace, departureTime, instructions, status: "CREATED"
         })
 
         await user.findByIdAndUpdate(req.data._id, { $push: { dailyRoutes: createdDailyRoute } }, { new: true })
