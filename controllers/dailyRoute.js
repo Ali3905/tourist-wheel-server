@@ -185,7 +185,7 @@ async function handleDeleteDailyRoute(req, res) {
             })
         }
 
-        const foundDailyRoute = await cleaner.findById(dailyRouteId)
+        const foundDailyRoute = await dailyRoute.findById(dailyRouteId)
         if (!foundDailyRoute) {
             return res.status(400).json({
                 success: false,
