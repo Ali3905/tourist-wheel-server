@@ -290,6 +290,7 @@ async function handleDeletePackageBooking(req, res) {
                 message: "Provide the ID of booking to delete"
             })
         }
+        console.log(bookingId);
         const foundPackageBooking = await packageBooking.findById(bookingId)
         if (!foundPackageBooking) {
             return res.status(400).json({
@@ -297,8 +298,8 @@ async function handleDeletePackageBooking(req, res) {
                 message: "Provide a valid booking ID"
             })
         }
-        await packageBooking.findByIdAndDelete(bookingId)
         await user.findByIdAndUpdate(req.data._id, { $pull: { packageBookings: bookingId } }, { new: true })
+        await packageBooking.findByIdAndDelete(bookingId)
         return res.status(200).json({
             success: true,
             message: "Package Booking Deleted"
