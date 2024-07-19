@@ -346,7 +346,7 @@ async function handleGetDriverDailyRoutes(req, res) {
                 { primaryDriver: driverId },
                 { secondaryDriver: driverId }
             ]
-        })
+        }).populate("primaryDriver secondaryDriver cleaner vehicle")
 
         return res.status(200).json({
             success: true,

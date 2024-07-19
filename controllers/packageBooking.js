@@ -405,7 +405,8 @@ async function handleGetDriverPackageBookings(req, res) {
                 { primaryDriver: driverId },
                 { secondaryDriver: driverId }
             ]
-        })
+        }).populate("cleaner vehicle otherVehicle primaryDriver secondaryDriver")
+        
 
         return res.status(200).json({
             success: true,
