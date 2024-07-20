@@ -1,5 +1,5 @@
 const employee = require('../models/employee');
-const user = require('../models/user');
+const {user} = require('../models/user');
 
 async function handleCreateEmployee(req, res) {
 

@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const employee = require("../models/employee")
 const axios = require("axios")
+const { sendSms } = require("../utils/sms")
 
 
 async function handleSendOtp(number, otp, type) {
@@ -21,9 +22,10 @@ async function handleSendOtp(number, otp, type) {
                 text: `You number verification OTP for Tourist Junction is ${otp}`,
                 route: "clickhere",
                 EntityId: process.env.DLT_ENTITY_ID,
-                dlttemplateid: process.env.DLT_TEMPLATE_ID
+                dlttemplateid: process.env.DLT_VERIFY_SIGNUP_TEMPLATE_ID
             }
         })
+        
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -93,11 +95,16 @@ async function handleSignUp(req, res) {
 
         createdUser.verificationOtp = undefined
 
-        handleSendOtp(mobileNumber, otp)
+        // handleSendOtp(mobileNumber, otp)
+        const response = await sendSms(mobileNumber, `Your OTP for mobile number verification for Tourist Junction is ${otp}. Do not share it with any other person.`, process.env.DLT_VERIFY_SIGNUP_TEMPLATE_ID)
+        // if(response.ErrorMessage !== "Success"){
+        //     return res.status(400).json(response)
+        // }
 
         return res.status(201).json({
             success: true,
             data: createdUser,
+            smsResponse: response
         })
     } catch (error) {
         return res.status(500).json({
@@ -173,12 +180,17 @@ async function handleSendOtpForResetPassword(req, res) {
         foundUser.isResetPasswordOtpVerified = false
         foundUser.save()
 
-        handleSendOtp(foundUser.mobileNumber, otp)
+        // handleSendOtp(foundUser.mobileNumber, otp)
+        const response = await sendSms(foundUser.mobileNumber, `Yor OTP for reset password for Tourist Junction is ${otp}. Do not share it with any other person.`, process.env.DLT_RESET_PASSWORD_TEMPLATE_ID)
+        // if(response.ErrorMessage !== "Success"){
+        //     return res.status(400).json(response)
+        // }
 
 
         return res.status(200).json({
             success: true,
-            message: "Otp for password reset is sent"
+            message: "Otp for password reset is sent",
+            smsResponse: response
         })
 
 

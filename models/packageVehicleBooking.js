@@ -115,6 +115,10 @@ const packageBookingSchema = mongoose.Schema({
     status: {
         type: String,
         enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
+    },
+    isNotified: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

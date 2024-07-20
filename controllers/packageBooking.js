@@ -4,12 +4,14 @@ const employee = require("../models/employee")
 const packageBooking = require("../models/packageVehicleBooking")
 const {user} = require("../models/user")
 const { vehicle } = require("../models/vehicle")
+const { formatDate, formatTime } = require("../utils/others")
+const { sendSms } = require("../utils/sms")
 
 async function handleCreatePackageBooking(req, res) {
     try {
         const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, instructions } = req.body
         // console.log({ vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note });
-        if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR || !instructions) {
+        if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR || !instructions || !departureDate || !returnDate) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
@@ -44,7 +46,7 @@ async function handleCreatePackageBooking(req, res) {
 
         if (req.data.role === "MANAGER" || req.data.role === "OFFICE-BOY") {
             const foundEmployee = await employee.findById(req.data.employeeId)
-            const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundEmployee.name, instructions })
+            const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundEmployee.name, instructions, isNotified: false })
             await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
             return res.status(201).json({
                 success: true,
@@ -53,11 +55,14 @@ async function handleCreatePackageBooking(req, res) {
         }
         const foundAgency = await user.findById(req.data._id)
         const bookingsCount = await packageBooking.countDocuments();
-        const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundAgency.userName, invoiceId : bookingsCount + 101 })
+        const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundAgency.userName, invoiceId : bookingsCount + 101, isNotified : false, instructions })
         await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
+
+        const response = await sendSms(createdPackageBooking.mobileNumber, `Dear ${createdPackageBooking.customerName}, You have successfully booked a vehicle with ${foundAgency.companyName}. Your trip dates are from ${formatDate(createdPackageBooking.departureDate)} to ${formatDate(createdPackageBooking.returnDate)} For any information, please contact ${foundAgency.companyName}. Best regards, TOURIST JUNCTION PRIVATE LIMITED`, process.env.DLT_PACKAGE_BOOKING_SUCCESS_TEMPLATE_ID)
         return res.status(201).json({
             success: true,
-            data: createdPackageBooking
+            data: createdPackageBooking,
+            smsResponse: response
         })
     } catch (error) {
         return res.status(500).json({
@@ -109,11 +114,21 @@ async function handleFinalizePackageBookings(req, res) {
         }
 
 
-        const updatedPackageBooking = await packageBooking.findByIdAndUpdate(bookingId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED" }, { new: true })
+        const updatedPackageBooking = await packageBooking.findByIdAndUpdate(bookingId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED" }, { new: true }).populate("cleaner primaryDriver secondaryDriver vehicle")
+        const customerResponse = await sendSms(updatedPackageBooking.mobileNumber, `Dear ${updatedPackageBooking.customerName}, For your upcoming journey, our drivers will be at your service. Please contact them at the following numbers: Name:${updatedPackageBooking.primaryDriver.name}, Mobile:${updatedPackageBooking.primaryDriver.mobileNumber} Name:${updatedPackageBooking.secondaryDriver.name}, Mobile:${updatedPackageBooking.secondaryDriver.mobileNumber} Name:${updatedPackageBooking.cleaner.name}, Mobile:${updatedPackageBooking.cleaner.mobileNumber} Thank you for choosing Tusharraj Travel. Best regards, TOURIST JUNCTION PRIVATE LIMITED`, process.env.DLT_PACKAGE_BOOKING_FINALIZATION_TEMPLATE_ID)
+        // Make the agency name dynamic
+        
+        const primaryDriverResponse = await sendSms(updatedPackageBooking.primaryDriver.mobileNumber, `You have been selected for a trip with ${"Tusharraj Travels"}. Departure Date: ${formatDate(updatedPackageBooking.departureDate)} Vehicle Number:${updatedPackageBooking.vehicle.number} Customer Name:${updatedPackageBooking.customerName} Customer Contact:${updatedPackageBooking.mobileNumber} Pick-Up Point:${updatedPackageBooking.kmStarting} Route: ${updatedPackageBooking.departurePlace} to ${updatedPackageBooking.destinationPlace} Pick-Up Time:${formatTime(updatedPackageBooking.departureTime)} Please reach the bus parking area 2 hours before departure and check the vehicle. Kindly start the trip from your app before departure. All driver and cleaner details for this trip: Name:${updatedPackageBooking.primaryDriver.name}, Mobile:${updatedPackageBooking.primaryDriver.mobileNumber} Name:${updatedPackageBooking.secondaryDriver.name}, Mobile:${updatedPackageBooking.secondaryDriver.mobileNumber} Name:${updatedPackageBooking.cleaner.name} Mobile:${updatedPackageBooking.cleaner.mobileNumber} Best regards, TOURIST JUNCTION PRIVATE LIMITED`, process.env.DLT_PACKAGE_BOOKING_FINALIZATION_DRIVER_TEMPLATE_ID)
+
+        const secondaryDriverResponse = await sendSms(updatedPackageBooking.secondaryDriver.mobileNumber, `You have been selected for a trip with ${"Tusharraj Travels"}. Departure Date: ${formatDate(updatedPackageBooking.departureDate)} Vehicle Number:${updatedPackageBooking.vehicle.number} Customer Name:${updatedPackageBooking.customerName} Customer Contact:${updatedPackageBooking.mobileNumber} Pick-Up Point:${updatedPackageBooking.kmStarting} Route: ${updatedPackageBooking.departurePlace} to ${updatedPackageBooking.destinationPlace} Pick-Up Time:${formatTime(updatedPackageBooking.departureTime)} Please reach the bus parking area 2 hours before departure and check the vehicle. Kindly start the trip from your app before departure. All driver and cleaner details for this trip: Name:${updatedPackageBooking.primaryDriver.name}, Mobile:${updatedPackageBooking.primaryDriver.mobileNumber} Name:${updatedPackageBooking.secondaryDriver.name}, Mobile:${updatedPackageBooking.secondaryDriver.mobileNumber} Name:${updatedPackageBooking.cleaner.name} Mobile:${updatedPackageBooking.cleaner.mobileNumber} Best regards, TOURIST JUNCTION PRIVATE LIMITED`, process.env.DLT_PACKAGE_BOOKING_FINALIZATION_DRIVER_TEMPLATE_ID)
+        
+        const cleanerResponse = await sendSms(updatedPackageBooking.cleaner.mobileNumber, `You have been selected for a trip with ${"Tusharraj Travels"}. Departure Date: ${formatDate(updatedPackageBooking.departureDate)} Vehicle Number:${updatedPackageBooking.vehicle.number} Customer Name:${updatedPackageBooking.customerName} Customer Contact:${updatedPackageBooking.mobileNumber} Pick-Up Point:${updatedPackageBooking.kmStarting} Route: ${updatedPackageBooking.departurePlace} to ${updatedPackageBooking.destinationPlace} Pick-Up Time:${formatTime(updatedPackageBooking.departureTime)} Please reach the bus parking area 2 hours before departure and check the vehicle. Kindly start the trip from your app before departure. All driver and cleaner details for this trip: Name:${updatedPackageBooking.primaryDriver.name}, Mobile:${updatedPackageBooking.primaryDriver.mobileNumber} Name:${updatedPackageBooking.secondaryDriver.name}, Mobile:${updatedPackageBooking.secondaryDriver.mobileNumber} Name:${updatedPackageBooking.cleaner.name} Mobile:${updatedPackageBooking.cleaner.mobileNumber} Best regards, TOURIST JUNCTION PRIVATE LIMITED`, process.env.DLT_PACKAGE_BOOKING_FINALIZATION_DRIVER_TEMPLATE_ID)
 
         return res.status(200).json({
             success: true,
-            data: updatedPackageBooking
+            data: updatedPackageBooking,
+            customerSmsResponse: customerResponse,
+            driverSmsResponse: primaryDriverResponse
         })
 
     } catch (error) {

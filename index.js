@@ -3,6 +3,7 @@ const cors = require("cors")
 require("dotenv").config()
 const data = require("./data")
 const subscriptionCronJob = require("./cron/subscription")
+const packageBookingCronJob = require("./cron/packageBookingReminder")
 
 const driverRoute = require("./routes/driver")
 const cleanerRoute = require("./routes/cleaner")
@@ -79,6 +80,7 @@ app.use("/api/subscription", subscriptionRoute)
 app.listen(PORT, () => {
     console.log("Server is running on " + PORT);
     subscriptionCronJob()
+    packageBookingCronJob()
 })
 
 
