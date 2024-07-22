@@ -3,32 +3,32 @@ const mongoose = require("mongoose")
 const technicianSchema = mongoose.Schema({
     technicianType: {   //option  mechanical, electrician, psarepartshop, springwork, batterservices, vehiclebodyrepair
         type: String,
-        enum: ["MECHANIC", "ELECTRICIAN", "SPAREPARTSHOP", "SPRINGWORK", "BATTERYSERVICES", "VEHICLEBODYREPAIR", "CRANESERVICES"],
+        enum: ["MECHANIC", "ELECTRICIAN", "SPAREPARTSHOP", "SPRINGWORK", "BATTERYSERVICES", "VEHICLEBODYREPAIR", "CRANESERVICES", "Hospital"],
     },
     name: {
         type: String,
-        required: true
+        // required: true
     },
     state: {
         type: String,
-        required: true
+        // required: true
     },
     city: {
         type: String,
-        required: true
+        // required: true
     },
     mobileNumber: {
         type: String,
-        required: true
+        // required: true
     },
     alternateNumber: {
         type: String,
-        required: true
+        // required: true
     },
     vehicleType: {
         type: String,
         enum: ["ALL", "CAR", "BUS", "TRUCK", "TAMPO"],
-        required: true
+        // required: true
     }
 
 }, { timestamps: true })

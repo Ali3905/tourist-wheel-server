@@ -48,8 +48,8 @@ async function handleCreateTechnician(req, res) {
 
 async function handleGetAllTechnicians(req, res) {
     try {
-        const foundTechnicians = await technician.find({})
-        const count = await technician.countDocuments()
+        const { page } = req.query
+        const foundTechnicians = await technician.find({}).skip((page - 1 )* 100).limit(100)
 
         if (!foundTechnicians) {
             return res.status(400).json({
@@ -59,14 +59,14 @@ async function handleGetAllTechnicians(req, res) {
         }
         return res.status(200).json({
             success: true,
-            count,
+            count: foundTechnicians.length,
             data: foundTechnicians
         })
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
         })
     }
 }
