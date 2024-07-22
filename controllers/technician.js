@@ -49,6 +49,7 @@ async function handleCreateTechnician(req, res) {
 async function handleGetAllTechnicians(req, res) {
     try {
         const foundTechnicians = await technician.find({})
+        const count = await technician.countDocuments()
 
         if (!foundTechnicians) {
             return res.status(400).json({
@@ -58,6 +59,7 @@ async function handleGetAllTechnicians(req, res) {
         }
         return res.status(200).json({
             success: true,
+            count,
             data: foundTechnicians
         })
 

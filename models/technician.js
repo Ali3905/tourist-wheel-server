@@ -35,9 +35,3 @@ const technicianSchema = mongoose.Schema({
 
 const technician = mongoose.model("technician", technicianSchema)
 module.exports = technician
-
-
-
-
-
-
