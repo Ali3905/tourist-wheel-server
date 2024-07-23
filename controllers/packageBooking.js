@@ -274,7 +274,7 @@ async function handleGetAllPackageBookings(req, res) {
 async function handleGetPackageBookingByID(req, res) {
     try {
         const { bookingId } = req.params
-        const foundPackageBooking = await packageBooking.findById(bookingId)
+        const foundPackageBooking = await packageBooking.findById(bookingId).populate("vehicle otherVehicle")
 
         if (!foundPackageBooking) {
             return res.status(400).json({
