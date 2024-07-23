@@ -1,5 +1,5 @@
 const express = require("express")
-const { handleCreateVehicle, handleGetAllVehicles, handleDeleteVehicle, handleUpdateVehicle, handleUpdateTruck, handleGetAllVehiclesByVehicleType, handleGetRentVehicles, handleGetSellVehicles, handleAddDocuments, handleGetVehicleById, handleDeleteDocuments } = require("../controllers/vehicle")
+const { handleCreateVehicle, handleGetAllVehicles, handleDeleteVehicle, handleUpdateVehicle, handleUpdateTruck, handleGetAllVehiclesByVehicleType, handleGetRentVehicles, handleGetSellVehicles, handleAddDocuments, handleGetVehicleById, handleDeleteDocuments, handleGetAllVehiclesImages } = require("../controllers/vehicle")
 const { upload } = require("../middlewares/upload")
 const router = express.Router()
 
@@ -8,6 +8,7 @@ router.get("/:vehicleType", handleGetAllVehiclesByVehicleType)
 router.get("/purpose/RENT", handleGetRentVehicles)
 router.get("/purpose/SELL", handleGetSellVehicles)
 router.get("/", handleGetAllVehicles)
+router.get("/all/photos", handleGetAllVehiclesImages)
 router.get("/id/:vehicleId", handleGetVehicleById)
 router.delete("/", handleDeleteVehicle),
 router.patch("/", upload.fields([{ name: "photos", maxCount: 5 }]), handleUpdateVehicle)

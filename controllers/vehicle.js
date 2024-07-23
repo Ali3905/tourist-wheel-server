@@ -108,7 +108,46 @@ async function handleGetAllVehicles(req, res) {
             }
             return res.status(200).json({
                 success: true,
-                data: foundvehicles.vehicles
+                data: foundvehicles
+            })
+        }
+        else {
+            const foundVehicles = await vehicle.find({})
+            if (!foundVehicles) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could not find vehicles"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundVehicles
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+async function handleGetAllVehiclesImages(req, res) {
+    try {
+        if (req.data.role === "AGENCY") {
+            const foundUser = await user.findById(req.data._id).populate({
+                path: "vehicles",
+                select: "photos"
+            })
+
+            if (!foundUser) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Could find vehicles"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: foundUser.vehicles
             })
         }
         else {
@@ -403,5 +442,6 @@ module.exports = {
     handleGetSellVehicles,
     handleAddDocuments,
     handleGetVehicleById,
-    handleDeleteDocuments
+    handleDeleteDocuments,
+    handleGetAllVehiclesImages
 }

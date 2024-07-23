@@ -1,5 +1,5 @@
 const technician = require("../models/technician");
-const {user} = require("../models/user");
+const { user } = require("../models/user");
 
 async function handleCreateTechnician(req, res) {
     try {
@@ -49,7 +49,7 @@ async function handleCreateTechnician(req, res) {
 async function handleGetAllTechnicians(req, res) {
     try {
         const { page } = req.query
-        const foundTechnicians = await technician.find({}).skip((page - 1 )* 100).limit(100)
+        const foundTechnicians = await technician.find({}).skip((page - 1) * 100).limit(100)
 
         if (!foundTechnicians) {
             return res.status(400).json({
