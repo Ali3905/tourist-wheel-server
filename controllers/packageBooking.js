@@ -253,7 +253,7 @@ async function handleGetAllPackageBookings(req, res) {
             })
         }
 
-        const foundBookings = await packageBooking.find({}).populate("primaryDriver secondaryDriver cleaner vehicle")
+        const foundBookings = await packageBooking.find({}).populate("primaryDriver secondaryDriver cleaner vehicle otherVehicle")
         if (!foundBookings) {
             return res.status(400).json({
                 success: false,
