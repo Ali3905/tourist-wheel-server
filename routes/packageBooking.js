@@ -8,7 +8,7 @@ router.post("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", 
 router.patch("/finalize", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleFinalizePackageBookings)
 router.patch("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), handleUpdatePackageBooking)
 router.get("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleGetAllPackageBookings)
-router.get("/:bookingId", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN"]), handleGetPackageBookingByID)
+router.get("/:bookingId", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), handleGetPackageBookingByID)
 router.get("/driver/:driverId", handleGetUserByAuthToken, handleAuthorizeUserByRole(["DRIVER"]), handleGetDriverPackageBookings)
 router.delete("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), handleDeletePackageBooking)
 router.patch("/start", handleGetUserByAuthToken, handleAuthorizeUserByRole(["DRIVER"]), upload.fields([{ name: "beforeJourneyPhotos", maxCount: 5 }]), handleStartPackageBooking)

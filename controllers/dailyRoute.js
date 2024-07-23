@@ -16,7 +16,7 @@ async function handleCreateDailyRoute(req, res) {
             });
         }
         const { vehicleId, departurePlace, destinationPlace, departureTime, instructions } = req.body
-        if (!vehicleId || !departurePlace || !destinationPlace || !departureTime || !instructions) {
+        if (!vehicleId || !departurePlace || !destinationPlace || !departureTime ) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -63,7 +63,7 @@ async function handleFinalizeDailyRoute(req, res) {
             });
         }
         const { primaryDriverId, secondaryDriverId, cleanerId, instructions } = req.body
-        if (!primaryDriverId || !secondaryDriverId || !cleanerId || !instructions) {
+        if (!primaryDriverId || !secondaryDriverId || !cleanerId) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the details"
