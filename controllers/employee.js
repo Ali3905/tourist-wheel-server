@@ -61,7 +61,10 @@ async function handleCreateEmployee(req, res) {
 async function handleGetAllEmployees(req, res) {
     try {
         if (req.data.role === "AGENCY") {
-            const foundEmployees = await user.findById(req.data._id).populate("employees")
+            const foundEmployees = await user.findById(req.data._id).populate({
+                path: "employees",
+                options: { sort: { createdAt: -1 } }
+            })
 
             if (!foundEmployees) {
                 return res.status(400).json({
@@ -75,7 +78,7 @@ async function handleGetAllEmployees(req, res) {
             })
         }
         else {
-            const foundEmployees = await employee.find({})
+            const foundEmployees = await employee.find({}).sort({ createdAt: -1 })
             if (!foundEmployees) {
                 return res.status(400).json({
                     success: false,

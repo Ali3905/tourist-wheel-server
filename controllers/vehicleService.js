@@ -50,7 +50,10 @@ async function handleCreateService(req, res) {
 async function handleGetAllServices(req, res) {
     try {
         if (req.data.role === "AGENCY") {
-            const foundUser = await user.findById(req.data._id).populate("services")
+            const foundUser = await user.findById(req.data._id).populate({
+                path: "services",
+                options: { sort: { createdAt: -1 } }
+            })
 
             if (!foundUser) {
                 return res.status(400).json({
@@ -64,7 +67,7 @@ async function handleGetAllServices(req, res) {
             })
         }
         else {
-            const foundServices = await service.find({})
+            const foundServices = await service.find({}).sort({createdAt: -1})
             if (!foundServices) {
                 return res.status(400).json({
                     success: false,

@@ -8,7 +8,6 @@ const packageBookingCronJob = require("./cron/packageBookingReminder")
 const driverRoute = require("./routes/driver")
 const cleanerRoute = require("./routes/cleaner")
 const employeeRoute = require("./routes/employee")
-const vehicleInspectionRoute = require("./routes/vehicleInspection")
 const authRoute = require("./routes/user")
 const technicianRoute = require("./routes/technician")
 const dailyRouteRoute = require("./routes/dailyRoute")
@@ -82,7 +81,6 @@ app.post("/addBulkTechnicians", async (req, res) => {
 app.use("/api/driver", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), driverRoute);
 app.use("/api/cleaner", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), cleanerRoute);
 app.use("/api/employee", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), employeeRoute);
-app.use("/api/vehicleInspection", vehicleInspectionRoute);
 app.use("/api/user", authRoute);
 app.use("/api/technician", handleGetUserByAuthToken, technicianRoute);
 app.use("/api/dailyRoute", dailyRouteRoute);

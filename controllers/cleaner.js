@@ -6,7 +6,10 @@ async function handleGetAllCleaners(req, res) {
     try {
 
         if (req.data.role === "AGENCY") {
-            const foundCleaners = await user.findById(req.data._id).populate("cleaners")
+            const foundCleaners = await user.findById(req.data._id).populate({
+                path: "cleaners",
+                options: { sort: { createdAt: -1 } }
+            })
 
             if (!foundCleaners) {
                 return res.status(400).json({
@@ -20,7 +23,7 @@ async function handleGetAllCleaners(req, res) {
             })
         }
         else {
-            const foundCleaners = await cleaner.find({})
+            const foundCleaners = await cleaner.find({}).sort({createdAt: -1})
             if (!foundCleaners) {
                 return res.status(400).json({
                     sucess: false,

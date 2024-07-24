@@ -33,8 +33,7 @@ const handleAuthorizeUserByRole = role => {
                 })
             }
             const data = jwt.verify(authtoken, process.env.JWT_SECRET)
-            console.log(data.role);
-            console.log(role);
+            
             if (!role.includes(data.role)) {
                 return res.status(400).json({
                     success: false,

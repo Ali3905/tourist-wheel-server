@@ -211,36 +211,15 @@ async function handleGetAllPackageBookings(req, res) {
         if (req.data.role === "AGENCY") {
             const foundUser = await user.findById(req.data._id).populate({
                 path: "packageBookings",
-                populate: {
-                    path: "cleaner",
-                    model: "cleaner"
-                }
-
-            }).populate({
-                path: "packageBookings",
-                populate: {
-                    path: "vehicle",
-                    model: "vehicle"
-                }
-            }).populate({
-                path: "packageBookings",
-                populate: {
-                    path: "otherVehicle",
-                    model: "vehicle"
-                }
-            }).populate({
-                path: "packageBookings",
-                populate: {
-                    path: "primaryDriver",
-                    model: "driver"
-                }
-            }).populate({
-                path: "packageBookings",
-                populate: {
-                    path: "secondaryDriver",
-                    model: "driver"
-                }
-            })
+                options: { sort: { createdAt: -1 } }, // Sort dailyRoutes by createdAt in descending order
+                populate: [
+                    { path: "cleaner", model: "cleaner" },
+                    { path: "vehicle", model: "vehicle" },
+                    { path: "otherVehicle", model: "vehicle" },
+                    { path: "primaryDriver", model: "driver" },
+                    { path: "secondaryDriver", model: "driver" }
+                ]
+            });
             if (!foundUser) {
                 return res.status(400).json({
                     success: false,
@@ -253,7 +232,7 @@ async function handleGetAllPackageBookings(req, res) {
             })
         }
 
-        const foundBookings = await packageBooking.find({}).populate("primaryDriver secondaryDriver cleaner vehicle otherVehicle")
+        const foundBookings = await packageBooking.find({}).populate("primaryDriver secondaryDriver cleaner vehicle otherVehicle").sort({createdAt: -1})
         if (!foundBookings) {
             return res.status(400).json({
                 success: false,
@@ -420,7 +399,7 @@ async function handleGetDriverPackageBookings(req, res) {
                 { primaryDriver: driverId },
                 { secondaryDriver: driverId }
             ]
-        }).populate("cleaner vehicle otherVehicle primaryDriver secondaryDriver")
+        }).populate("cleaner vehicle otherVehicle primaryDriver secondaryDriver").sort({ createdAt: -1 })
         
 
         return res.status(200).json({

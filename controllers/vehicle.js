@@ -1,4 +1,4 @@
-const {user} = require("../models/user");
+const { user } = require("../models/user");
 const { vehicle, truck, car } = require("../models/vehicle")
 
 async function handleCreateVehicle(req, res) {
@@ -98,7 +98,10 @@ async function handleGetAllVehiclesByVehicleType(req, res) {
 async function handleGetAllVehicles(req, res) {
     try {
         if (req.data.role === "AGENCY") {
-            const foundvehicles = await user.findById(req.data._id).populate("vehicles")
+            const foundvehicles = await user.findById(req.data._id).populate({
+                path: "vehicles",
+                options: { sort: { createdAt: -1 } }
+            }).select("vehicles")
 
             if (!foundvehicles) {
                 return res.status(400).json({
@@ -112,7 +115,7 @@ async function handleGetAllVehicles(req, res) {
             })
         }
         else {
-            const foundVehicles = await vehicle.find({})
+            const foundVehicles = await vehicle.find({}).sort({ createdAt: -1 })
             if (!foundVehicles) {
                 return res.status(400).json({
                     success: false,
@@ -136,7 +139,8 @@ async function handleGetAllVehiclesImages(req, res) {
         if (req.data.role === "AGENCY") {
             const foundUser = await user.findById(req.data._id).populate({
                 path: "vehicles",
-                select: "photos"
+                select: "photos",
+                options: { sort: { createdAt: -1 } }
             })
 
             if (!foundUser) {
@@ -151,7 +155,7 @@ async function handleGetAllVehiclesImages(req, res) {
             })
         }
         else {
-            const foundVehicles = await vehicle.find({})
+            const foundVehicles = await vehicle.find({}).sort({ createdAt: -1 })
             if (!foundVehicles) {
                 return res.status(400).json({
                     success: false,
@@ -175,7 +179,10 @@ async function handleGetRentVehicles(req, res) {
     try {
 
         if (req.data.role === "AGENCY") {
-            const foundVehicles = await user.findById(req.data._id).populate("vehicles")
+            const foundVehicles = await user.findById(req.data._id).populate({
+                path: "vehicles",
+                options: { sort: { createdAt: -1 } } 
+            })
             const vehicles = foundVehicles?.vehicles?.filter(veh => veh.isForRent === true)
             if (!foundVehicles) {
                 return res.status(400).json({
@@ -189,7 +196,7 @@ async function handleGetRentVehicles(req, res) {
             })
         }
 
-        const foundRentVehicles = await vehicle.find({ isForRent: true })
+        const foundRentVehicles = await vehicle.find({ isForRent: true }).sort({createdAt: -1})
         return res.status(200).json({
             success: true,
             data: foundRentVehicles
@@ -206,7 +213,10 @@ async function handleGetRentVehicles(req, res) {
 async function handleGetSellVehicles(req, res) {
     try {
         if (req.data.role === "AGENCY") {
-            const foundVehicles = await user.findById(req.data._id).populate("vehicles")
+            const foundVehicles = await user.findById(req.data._id).populate({
+                path: "vehicles",
+                options: { sort: { createdAt: -1 } } 
+            })
             const vehicles = foundVehicles?.vehicles?.filter(veh => veh.isForSell === true)
             if (!foundVehicles) {
                 return res.status(400).json({
@@ -219,7 +229,7 @@ async function handleGetSellVehicles(req, res) {
                 data: vehicles
             })
         }
-        const foundSellVehicles = await vehicle.find({ isForSell: true })
+        const foundSellVehicles = await vehicle.find({ isForSell: true }).sort({ createdAt: -1 })
         return res.status(200).json({
             success: true,
             data: foundSellVehicles
@@ -357,7 +367,7 @@ async function handleDeleteDocuments(req, res) {
             })
         }
 
-        const a = await vehicle.findByIdAndUpdate(vehicleId, { RC : null, permit: null, insurance: null, fitness: null, tax: null, PUC: null }, { new: true })
+        const a = await vehicle.findByIdAndUpdate(vehicleId, { RC: null, permit: null, insurance: null, fitness: null, tax: null, PUC: null }, { new: true })
         return res.status(200).json({
             success: true,
             message: "Documents deleted",
@@ -412,21 +422,21 @@ async function handleUpdateTruck(req, res) {
 async function handleGetVehicleById(req, res) {
     try {
         const { vehicleId } = req.params
-        if(!vehicleId) {
+        if (!vehicleId) {
             return res.status(200).json({
-                success : false,
-                message : "Provide vehicle ID"
+                success: false,
+                message: "Provide vehicle ID"
             })
         }
         const foundVehicle = await vehicle.findById(vehicleId)
         return res.status(200).json({
-            success : true,
-            data : foundVehicle
+            success: true,
+            data: foundVehicle
         })
     } catch (error) {
         return res.status(500).json({
-            success : false,
-            message : error.message
+            success: false,
+            message: error.message
         })
     }
 }

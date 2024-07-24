@@ -128,30 +128,14 @@ async function handleGetAllDailyRoutes(req, res) {
         if (req.data.role === "AGENCY") {
             const foundUser = await user.findById(req.data._id).populate({
                 path: "dailyRoutes",
-                populate: {
-                    path: "cleaner",
-                    model: "cleaner"
-                }
-
-            }).populate({
-                path: "dailyRoutes",
-                populate: {
-                    path: "vehicle",
-                    model: "vehicle"
-                }
-            }).populate({
-                path: "dailyRoutes",
-                populate: {
-                    path: "primaryDriver",
-                    model: "driver"
-                }
-            }).populate({
-                path: "dailyRoutes",
-                populate: {
-                    path: "secondaryDriver",
-                    model: "driver"
-                }
-            })
+                options: { sort: { createdAt: -1 } }, // Sort dailyRoutes by createdAt in descending order
+                populate: [
+                    { path: "cleaner", model: "cleaner" },
+                    { path: "vehicle", model: "vehicle" },
+                    { path: "primaryDriver", model: "driver" },
+                    { path: "secondaryDriver", model: "driver" }
+                ]
+            });
             if (!foundUser) {
                 return res.status(400).json({
                     success: false,
@@ -164,7 +148,7 @@ async function handleGetAllDailyRoutes(req, res) {
             })
         }
 
-        const foundRoutes = await dailyRoute.find({}).populate("primaryDriver secondaryDriver cleaner vehicle")
+        const foundRoutes = await dailyRoute.find({}).populate("primaryDriver secondaryDriver cleaner vehicle").sort({createdAt: -1})
         if (!foundRoutes) {
             return res.status(400).json({
                 success: false,
@@ -354,7 +338,7 @@ async function handleGetDriverDailyRoutes(req, res) {
                 { primaryDriver: driverId },
                 { secondaryDriver: driverId }
             ]
-        }).populate("primaryDriver secondaryDriver cleaner vehicle")
+        }).populate("primaryDriver secondaryDriver cleaner vehicle").sort({ createdAt: -1 })
 
         return res.status(200).json({
             success: true,
