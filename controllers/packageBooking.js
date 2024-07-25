@@ -4,6 +4,7 @@ const employee = require("../models/employee")
 const packageBooking = require("../models/packageVehicleBooking")
 const {user} = require("../models/user")
 const { vehicle } = require("../models/vehicle")
+const { generatePresignedUrl } = require("../utils/cloudinary")
 const { formatDate, formatTime } = require("../utils/others")
 const { sendSms } = require("../utils/sms")
 
@@ -142,11 +143,18 @@ async function handleFinalizePackageBookings(req, res) {
 async function handleUpdatePackageBooking(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
 
         const { bookingId } = req.query
@@ -309,11 +317,18 @@ async function handleDeletePackageBooking(req, res) {
 async function handleStartPackageBooking(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
         const { beforeJourneyPhotos, beforeJourneyNote } = req.body
         const { bookingId } = req.query
@@ -348,11 +363,18 @@ async function handleStartPackageBooking(req, res) {
 async function handleCompletePackageBooking(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
         const { afterJourneyPhotos, afterJourneyNote } = req.body
         const { bookingId } = req.query

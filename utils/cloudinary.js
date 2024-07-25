@@ -24,7 +24,7 @@ const generatePresignedUrl = async (bucketName, key) => {
     Bucket: bucketName,
     Key: key,
   });
-  const url = await getSignedUrl(s3, command); // URL valid for 1 hour
+  const url = await getSignedUrl(s3, command, { expiresIn: 360000 });
   return url;
 };
 

@@ -10,7 +10,6 @@ async function handleCreateEmployee(req, res) {
             for (const key of Object.keys(req.files)) {
                 if (req.files[key][0] && req.files[key][0].location) {
                     const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
-                    console.log({ signedUrl });
                     req.body[key] = signedUrl; // Add the URL to req.body
                 }
             }
@@ -144,11 +143,12 @@ async function handleDeleteEmployee(req, res) {
 async function handleUpdateEmployee(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path;
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key][0] && req.files[key][0].location) {
+                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
+                    req.body[key] = signedUrl; // Add the URL to req.body
                 }
-            });
+            }
         }
 
         const { employeeId } = req.query

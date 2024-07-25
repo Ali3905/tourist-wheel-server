@@ -7,34 +7,6 @@ const axios = require("axios")
 const { sendSms } = require("../utils/sms")
 
 
-async function handleSendOtp(number, otp, type) {
-    try {
-        const res = await axios({
-            method: "get",
-            url: process.env.SMS_HOST,
-            params: {
-                APIKey: process.env.DLT_API_KEY,
-                senderid: process.env.DLT_SENDER_ID,
-                channel: 2,
-                DCS: 0,
-                flashsms: 0,
-                number: number,
-                text: `You number verification OTP for Tourist Junction is ${otp}`,
-                route: "clickhere",
-                EntityId: process.env.DLT_ENTITY_ID,
-                dlttemplateid: process.env.DLT_VERIFY_SIGNUP_TEMPLATE_ID
-            }
-        })
-        
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
-
-
 
 async function handleSignUp(req, res) {
     try {
@@ -395,18 +367,31 @@ async function handleGetUserById(req, res) {
                 message: "Login with correct creds"
             })
         }
-        const userId = req.data._id
-        const foundUser = await user.findById(userId)
-        if (!foundUser) {
-            res.status(400).json({
-                success: false,
-                message: "Login with correct creds"
+        if (req.data._id && !req.data.employeeId) {
+
+
+            const userId = req.data._id
+            const foundUser = await user.findById(userId)
+            if (foundUser) {
+                return res.status(200).json({
+                    success: true,
+                    data: foundUser
+                })
+            }
+        }
+        const employeeId = req.data.employeeId
+        const foundEmployee = await employee.findById(employeeId)
+        if (foundEmployee) {
+            return res.status(200).json({
+                success: true,
+                data: foundEmployee
             })
         }
-        return res.status(200).json({
-            success: true,
-            data: foundUser
+        return res.status(400).json({
+            success: false,
+            message: "Login with correct creds"
         })
+
     } catch (error) {
         return res.status(500).json({
             success: false,

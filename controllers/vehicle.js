@@ -1,14 +1,22 @@
 const { user } = require("../models/user");
-const { vehicle, truck, car } = require("../models/vehicle")
+const { vehicle, truck, car } = require("../models/vehicle");
+const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateVehicle(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
         const { name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, type, noOfTyres, vehicleWeightInKGS } = req.body
         if (!number || !model || !location || !contactNumber || !photos || !isAC || !isForRent || !isForSell || !type) {
@@ -276,11 +284,18 @@ async function handleDeleteVehicle(req, res) {
 async function handleUpdateVehicle(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path);
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
 
         const { vehicleId } = req.query
@@ -322,11 +337,12 @@ async function handleUpdateVehicle(req, res) {
 async function handleAddDocuments(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key][0] && req.files[key][0].location) {
+                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
+                    req.body[key] = signedUrl; // Add the URL to req.body
                 }
-            });
+            }
         }
         const { RC, permit, insurance, fitness, tax, PUC } = req.body
         const { vehicleId } = req.query
@@ -383,11 +399,18 @@ async function handleDeleteDocuments(req, res) {
 async function handleUpdateTruck(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path);
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
 
         const { vehicleId } = req.query

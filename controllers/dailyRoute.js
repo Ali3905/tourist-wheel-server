@@ -5,15 +5,22 @@ const { vehicle } = require("../models/vehicle");
 const {user, agency} = require("../models/user");
 const { sendSms } = require("../utils/sms");
 const { formatTime } = require("../utils/others");
+const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateDailyRoute(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
         const { vehicleId, departurePlace, destinationPlace, departureTime, instructions } = req.body
         if (!vehicleId || !departurePlace || !destinationPlace || !departureTime ) {
@@ -56,11 +63,18 @@ async function handleFinalizeDailyRoute(req, res) {
     try {
         const { routeId } = req.query
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
         const { primaryDriverId, secondaryDriverId, cleanerId, instructions } = req.body
         if (!primaryDriverId || !secondaryDriverId || !cleanerId) {
@@ -202,11 +216,18 @@ async function handleDeleteDailyRoute(req, res) {
 async function handleUpdateDailyRoute(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
 
         const { routeId } = req.query
@@ -248,11 +269,18 @@ async function handleUpdateDailyRoute(req, res) {
 async function handleStartDailyRoute(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
         const { beforeJourneyPhotos, beforeJourneyNote } = req.body
         const { routeId } = req.query
@@ -287,11 +315,18 @@ async function handleStartDailyRoute(req, res) {
 async function handleCompleteDailyRoute(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key].map(el => el.path); // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
+                            console.log({ signedUrl });
+                            req.body[key].push(signedUrl);
+                        }
+                    }
                 }
-            });
+            }
         }
         const { afterJourneyPhotos, afterJourneyNote } = req.body
         const { routeId } = req.query

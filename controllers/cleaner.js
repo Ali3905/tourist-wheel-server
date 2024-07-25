@@ -1,5 +1,6 @@
 const cleaner = require('../models/cleaner')
 const { user } = require('../models/user')
+const { generatePresignedUrl } = require('../utils/cloudinary')
 
 async function handleGetAllCleaners(req, res) {
 
@@ -50,11 +51,12 @@ async function handleCreateCleaner(req, res) {
     try {
 
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key][0] && req.files[key][0].location) {
+                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
+                    req.body[key] = signedUrl; // Add the URL to req.body
                 }
-            });
+            }
         }
 
         const { name, password, city, state, mobileNumber, photo, aadharCard } = req.body
@@ -126,11 +128,12 @@ async function handleDeleteCleaner(req, res) {
 async function handleUpdateCleaner(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path;
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key][0] && req.files[key][0].location) {
+                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
+                    req.body[key] = signedUrl;
                 }
-            });
+            }
         }
 
         const { cleanerId } = req.query

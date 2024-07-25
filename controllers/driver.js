@@ -1,15 +1,17 @@
 const driver = require("../models/driver");
 const {user} = require("../models/user");
+const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateDriver(req, res) {
     try {
 
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key][0] && req.files[key][0].location) {
+                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
+                    req.body[key] = signedUrl; // Add the URL to req.body
                 }
-            });
+            }
         }
 
         const { name, password, vehicleType, mobileNumber, city, state, license, photo, aadharCard } = req.body
@@ -18,6 +20,13 @@ async function handleCreateDriver(req, res) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
+            })
+        }
+        const alreadyDriverWithMobileNumber = await driver.findOne({ mobileNumber })
+        if (alreadyDriverWithMobileNumber) {
+            return res.status(400).json({
+                success: false,
+                message: "Driver with this phone number already exists"
             })
         }
         if (password.length < 5) {
@@ -135,13 +144,12 @@ async function handleDeleteDriver(req, res) {
 async function handleUpdateDriver(req, res) {
     try {
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    // console.log(req.files);
-                    // console.log(req.files[key]);
-                    req.body[key] = req.files[key][0].path;
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key][0] && req.files[key][0].location) {
+                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
+                    req.body[key] = signedUrl; // Add the URL to req.body
                 }
-            });
+            }
         }
 
         const { driverId } = req.query
