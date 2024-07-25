@@ -323,6 +323,12 @@ async function handleLogin(req, res) {
             }
 
             const foundEmployee = await employee.findOne({ mobileNumber, password })
+            if (!foundEmployee) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid Creds"
+                })
+            }
             const foundAgency = await user.findOne({ employees: foundEmployee._id })
             if (foundEmployee && (foundEmployee.employeeType === "MANAGER" || foundEmployee.employeeType === "OFFICE-BOY")) {
                 const payload = {

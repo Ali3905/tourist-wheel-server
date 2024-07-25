@@ -94,6 +94,12 @@ const packageBookingSchema = mongoose.Schema({
     instructions: {
         type: String
     },
+    note: {
+        type: String
+    },
+    pickupPoint: {
+        type: String,
+    },
     beforeJourneyPhotos: {
         type: Array,
 

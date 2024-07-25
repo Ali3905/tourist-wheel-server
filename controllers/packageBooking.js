@@ -9,9 +9,9 @@ const { sendSms } = require("../utils/sms")
 
 async function handleCreatePackageBooking(req, res) {
     try {
-        const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, instructions } = req.body
+        const { vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note, pickupPoint } = req.body
         // console.log({ vehicleId, otherVehicleId, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, note });
-        if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR || !instructions || !departureDate || !returnDate) {
+        if (!vehicleId || !otherVehicleId || !customerName || !mobileNumber || !alternateNumber || !kmStarting || !perKmRateInINR || !advanceAmountInINR || !remainingAmountInINR || !advancePlace || !departurePlace || !destinationPlace || !departureTime || !returnTime || !tollInINR || !otherStateTaxInINR || !departureDate || !returnDate || !pickupPoint) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
@@ -46,7 +46,7 @@ async function handleCreatePackageBooking(req, res) {
 
         if (req.data.role === "MANAGER" || req.data.role === "OFFICE-BOY") {
             const foundEmployee = await employee.findById(req.data.employeeId)
-            const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundEmployee.name, instructions, isNotified: false })
+            const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundEmployee.name, note, isNotified: false, pickupPoint })
             await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
             return res.status(201).json({
                 success: true,
@@ -55,7 +55,7 @@ async function handleCreatePackageBooking(req, res) {
         }
         const foundAgency = await user.findById(req.data._id)
         const bookingsCount = await packageBooking.countDocuments();
-        const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundAgency.userName, invoiceId : bookingsCount + 101, isNotified : false, instructions })
+        const createdPackageBooking = await packageBooking.create({ vehicle: foundVehicle, otherVehicle: foundOtherVehicle, customerName, mobileNumber, alternateNumber, kmStarting, perKmRateInINR, advanceAmountInINR, remainingAmountInINR, advancePlace, departurePlace, destinationPlace, departureTime, departureDate, returnTime, returnDate, tollInINR, otherStateTaxInINR, status: "CREATED", createdBy: foundAgency.userName, invoiceId : bookingsCount + 101, isNotified : false, note, pickupPoint })
         await user.findByIdAndUpdate(req.data._id, { $push: { packageBookings: createdPackageBooking } }, { new: true })
 
         const response = await sendSms(createdPackageBooking.mobileNumber, `Dear ${createdPackageBooking.customerName}, You have successfully booked a vehicle with ${foundAgency.companyName}. Your trip dates are from ${formatDate(createdPackageBooking.departureDate)} to ${formatDate(createdPackageBooking.returnDate)} For any information, please contact ${foundAgency.companyName}. Best regards, TOURIST JUNCTION PRIVATE LIMITED`, process.env.DLT_PACKAGE_BOOKING_SUCCESS_TEMPLATE_ID)
@@ -75,7 +75,7 @@ async function handleCreatePackageBooking(req, res) {
 async function handleFinalizePackageBookings(req, res) {
     try {
         const { bookingId } = req.query
-        const { primaryDriverId, secondaryDriverId, cleanerId, instructions } = req.body
+        const { primaryDriverId, secondaryDriverId, cleanerId, instructions, note } = req.body
         if (!primaryDriverId || !secondaryDriverId || !cleanerId || !instructions) {
             return res.status(400).json({
                 success: false,
@@ -114,7 +114,7 @@ async function handleFinalizePackageBookings(req, res) {
         }
 
 
-        const updatedPackageBooking = await packageBooking.findByIdAndUpdate(bookingId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED" }, { new: true }).populate("cleaner primaryDriver secondaryDriver vehicle")
+        const updatedPackageBooking = await packageBooking.findByIdAndUpdate(bookingId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED", note }, { new: true }).populate("cleaner primaryDriver secondaryDriver vehicle")
         const customerResponse = await sendSms(updatedPackageBooking.mobileNumber, `Dear ${updatedPackageBooking.customerName}, For your upcoming journey, our drivers will be at your service. Please contact them at the following numbers: Name:${updatedPackageBooking.primaryDriver.name}, Mobile:${updatedPackageBooking.primaryDriver.mobileNumber} Name:${updatedPackageBooking.secondaryDriver.name}, Mobile:${updatedPackageBooking.secondaryDriver.mobileNumber} Name:${updatedPackageBooking.cleaner.name}, Mobile:${updatedPackageBooking.cleaner.mobileNumber} Thank you for choosing Tusharraj Travel. Best regards, TOURIST JUNCTION PRIVATE LIMITED`, process.env.DLT_PACKAGE_BOOKING_FINALIZATION_TEMPLATE_ID)
         // Make the agency name dynamic
         

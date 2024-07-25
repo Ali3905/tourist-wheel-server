@@ -22,6 +22,14 @@ async function handleCreateEmployee(req, res) {
             })
         }
 
+        const alreadyEmployeeWithMobileNumber = await employee.findOne({mobileNumber})
+        if (alreadyEmployeeWithMobileNumber) {
+            return res.status(400).json({
+                success: false,
+                message: "Employee with this mobile number already exists"
+            })
+        }
+
         if (!["MANAGER", "CLEANER", "OFFICE-BOY", "ACCOUNTANT", "TELECALLER"].includes(employeeType)) {
             return res.status(400).json({
                 success: false,
