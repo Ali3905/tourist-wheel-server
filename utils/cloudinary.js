@@ -1,5 +1,7 @@
-// import {v2 as cloudinary} from 'cloudinary';
 const cloudinary = require("cloudinary").v2
+const { S3Client } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const { GetObjectCommand } = require('@aws-sdk/client-s3');
 
 cloudinary.config({ 
     cloud_name: process.env.cloudinary_cloud_name, 
@@ -7,40 +9,27 @@ cloudinary.config({
     api_secret: process.env.cloudinary_api_secret
 });
 
-// (async function() {
 
-    // Configuration
-    
-    
-    // Upload an image
-    // const uploadResult = await cloudinary.uploader.upload("https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg", {
-    //     public_id: "shoes"
-    // }).catch((error)=>{console.log(error)});
-    
-    // console.log(uploadResult);
-    
-    // // Optimize delivery by resizing and applying auto-format and auto-quality
-    // const optimizeUrl = cloudinary.url("shoes", {
-    //     fetch_format: 'auto',
-    //     quality: 'auto'
-    // });
-    
-    // console.log(optimizeUrl);
-    
-    // // Transform the image: auto-crop to square aspect_ratio
-    // const autoCropUrl = cloudinary.url("shoes", {
-    //     crop: 'auto',
-    //     gravity: 'auto',
-    //     width: 500,
-    //     height: 500,
-    // });
-    
-    // console.log(autoCropUrl);    
-// })();
 
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+const generatePresignedUrl = async (bucketName, key) => {
+  const command = new GetObjectCommand({
+    Bucket: bucketName,
+    Key: key,
+  });
+  const url = await getSignedUrl(s3, command); // URL valid for 1 hour
+  return url;
+};
 
 
 module.exports = {
     cloudinary,
-    // handleUpload
+    generatePresignedUrl
 }

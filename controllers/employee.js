@@ -1,19 +1,23 @@
 const employee = require('../models/employee');
-const {user} = require('../models/user');
+const { user } = require('../models/user');
+const { generatePresignedUrl } = require('../utils/cloudinary')
 
 async function handleCreateEmployee(req, res) {
 
     try {
 
         if (req.files) {
-            Object.keys(req.files).forEach((key) => {
-                if (req.files[key][0] && req.files[key][0].path) {
-                    req.body[key] = req.files[key][0].path; // Add the URL to req.body
+            for (const key of Object.keys(req.files)) {
+                if (req.files[key][0] && req.files[key][0].location) {
+                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
+                    console.log({ signedUrl });
+                    req.body[key] = signedUrl; // Add the URL to req.body
                 }
-            });
+            }
         }
 
         const { name, mobileNumber, employeeType, state, photo, aadharCard, password } = req.body
+        console.log({ name, mobileNumber, employeeType, state, photo, aadharCard, password });
 
         if (!name || !mobileNumber || !employeeType || !state || !photo || !aadharCard || !password) {
             return res.status(400).json({
@@ -22,7 +26,7 @@ async function handleCreateEmployee(req, res) {
             })
         }
 
-        const alreadyEmployeeWithMobileNumber = await employee.findOne({mobileNumber})
+        const alreadyEmployeeWithMobileNumber = await employee.findOne({ mobileNumber })
         if (alreadyEmployeeWithMobileNumber) {
             return res.status(400).json({
                 success: false,
@@ -98,7 +102,7 @@ async function handleGetAllEmployees(req, res) {
                 data: foundEmployees
             })
         }
-        
+
     } catch (error) {
         return res.status(500).json({
             success: false,
