@@ -1,5 +1,5 @@
 const driver = require("../models/driver");
-const {user} = require("../models/user");
+const { user } = require("../models/user");
 const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateDriver(req, res) {
@@ -68,8 +68,8 @@ async function handleCreateDriver(req, res) {
 }
 
 async function handleGetAllDrivers(req, res) {
+    
     try {
-        // const { } = req.body
         if (req.data.role === "AGENCY") {
             const foundDrivers = await user.findById(req.data._id).populate({
                 path: "drivers",
@@ -180,11 +180,38 @@ async function handleUpdateDriver(req, res) {
     }
 }
 
+
+async function handleGetAllAvailableDrivers(req, res) {
+    try {
+        const foundDrivers = await driver.find({}).sort({ createdAt: -1 })
+
+        if (!foundDrivers) {
+            return res.status(400).json({
+                success: false,
+                message: "Could find drivers"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            count: foundDrivers.length,
+            data: foundDrivers
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleCreateDriver,
     handleGetAllDrivers,
     handleDeleteDriver,
-    handleUpdateDriver
+    handleUpdateDriver,
+    handleGetAllAvailableDrivers
 }
 
 
