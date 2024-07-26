@@ -186,25 +186,13 @@ async function handleGetAllVehiclesImages(req, res) {
 async function handleGetRentVehicles(req, res) {
     try {
 
-        if (req.data.role === "AGENCY") {
-            const foundVehicles = await user.findById(req.data._id).populate({
-                path: "vehicles",
-                options: { sort: { createdAt: -1 } } 
-            })
-            const vehicles = foundVehicles?.vehicles?.filter(veh => veh.isForRent === true)
-            if (!foundVehicles) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Could not find vehicles"
-                })
-            }
-            return res.status(200).json({
-                success: true,
-                data: vehicles
+        const foundRentVehicles = await vehicle.find({ isForRent: true }).sort({ createdAt: -1 })
+        if (!foundRentVehicles) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not find vehicles"
             })
         }
-
-        const foundRentVehicles = await vehicle.find({ isForRent: true }).sort({createdAt: -1})
         return res.status(200).json({
             success: true,
             data: foundRentVehicles
@@ -220,24 +208,13 @@ async function handleGetRentVehicles(req, res) {
 
 async function handleGetSellVehicles(req, res) {
     try {
-        if (req.data.role === "AGENCY") {
-            const foundVehicles = await user.findById(req.data._id).populate({
-                path: "vehicles",
-                options: { sort: { createdAt: -1 } } 
-            })
-            const vehicles = foundVehicles?.vehicles?.filter(veh => veh.isForSell === true)
-            if (!foundVehicles) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Could not find vehicles"
-                })
-            }
-            return res.status(200).json({
-                success: true,
-                data: vehicles
+        const foundSellVehicles = await vehicle.find({ isForSell: true }).sort({ createdAt: -1 })
+        if (!foundSellVehicles) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not find vehicles"
             })
         }
-        const foundSellVehicles = await vehicle.find({ isForSell: true }).sort({ createdAt: -1 })
         return res.status(200).json({
             success: true,
             data: foundSellVehicles

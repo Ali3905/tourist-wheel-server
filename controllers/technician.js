@@ -48,10 +48,15 @@ async function handleCreateTechnician(req, res) {
 
 async function handleGetAllTechnicians(req, res) {
     try {
-        const { page } = req.query
-        const foundTechnicians = await technician.find({}).skip((page - 1) * 100).limit(100)
+        const { page = 1 } = req.query; // Default to page 1 if not provided
+        const pageSize = 100; // Define the number of records per page
 
-        if (!foundTechnicians) {
+        const foundTechnicians = await technician.find({})
+            .sort({ createdAt: -1 }) // Sort technicians by createdAt in descending order
+            .skip((page - 1) * pageSize) // Skip records for pagination
+            .limit(pageSize); // Limit the number of records per page
+
+        if (!foundTechnicians || foundTechnicians.length < 1) {
             return res.status(400).json({
                 success: false,
                 message: "Could find technicians"

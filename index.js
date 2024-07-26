@@ -84,7 +84,7 @@ app.use("/api/employee", handleGetUserByAuthToken, handleAuthorizeUserByRole(["A
 app.use("/api/user", authRoute);
 app.use("/api/technician", handleGetUserByAuthToken, technicianRoute);
 app.use("/api/dailyRoute", dailyRouteRoute);
-app.use("/api/vehicle", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), vehicleRoute);
+app.use("/api/vehicle", handleGetUserByAuthToken, vehicleRoute);
 app.use("/api/packageBooking", packageBookingRoute)
 app.use("/api/service", serviceRoute)
 app.use("/api/subscription", subscriptionRoute)

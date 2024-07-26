@@ -346,7 +346,7 @@ async function handleLogin(req, res) {
 
         const authToken = jwt.sign(payload, process.env.JWT_SECRET)
         return res.status(200).json({
-            success: false,
+            success: true,
             data: foundUser,
             authToken
         })
