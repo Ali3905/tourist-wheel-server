@@ -16,15 +16,12 @@ const userSchema = mongoose.Schema({
     },
     whatsappNumber: {
         type: String,
-        required: true
     },
     state: {
         type: String,
-        required: true
     },
     city: {
         type: String,
-        required: true
     },
     email: {
         type: String,

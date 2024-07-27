@@ -12,7 +12,6 @@ const vehicleSchema = mongoose.Schema({
     },
     model: {
         type: String,
-        required: true
     },
     bodyType: {
         type: String,
@@ -22,12 +21,10 @@ const vehicleSchema = mongoose.Schema({
     },
     location: {
         type: String,
-        required: true
     },
 
     contactNumber: {
         type: String,
-        required: true
     },
     photos: {
         type: [String]

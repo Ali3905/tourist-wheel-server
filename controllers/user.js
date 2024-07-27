@@ -11,7 +11,7 @@ const { sendSms } = require("../utils/sms")
 async function handleSignUp(req, res) {
     try {
         const { userName, companyName, mobileNumber, whatsappNumber, state, city, email, password, type } = req.body
-        if (!userName || !companyName || !mobileNumber || !whatsappNumber || !state || !city || !email || !password || !type) {
+        if (!userName || !companyName || !mobileNumber || !email || !password || !type) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -29,7 +29,7 @@ async function handleSignUp(req, res) {
                 message: "Enter a valid mobile NUmber"
             })
         }
-        if (whatsappNumber.length < 10 || whatsappNumber.length > 12) {
+        if (whatsappNumber && (whatsappNumber.length < 10 || whatsappNumber.length > 12)) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid whatsapp NUmber"
