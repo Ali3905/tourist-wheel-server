@@ -1,6 +1,5 @@
 const driver = require("../models/driver");
 const { user } = require("../models/user");
-const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateDriver(req, res) {
     try {
@@ -8,8 +7,7 @@ async function handleCreateDriver(req, res) {
         if (req.files) {
             for (const key of Object.keys(req.files)) {
                 if (req.files[key][0] && req.files[key][0].location) {
-                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
-                    req.body[key] = signedUrl; // Add the URL to req.body
+                    req.body[key] = req.files[key][0].location; // Add the URL to req.body
                 }
             }
         }
@@ -146,8 +144,7 @@ async function handleUpdateDriver(req, res) {
         if (req.files) {
             for (const key of Object.keys(req.files)) {
                 if (req.files[key][0] && req.files[key][0].location) {
-                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
-                    req.body[key] = signedUrl; // Add the URL to req.body
+                    req.body[key] = req.files[key][0].location; // Add the URL to req.body
                 }
             }
         }

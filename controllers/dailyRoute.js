@@ -5,7 +5,6 @@ const { vehicle } = require("../models/vehicle");
 const {user, agency} = require("../models/user");
 const { sendSms } = require("../utils/sms");
 const { formatTime } = require("../utils/others");
-const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateDailyRoute(req, res) {
     try {
@@ -15,8 +14,7 @@ async function handleCreateDailyRoute(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -68,9 +66,7 @@ async function handleFinalizeDailyRoute(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -221,9 +217,7 @@ async function handleUpdateDailyRoute(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -274,9 +268,7 @@ async function handleStartDailyRoute(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -320,9 +312,7 @@ async function handleCompleteDailyRoute(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }

@@ -4,7 +4,6 @@ const employee = require("../models/employee")
 const packageBooking = require("../models/packageVehicleBooking")
 const {user} = require("../models/user")
 const { vehicle } = require("../models/vehicle")
-const { generatePresignedUrl } = require("../utils/cloudinary")
 const { formatDate, formatTime } = require("../utils/others")
 const { sendSms } = require("../utils/sms")
 
@@ -148,9 +147,7 @@ async function handleUpdatePackageBooking(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -322,9 +319,7 @@ async function handleStartPackageBooking(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -368,9 +363,7 @@ async function handleCompletePackageBooking(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }

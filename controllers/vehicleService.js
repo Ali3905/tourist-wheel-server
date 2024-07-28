@@ -1,7 +1,6 @@
 const {user} = require("../models/user");
 const { vehicle } = require("../models/vehicle")
 const service = require("../models/vehicleService");
-const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateService(req, res) {
     try {
@@ -11,9 +10,7 @@ async function handleCreateService(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -137,9 +134,7 @@ async function handleUpdateService(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }

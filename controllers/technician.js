@@ -48,13 +48,26 @@ async function handleCreateTechnician(req, res) {
 
 async function handleGetAllTechnicians(req, res) {
     try {
-        const { page = 1 } = req.query; // Default to page 1 if not provided
+        const { page = 1, vehicleType, city, state } = req.query; // Default to page 1 if not provided
         const pageSize = 100; // Define the number of records per page
 
-        const foundTechnicians = await technician.find({})
-            .sort({ createdAt: -1 }) // Sort technicians by createdAt in descending order
-            .skip((page - 1) * pageSize) // Skip records for pagination
-            .limit(pageSize); // Limit the number of records per page
+        // Construct the filter object
+        let filter = {};
+
+        if (vehicleType) {
+            filter.vehicleType = vehicleType;
+        }
+        if (city) {
+            filter.city = { $regex: city, $options: 'i' }; // Case-insensitive partial match
+        }
+        if (state) {
+            filter.state = { $regex: state, $options: 'i' }; // Case-insensitive partial match
+        }
+
+        const foundTechnicians = await technician.find(filter)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * pageSize)
+            .limit(pageSize);
 
         if (!foundTechnicians || foundTechnicians.length < 1) {
             return res.status(400).json({

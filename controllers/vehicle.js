@@ -1,6 +1,5 @@
 const { user } = require("../models/user");
 const { vehicle, truck, car } = require("../models/vehicle");
-const { generatePresignedUrl } = require("../utils/cloudinary");
 
 async function handleCreateVehicle(req, res) {
     try {
@@ -10,9 +9,7 @@ async function handleCreateVehicle(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -266,9 +263,7 @@ async function handleUpdateVehicle(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
@@ -316,8 +311,7 @@ async function handleAddDocuments(req, res) {
         if (req.files) {
             for (const key of Object.keys(req.files)) {
                 if (req.files[key][0] && req.files[key][0].location) {
-                    const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, req.files[key][0].key);
-                    req.body[key] = signedUrl; // Add the URL to req.body
+                    req.body[key] = req.files[key][0].location; // Add the URL to req.body
                 }
             }
         }
@@ -381,9 +375,7 @@ async function handleUpdateTruck(req, res) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
-                            const signedUrl = await generatePresignedUrl(process.env.S3_BUCKET_NAME, file.key);
-                            console.log({ signedUrl });
-                            req.body[key].push(signedUrl);
+                            req.body[key].push(file.location);
                         }
                     }
                 }
