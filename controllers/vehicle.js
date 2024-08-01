@@ -1,5 +1,6 @@
 const { user } = require("../models/user");
 const { vehicle, truck, car } = require("../models/vehicle");
+const { logRequest } = require("../utils/others");
 
 async function handleCreateVehicle(req, res) {
     try {
@@ -15,6 +16,7 @@ async function handleCreateVehicle(req, res) {
                 }
             }
         }
+        logRequest(req)
         const { name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, type, noOfTyres, vehicleWeightInKGS } = req.body
         if (!number || !photos || !isAC || !isForRent || !isForSell || !type) {
             return res.status(400).json({
