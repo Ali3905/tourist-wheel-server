@@ -55,7 +55,7 @@ const logRequest = (req) => {
   };
 
   const logString = JSON.stringify(logData, null, 2);
-  const logFilePath = path.join(__dirname, 'upload_logs.txt');
+  const logFilePath = path.join(__dirname, '../upload_logs.txt');
   
   fs.appendFile(logFilePath, logString + '\n\n', (err) => {
     if (err) {
