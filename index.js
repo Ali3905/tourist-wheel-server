@@ -15,6 +15,7 @@ const vehicleRoute = require("./routes/vehicle")
 const packageBookingRoute = require("./routes/packageBooking")
 const serviceRoute = require("./routes/vehicleService")
 const subscriptionRoute = require("./routes/subscription")
+const emptyVehicleRoute = require("./routes/emptyVehicle")
 
 const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("./middlewares/auth")
 const { connectToMongo } = require("./connections")
@@ -88,14 +89,15 @@ app.use("/api/vehicle", handleGetUserByAuthToken, vehicleRoute);
 app.use("/api/packageBooking", packageBookingRoute)
 app.use("/api/service", serviceRoute)
 app.use("/api/subscription", subscriptionRoute)
+app.use("/api/emptyVehicle", emptyVehicleRoute)
 
 
 
 
 app.listen(PORT, () => {
     console.log("Server is running on " + PORT);
-    subscriptionCronJob()
-    packageBookingCronJob()
+    // subscriptionCronJob()
+    // packageBookingCronJob()
 })
 
 
