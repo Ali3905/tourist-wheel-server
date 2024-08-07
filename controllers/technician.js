@@ -1,5 +1,5 @@
 const technician = require("../models/technician");
-const { user } = require("../models/user");
+const { user, agency } = require("../models/user");
 
 async function handleCreateTechnician(req, res) {
     try {
@@ -178,10 +178,73 @@ async function handleGetTechnicianById(req, res) {
     }
 }
 
+const ratingMessages = [
+    {
+        rating: 1,
+        message: "very bad"
+    },
+    {
+        rating: 2,
+        message: "bad"
+    },
+    {
+        rating: 3,
+        message: "average"
+    },
+    {
+        rating: 4,
+        message: "good"
+    },
+    {
+        rating: 5,
+        message: "very good"
+    },
+]
+
+async function handleGiveRating(req, res) {
+    try {
+        const { rating } = req.body
+        const { technicianId } = req.query
+        if (!technicianId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide the ID of technician to give rating"
+            })
+        }
+        if (!rating) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide all the fields"
+            })
+        }
+
+        const foundAgency = await agency.findById(req.data._id)
+        const ratingObj = ratingMessages.filter((ele) => ele.rating === Number(rating))[0]
+        const foundTechnician = await technician.findById(technicianId)
+
+        foundTechnician.avgRating = foundTechnician.ratings.length > 0 ? (foundTechnician.ratings.length * foundTechnician.avgRating + Number(rating)) / (foundTechnician.ratings.length + 1) : Number(rating)
+        foundTechnician.ratings.push({ ...ratingObj, agency: foundAgency })
+        await foundTechnician.save()
+
+        return res.status(200).json({
+            success: true,
+            data: foundTechnician
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleGetAllTechnicians,
     handleCreateTechnician,
     handleDeleteTechnician,
     handleUpdateTechnician,
-    handleGetTechnicianById
+    handleGetTechnicianById,
+    handleGiveRating
 }

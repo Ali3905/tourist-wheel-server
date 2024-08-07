@@ -29,6 +29,18 @@ const technicianSchema = mongoose.Schema({
         type: String,
         enum: ["ALL", "CAR", "BUS", "TRUCK", "TAMPO"],
         // required: true
+    },
+    ratings: {
+        type: [{
+            rating: Number,
+            message: String,
+            agency: { type: mongoose.Types.ObjectId, ref: "user" }
+        }],
+        default: []
+    },
+    avgRating: {
+        type: Number,
+        default: 0
     }
 
 }, { timestamps: true })
