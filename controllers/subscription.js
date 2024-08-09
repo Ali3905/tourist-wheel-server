@@ -1,7 +1,6 @@
+const { subscriptionPlans } = require("../constants/constants");
 const subscription = require("../models/subscription");
 const { agency } = require("../models/user");
-// const razorpay = require("../utils/razorpay");
-const subscriptionPlans = require("../utils/subscription");
 
 const Razorpay = require('razorpay');
 

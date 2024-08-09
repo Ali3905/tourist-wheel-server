@@ -53,6 +53,9 @@ const userSchema = mongoose.Schema({
     dailyRoutes: {
         type: [{ type: mongoose.Types.ObjectId, ref: "dailyRoute" }],
     },
+    busRoutes: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "busRoute" }],
+    },
     packageBookings: {
         type: [{ type: mongoose.Types.ObjectId, ref: "packageBooking" }],
     },

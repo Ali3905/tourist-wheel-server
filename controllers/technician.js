@@ -1,3 +1,4 @@
+const { ratingMessages } = require("../constants/constants");
 const technician = require("../models/technician");
 const { user, agency } = require("../models/user");
 
@@ -178,28 +179,6 @@ async function handleGetTechnicianById(req, res) {
     }
 }
 
-const ratingMessages = [
-    {
-        rating: 1,
-        message: "very bad"
-    },
-    {
-        rating: 2,
-        message: "bad"
-    },
-    {
-        rating: 3,
-        message: "average"
-    },
-    {
-        rating: 4,
-        message: "good"
-    },
-    {
-        rating: 5,
-        message: "very good"
-    },
-]
 
 async function handleGiveRating(req, res) {
     try {

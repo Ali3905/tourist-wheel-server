@@ -16,6 +16,7 @@ const packageBookingRoute = require("./routes/packageBooking")
 const serviceRoute = require("./routes/vehicleService")
 const subscriptionRoute = require("./routes/subscription")
 const emptyVehicleRoute = require("./routes/emptyVehicle")
+const busRouteRoute = require("./routes/busRoute")
 
 const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("./middlewares/auth")
 const { connectToMongo } = require("./connections")
@@ -37,7 +38,7 @@ const SMARTPING_API_URL = 'https://api.smartping.io/send-otp';
 
 // For Testing
 app.get("/", async (req, res) => {
-        res.send("Home page of tourist wheel")
+    res.send("Home page of tourist wheel")
 })
 
 app.post('/send-otp', async (req, res) => {
@@ -72,7 +73,7 @@ app.post("/addBulkTechnicians", async (req, res) => {
         res.send(`Inserted ${result.insertedCount} documents successfully`);
     } catch (err) {
         console.error('Error inserting data:', err);
-        res.status(500).json({error: err.message});
+        res.status(500).json({ error: err.message });
     }
     // res.send("Home page of tourist wheel")
 })
@@ -90,6 +91,7 @@ app.use("/api/packageBooking", packageBookingRoute)
 app.use("/api/service", serviceRoute)
 app.use("/api/subscription", subscriptionRoute)
 app.use("/api/emptyVehicle", emptyVehicleRoute)
+app.use("/api/busRoute", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), busRouteRoute)
 
 
 
