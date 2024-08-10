@@ -5,6 +5,9 @@ const busRouteSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "vehicle"
     },
+    officeAddress: String,
+    discount: Number,
+    agencyName: String,
     departurePlace: String,
     destinationPlace: String,
     departureTime: Date,

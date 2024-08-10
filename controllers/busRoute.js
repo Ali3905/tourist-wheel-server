@@ -22,13 +22,17 @@ async function handleCreateBusRoute(req, res) {
 
         // console.log({ body : req.body });
 
+        const foundUser = await user.findById(req.data._id)
 
-        const { vehicleNo, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
+
+        const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
         const foundVehicle = await vehicle.findOne({ number: vehicleNo })
         const createdBusRoute = await busRoute.create({
-            vehicle: foundVehicle, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement
+            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement
         })
-        await user.findByIdAndUpdate(req.data._id, { $push: { busRoutes: createdBusRoute } }, { new: true })
+        // await user.findByIdAndUpdate(req.data._id, { $push: { busRoutes: createdBusRoute } }, { new: true })
+        foundUser.busRoutes.push(createdBusRoute)
+        await foundUser.save()
         return res.status(400).json({
             success: false,
             data: createdBusRoute
@@ -46,9 +50,9 @@ async function handleGetAllBusRoutes(req, res) {
         const foundUser = await user.findById(req.data._id).populate({
             path: "busRoutes",
             options: { sort: { createdAt: -1 } }, // Sort dailyRoutes by createdAt in descending order
-            populate: 
+            populate:
                 { path: "vehicle", model: "vehicle", select: "number" },
-            
+
         })
         if (!foundUser) {
             return res.status(400).json({
@@ -58,7 +62,8 @@ async function handleGetAllBusRoutes(req, res) {
         }
         return res.status(200).json({
             success: true,
-            data: foundUser.busRoutes
+            count: foundUser.busRoutes.length,
+            data: foundUser.busRoutes,
         })
 
     } catch (error) {
