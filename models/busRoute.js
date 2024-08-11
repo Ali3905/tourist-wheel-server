@@ -5,6 +5,22 @@ const busRouteSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "vehicle"
     },
+    primaryDriver: {
+        type: mongoose.Types.ObjectId,
+        ref: "driver",
+        // required: true
+    },
+    secondaryDriver: {
+        type: mongoose.Types.ObjectId,
+        ref: "driver",
+        // required: true
+    },
+    cleaner: {
+        type: mongoose.Types.ObjectId,
+        ref: "cleaner",
+        // required: true
+    },
+    instructions: String,
     officeAddress: String,
     discount: Number,
     agencyName: String,
@@ -26,7 +42,15 @@ const busRouteSchema = mongoose.Schema({
     phonepeName: String,
     QR: String,
     seatingArrangement: String,
-    
+    beforeJourneyPhotos: [String],
+    afterJourneyPhotos: [String],
+    beforeJourneyNote: String,
+    afterJourneyNote: String,
+    status: {
+        type: String,
+        enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
+    }
+
 }, { timestamps: true })
 
 

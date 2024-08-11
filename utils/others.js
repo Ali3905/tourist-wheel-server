@@ -4,7 +4,6 @@ const path = require('path');
 const formatDate = (mongoDate) => {
   const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
   const formated = new Intl.DateTimeFormat('en-GB', options).format(mongoDate);
-  console.log(formated);
   return formated
 
 
@@ -37,7 +36,6 @@ function formatTime(mongoDate) {
 // Example usage
 try {
   const mongoDate = new Date(); // Example MongoDB date
-  console.log(formatTime(mongoDate)); // Output: "12:00 am" (for example)
 } catch (error) {
   console.error(error.message);
 }
