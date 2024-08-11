@@ -35,8 +35,8 @@ async function handleCreateBusRoute(req, res) {
         // await user.findByIdAndUpdate(req.data._id, { $push: { busRoutes: createdBusRoute } }, { new: true })
         foundUser.busRoutes.push(createdBusRoute)
         await foundUser.save()
-        return res.status(400).json({
-            success: false,
+        return res.status(201).json({
+            success: true,
             data: createdBusRoute
         })
     } catch (error) {
