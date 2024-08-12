@@ -62,6 +62,9 @@ const userSchema = mongoose.Schema({
     services: {
         type: [{ type: mongoose.Types.ObjectId, ref: "service" }],
     },
+    tours: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "tour" }]
+    },
     isVerified: {
         type: Boolean,
     },

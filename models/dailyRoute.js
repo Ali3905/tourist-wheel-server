@@ -44,7 +44,6 @@ const dailyRouteSchema = mongoose.Schema({
     },
     beforeJourneyNote: {
         type: String,
-
     },
     afterJourneyPhotos: {
         type: Array,
