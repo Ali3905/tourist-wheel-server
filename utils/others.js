@@ -61,10 +61,26 @@ const logRequest = (req) => {
     }
   });
 };
+const logError = (err) => {
+  const logData = {
+    error: err.message,
+    timestamp: new Date().toISOString()
+  };
+
+  const logString = JSON.stringify(logData, null, 2);
+  const logFilePath = path.join(__dirname, '../upload_errors.txt');
+  
+  fs.appendFile(logFilePath, logString + '\n\n', (err) => {
+    if (err) {
+      console.error('Failed to write log:', err);
+    }
+  });
+};
 
 
 module.exports = {
   formatDate,
   formatTime,
-  logRequest
+  logRequest,
+  logError
 }

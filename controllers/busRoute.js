@@ -3,11 +3,11 @@ const cleaner = require("../models/cleaner");
 const driver = require("../models/driver");
 const { user, agency } = require("../models/user");
 const { vehicle } = require("../models/vehicle");
-const { logRequest } = require("../utils/others");
+const { logRequest, logError } = require("../utils/others");
 
 async function handleCreateBusRoute(req, res) {
     try {
-        logRequest()
+        logRequest(req)
         if (req.files) {
             for (const key of Object.keys(req.files)) {
 
@@ -24,7 +24,7 @@ async function handleCreateBusRoute(req, res) {
             }
         }
 
-        console.log({ body : req.body });
+        console.log({ body: req.body });
 
         const foundUser = await user.findById(req.data._id)
 
@@ -42,6 +42,7 @@ async function handleCreateBusRoute(req, res) {
             data: createdBusRoute
         })
     } catch (error) {
+        logError(error)
         return res.status(500).json({
             success: false,
             message: error.message
@@ -53,7 +54,7 @@ async function handleGetAllBusRoutes(req, res) {
     try {
         const foundUser = await user.findById(req.data._id).populate({
             path: "busRoutes",
-            options: { sort: { createdAt: -1 } }, 
+            options: { sort: { createdAt: -1 } },
             populate:
                 { path: "vehicle", model: "vehicle", select: "number" },
 
