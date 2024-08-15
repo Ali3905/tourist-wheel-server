@@ -3,11 +3,9 @@ const cleaner = require("../models/cleaner");
 const driver = require("../models/driver");
 const { user, agency } = require("../models/user");
 const { vehicle } = require("../models/vehicle");
-const { logRequest, logError } = require("../utils/others");
 
 async function handleCreateBusRoute(req, res) {
     try {
-        logRequest(req)
         if (req.files) {
             for (const key of Object.keys(req.files)) {
 
@@ -42,7 +40,6 @@ async function handleCreateBusRoute(req, res) {
             data: createdBusRoute
         })
     } catch (error) {
-        logError(error)
         return res.status(500).json({
             success: false,
             message: error.message
@@ -288,13 +285,16 @@ async function handleUpdateBusRoute(req, res) {
     try {
         if (req.files) {
             for (const key of Object.keys(req.files)) {
-                if (req.files[key] && req.files[key].length > 0) {
+
+                if (req.files[key] && req.files[key].length > 1) {
                     req.body[key] = [];
                     for (const file of req.files[key]) {
                         if (file.location) {
                             req.body[key].push(file.location);
                         }
                     }
+                } else if (req.files[key][0] && req.files[key][0].location) {
+                    req.body[key] = req.files[key][0].location; // Add the URL to req.body
                 }
             }
         }
