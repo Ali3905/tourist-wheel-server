@@ -41,6 +41,7 @@ const vehicleSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
+    sellDescription: String,
     type: {
         type: String,
         enum: ["CAR", "TRUCK", "BUS", "TAMPO"]
@@ -77,6 +78,13 @@ const truckSchema = mongoose.Schema({
     }
 })
 
+const busSchema = mongoose.Schema({
+    isSeatPushBack: Boolean,
+    isLuggageSpace: Boolean,
+    curtain: Boolean,
+    amenities: [],
+})
+
 const carSchema = mongoose.Schema({
     name: {
         type: String,
@@ -88,11 +96,12 @@ vehicleSchema.set("discriminatorKey", "type")
 const vehicle = mongoose.model("vehicle", vehicleSchema)
 const truck = vehicle.discriminator("TRUCK", truckSchema)
 const car = vehicle.discriminator("CAR", carSchema)
-const bus = vehicle.discriminator("BUS", vehicleSchema)
+const bus = vehicle.discriminator("BUS", busSchema)
 const tampo = vehicle.discriminator("TAMPO", vehicleSchema)
 
 module.exports = {
     vehicle,
     truck,
-    car
+    car,
+    bus
 }

@@ -1,5 +1,5 @@
 const { user } = require("../models/user");
-const { vehicle, truck, car } = require("../models/vehicle");
+const { vehicle, truck, car, bus } = require("../models/vehicle");
 
 async function handleCreateVehicle(req, res) {
     try {
@@ -15,7 +15,7 @@ async function handleCreateVehicle(req, res) {
                 }
             }
         }
-        const { name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, type, noOfTyres, vehicleWeightInKGS } = req.body
+        const { name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, sellDescription, type, noOfTyres, vehicleWeightInKGS, isSeatPushBack, isLuggageSpace, curtain, amenities } = req.body
         if (!number || !photos || !isAC || !isForRent || !isForSell || !type) {
             return res.status(400).json({
                 success: false,
@@ -45,7 +45,7 @@ async function handleCreateVehicle(req, res) {
         }
 
         const createdVehicle = await vehicle.create({
-            name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, type, noOfTyres, vehicleWeightInKGS
+            name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, sellDescription, type, noOfTyres, vehicleWeightInKGS, isSeatPushBack, isLuggageSpace, curtain, amenities
         })
 
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { vehicles: createdVehicle } }, { new: true })
@@ -290,6 +290,14 @@ async function handleUpdateVehicle(req, res) {
                 success: true,
                 message: "Car updated",
                 data: updatedcar
+            })
+        }
+        if (foundVehicle && foundVehicle.type === "BUS") {
+            const updatedBus = await bus.findByIdAndUpdate(vehicleId, req.body, { new: true })
+            return res.status(200).json({
+                success: true,
+                message: "Bus Updated",
+                data: updatedBus
             })
         }
         const updatedVehicle = await vehicle.findByIdAndUpdate(vehicleId, req.body, { new: true })

@@ -49,7 +49,7 @@ async function handleCreateTechnician(req, res) {
 
 async function handleGetAllTechnicians(req, res) {
     try {
-        const { page = 1, vehicleType, city, state } = req.query; // Default to page 1 if not provided
+        const { page = 1, vehicleType, city, state, technicianType } = req.query; // Default to page 1 if not provided
         const pageSize = 100; // Define the number of records per page
 
         // Construct the filter object
@@ -63,6 +63,9 @@ async function handleGetAllTechnicians(req, res) {
         }
         if (state) {
             filter.state = { $regex: state, $options: 'i' }; // Case-insensitive partial match
+        }
+        if (technicianType) {
+            filter.technicianType = { $regex: technicianType, $options: 'i' }
         }
 
         const foundTechnicians = await technician.find(filter)

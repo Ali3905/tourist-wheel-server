@@ -53,7 +53,7 @@ async function handleGetAllBusRoutes(req, res) {
             path: "busRoutes",
             options: { sort: { createdAt: -1 } },
             populate:
-                { path: "vehicle", model: "vehicle", select: "number" },
+                { path: "vehicle", model: "vehicle" },
 
         })
         if (!foundUser) {
