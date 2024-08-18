@@ -21,16 +21,13 @@ async function handleCreateBusRoute(req, res) {
                 }
             }
         }
-
-        console.log({ body: req.body });
-
         const foundUser = await user.findById(req.data._id)
 
 
-        const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
+        const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
         const foundVehicle = await vehicle.findOne({ number: vehicleNo })
         const createdBusRoute = await busRoute.create({
-            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement
+            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement
         })
         // await user.findByIdAndUpdate(req.data._id, { $push: { busRoutes: createdBusRoute } }, { new: true })
         foundUser.busRoutes.push(createdBusRoute)
@@ -134,6 +131,31 @@ async function handleFinalizeBusRoute(req, res) {
             success: true,
             data: updatedBusRoute,
             // smsResponse: primaryDriverResponse
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleToggleIsActive(req, res) {
+    try {
+        const { isActive, routeId } = req.query
+
+        if (!routeId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide a route ID to change it state"
+            })
+        }
+        const foundRoute = await busRoute.findByIdAndUpdate(routeId, { isActive }, { new: true })
+
+        return res.status(200).json({
+            success: true,
+            data: foundRoute
         })
 
     } catch (error) {
@@ -377,5 +399,6 @@ module.exports = {
     handleUpdateBusRoute,
     handleStartBusRoute,
     handleCompleteBusRoute,
-    handleGetDriverBusRoutes
+    handleGetDriverBusRoutes,
+    handleToggleIsActive
 }

@@ -40,6 +40,7 @@ const busRouteSchema = mongoose.Schema({
     // doesBookTrainTickets: Boolean,
     phonepeNumber: String,
     phonepeName: String,
+    mobileNumbers: [],
     QR: String,
     seatingArrangement: String,
     beforeJourneyPhotos: [String],
@@ -49,7 +50,11 @@ const busRouteSchema = mongoose.Schema({
     status: {
         type: String,
         enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
-    }
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
 
 }, { timestamps: true })
 
