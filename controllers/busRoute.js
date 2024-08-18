@@ -115,16 +115,8 @@ async function handleFinalizeBusRoute(req, res) {
                 message: "Provide a valid primary driver ID"
             })
         }
-        if (!foundCleaner) {
-            return res.status(400).json({
-                success: false,
-                message: "Provide a valid Cleaner ID"
-            })
-        }
-
 
         const updatedBusRoute = await busRoute.findByIdAndUpdate(routeId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED" }, { new: true }).populate("primaryDriver secondaryDriver vehicle cleaner")
-        console.log(req.data._id);
         const foundAgency = await agency.findById(req.data._id)
         // const primaryDriverResponse = await sendSms(updatedDailyRoute.primaryDriver?.mobileNumber, `You have been selected for today's trip with ${foundAgency.companyName}. Route: ${updatedDailyRoute.departurePlace} to ${updatedDailyRoute.destinationPlace} Pick-Up Time: ${formatTime(updatedDailyRoute.departureTime)} Please reach the office 2 hours before departure. Kindly start the trip from your app before departure. All driver and cleaner details for this trip: Name:${updatedDailyRoute.primaryDriver?.name}, Mobile:${updatedDailyRoute.primaryDriver?.mobileNumber} Name:${updatedDailyRoute.secondaryDriver?.name}, Mobile:${updatedDailyRoute.secondaryDriver?.mobileNumber} Name:${updatedDailyRoute.cleaner?.name}, Mobile:${updatedDailyRoute.cleaner?.mobileNumber} Best regards, TOURIST JUNCTION PRIVATE LIMITED`)
         // const secondaryDriverResponse = await sendSms(updatedDailyRoute.secondaryDriver?.mobileNumber, `You have been selected for today's trip with ${foundAgency.companyName}. Route: ${updatedDailyRoute.departurePlace} to ${updatedDailyRoute.destinationPlace} Pick-Up Time: ${formatTime(updatedDailyRoute.departureTime)} Please reach the office 2 hours before departure. Kindly start the trip from your app before departure. All driver and cleaner details for this trip: Name:${updatedDailyRoute.primaryDriver?.name}, Mobile:${updatedDailyRoute.primaryDriver?.mobileNumber} Name:${updatedDailyRoute.secondaryDriver?.name}, Mobile:${updatedDailyRoute.secondaryDriver?.mobileNumber} Name:${updatedDailyRoute.cleaner?.name}, Mobile:${updatedDailyRoute.cleaner?.mobileNumber} Best regards, TOURIST JUNCTION PRIVATE LIMITED`)
