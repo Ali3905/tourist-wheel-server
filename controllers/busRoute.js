@@ -97,7 +97,7 @@ async function handleFinalizeBusRoute(req, res) {
             }
         }
         const { primaryDriverId, secondaryDriverId, cleanerId, instructions } = req.body
-        if (!primaryDriverId || !cleanerId) {
+        if (!primaryDriverId) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the details"
