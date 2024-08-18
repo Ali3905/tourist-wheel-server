@@ -49,9 +49,12 @@ async function handleGetAllBusRoutes(req, res) {
         const foundUser = await user.findById(req.data._id).populate({
             path: "busRoutes",
             options: { sort: { createdAt: -1 } },
-            populate:
+            populate: [
                 { path: "vehicle", model: "vehicle" },
-
+                { path: "primaryDriver", model: "driver", select: "name" },
+                { path: "secondaryDriver", model: "driver", select: "name" },
+                { path: "cleaner", model: "cleaner", select: "name" },
+            ]
         })
         if (!foundUser) {
             return res.status(400).json({
