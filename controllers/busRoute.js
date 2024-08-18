@@ -328,7 +328,7 @@ async function handleUpdateBusRoute(req, res) {
                 message: "Provide the ID of route to update"
             })
         }
-        const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
+        const { vehicleNo } = req.body
         if (!vehicleNo) {
             return res.status(400).json({
                 success: false,
@@ -344,7 +344,7 @@ async function handleUpdateBusRoute(req, res) {
                 message: "Provide a valid Vehicle ID"
             })
         }
-        const updatedRoute = await busRoute.findByIdAndUpdate(routeId, { vehicle: foundVehicle, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement }, { new: true })
+        const updatedRoute = await busRoute.findByIdAndUpdate(routeId, { vehicle: foundVehicle, ...req.body }, { new: true })
         return res.status(200).json({
             success: true,
             data: updatedRoute,
