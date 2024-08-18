@@ -24,10 +24,10 @@ async function handleCreateBusRoute(req, res) {
         const foundUser = await user.findById(req.data._id)
 
 
-        const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
+        const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
         const foundVehicle = await vehicle.findOne({ number: vehicleNo })
         const createdBusRoute = await busRoute.create({
-            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, busPhotos, isAC, isSleeper, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement
+            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement
         })
         // await user.findByIdAndUpdate(req.data._id, { $push: { busRoutes: createdBusRoute } }, { new: true })
         foundUser.busRoutes.push(createdBusRoute)
