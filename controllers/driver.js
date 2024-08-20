@@ -14,7 +14,7 @@ async function handleCreateDriver(req, res) {
 
         const { name, password, vehicleType, mobileNumber, city, state, license, photo, aadharCard } = req.body
 
-        if (!name || !password || !vehicleType || !mobileNumber || !city || !state || !photo || !license || !aadharCard) {
+        if (!name || !password || !vehicleType || !mobileNumber || !city || !state) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the fields"
