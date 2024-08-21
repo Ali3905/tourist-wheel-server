@@ -17,7 +17,7 @@ async function handleCreateEmptyVehicle(req, res) {
             }
         }
         const { vehicleNo, moreInformation, departurePlace, destinationPlace, departureTime, departureDate, mobileNumber, photos } = req.body
-        if (!vehicleNo || !moreInformation || !departurePlace || !destinationPlace || !departureTime || !departureDate || !mobileNumber || !photos) {
+        if (!vehicleNo || !moreInformation || !departurePlace || !destinationPlace || !departureTime || !departureDate || !mobileNumber) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -120,7 +120,7 @@ async function handleUpdateEmptyVehicle(req, res) {
             }
         }
         const { vehicleNo, moreInformation, departurePlace, destinationPlace, departureTime, departureDate, mobileNumber, photos } = req.body
-        if (!vehicleNo || !moreInformation || !departurePlace || !destinationPlace || !departureTime || !departureDate || !mobileNumber || !photos) {
+        if (!vehicleNo || !moreInformation || !departurePlace || !destinationPlace || !departureTime || !departureDate || !mobileNumber) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
