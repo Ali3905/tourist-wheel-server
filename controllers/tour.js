@@ -32,7 +32,10 @@ async function handleCreateTour(req, res) {
 
 async function handleGetAllTours(req, res) {
     try {
-        const foundUser = await user.findById(req.data._id).populate("tours")
+        const foundUser = await user.findById(req.data._id).populate({
+            path: "tours",
+            options: { sort: { createdAt: -1 } }
+        })
         if (!foundUser.tours || foundUser.tours.length < 1) {
             return res.status(400).json({
                 success: false,
@@ -67,8 +70,8 @@ async function handleUpdateTour(req, res) {
                 }
             }
         }
-        
-        const updatedTour = await tour.findByIdAndUpdate(tourId,  req.body, { new: true} )
+
+        const updatedTour = await tour.findByIdAndUpdate(tourId, req.body, { new: true })
 
 
         return res.status(200).json({

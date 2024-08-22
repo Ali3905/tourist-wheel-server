@@ -25,7 +25,6 @@ module.exports = () => {
             // console.log(expiredSubscriptions);
             bookingsWithLessThanTwoDaysOfDepartureDate.forEach(async (booking) => {
                 // handle expired subscription (e.g., deactivate agency)
-                console.log("in block");
                 booking.isNotified = true
                 await sendSms(booking.mobileNumber, `Dear ${booking.customerName}, Your upcoming trip from ${booking.departurePlace} to ${booking.destinationPlace} is nearing. Please deposit the remaining payment at the ${"Tusharraj Agency"} office. Best regards, TOURIST JUNCTION PRIVATE LIMITED`)
                 await booking.save()
