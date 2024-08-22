@@ -16,8 +16,8 @@ async function handleCreateService(req, res) {
                 }
             }
         }
-        const { garageName, garageNumber, date, workDescription, bill, vehicleNumeber } = req.body
-        if (!vehicleNumeber) {
+        const { garageName, garageNumber, date, workDescription, bill, vehicleNumber } = req.body
+        if (!vehicleNumber) {
             return res.status(400).json({
                 success: false,
                 message: "Provide vehicleNumber to add service"
@@ -29,7 +29,7 @@ async function handleCreateService(req, res) {
                 message: "Provide all the fields"
             })
         }
-        const foundVehicle = await vehicle.findOne({ number: vehicleNumeber })
+        const foundVehicle = await vehicle.findOne({ number: vehicleNumber })
 
         if (!foundVehicle) {
             return res.status(400).json({
