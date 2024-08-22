@@ -73,12 +73,7 @@ async function handleGetAllTechnicians(req, res) {
             .skip((page - 1) * pageSize)
             .limit(pageSize);
 
-        if (!foundTechnicians || foundTechnicians.length < 1) {
-            return res.status(400).json({
-                success: false,
-                message: "Could find technicians"
-            })
-        }
+        
         return res.status(200).json({
             success: true,
             count: foundTechnicians.length,
