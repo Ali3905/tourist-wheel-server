@@ -105,7 +105,7 @@ async function handleGetAllVehicles(req, res) {
         if (req.data.role === "AGENCY") {
             const foundvehicles = await user.findById(req.data._id).populate({
                 path: "vehicles",
-                options: { sort: { createdAt: -1 } }
+                options: { sort: { updatedAt: -1 } }
             }).select("vehicles")
 
             if (!foundvehicles) {
