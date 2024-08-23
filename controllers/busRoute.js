@@ -29,7 +29,7 @@ async function handleCreateBusRoute(req, res) {
         const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
         const foundVehicle = await vehicle.findOne({ number: vehicleNo })
         const createdBusRoute = await busRoute.create({
-            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement
+            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement, status: "CREATED" 
         })
         // await user.findByIdAndUpdate(req.data._id, { $push: { busRoutes: createdBusRoute } }, { new: true })
         foundUser.busRoutes.push(createdBusRoute)
@@ -225,7 +225,13 @@ async function handleStartBusRoute(req, res) {
         }
 
         const foundRoute = await busRoute.findById(routeId)
-        if (foundRoute.status !== "FINALIZED") {
+        if(!foundRoute) {
+             return res.status(400).json({
+                success: false,
+                message: "Could not find the route with this id"
+            })
+        }
+        if (foundRoute && foundRoute.status !== "FINALIZED") {
             return res.status(400).json({
                 success: false,
                 message: "The selected route is not in a state to start. It is either completed, started or not finalized yet"
