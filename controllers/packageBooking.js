@@ -92,6 +92,7 @@ async function handleFinalizePackageBookings(req, res) {
 
         const primaryDriver = await driver.findById(primaryDriverId)
         const secondaryDriver = await driver.findById(secondaryDriverId)
+        const foundCleaner = await cleaner.findById(cleanerId)
 
         if (!primaryDriver) {
             return res.status(400).json({
