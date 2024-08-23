@@ -92,7 +92,6 @@ async function handleFinalizePackageBookings(req, res) {
 
         const primaryDriver = await driver.findById(primaryDriverId)
         const secondaryDriver = await driver.findById(secondaryDriverId)
-        const foundCleaner = await cleaner.findById(cleanerId)
 
         if (!primaryDriver) {
             return res.status(400).json({
@@ -106,12 +105,6 @@ async function handleFinalizePackageBookings(req, res) {
         //         message: "Provide a valid secondary driver ID"
         //     })
         // }
-        if (!foundCleaner) {
-            return res.status(400).json({
-                success: false,
-                message: "Provide a valid Cleaner ID"
-            })
-        }
 
 
         const updatedPackageBooking = await packageBooking.findByIdAndUpdate(bookingId, { primaryDriver, secondaryDriver, cleaner: foundCleaner, instructions, status: "FINALIZED", note }, { new: true }).populate("cleaner primaryDriver secondaryDriver vehicle")
