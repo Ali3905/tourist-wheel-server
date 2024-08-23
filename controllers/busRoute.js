@@ -231,12 +231,6 @@ async function handleStartBusRoute(req, res) {
                 message: "Could not find the route with this id"
             })
         }
-        if (foundRoute && foundRoute.status !== "FINALIZED") {
-            return res.status(400).json({
-                success: false,
-                message: "The selected route is not in a state to start. It is either completed, started or not finalized yet"
-            })
-        }
 
         const updatedRoute = await busRoute.findByIdAndUpdate(routeId, { beforeJourneyPhotos, beforeJourneyNote, status: "STARTED" }, { new: true })
         return res.status(200).json({
