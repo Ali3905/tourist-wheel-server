@@ -92,7 +92,7 @@ app.use("/api/packageBooking", packageBookingRoute)
 app.use("/api/service", serviceRoute);
 app.use("/api/subscription", subscriptionRoute);
 app.use("/api/emptyVehicle", emptyVehicleRoute);
-app.use("/api/busRoute", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), busRouteRoute);
+app.use("/api/busRoute", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER"]), busRouteRoute);
 app.use("/api/tour", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY"]), tourRoute)
 
 
