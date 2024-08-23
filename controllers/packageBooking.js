@@ -76,7 +76,7 @@ async function handleFinalizePackageBookings(req, res) {
     try {
         const { bookingId } = req.query
         const { primaryDriverId, secondaryDriverId, cleanerId, instructions, note } = req.body
-        if (!primaryDriverId || !cleanerId || !instructions) {
+        if (!primaryDriverId) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the details"
