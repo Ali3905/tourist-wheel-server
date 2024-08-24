@@ -15,7 +15,7 @@ async function handleCreateVehicle(req, res) {
                 }
             }
         }
-        const { name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, sellDescription, type, noOfTyres, vehicleWeightInKGS, isSeatPushBack, isLuggageSpace, curtain, amenities } = req.body
+        const { name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isSleeper, isForRent, isForSell, sellDescription, type, noOfTyres, vehicleWeightInKGS, isSeatPushBack, isLuggageSpace, curtain, amenities } = req.body
         if (!number || !photos || !isAC || !isForRent || !isForSell || !type) {
             return res.status(400).json({
                 success: false,
@@ -45,7 +45,7 @@ async function handleCreateVehicle(req, res) {
         }
 
         const createdVehicle = await vehicle.create({
-            name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isForRent, isForSell, sellDescription, type, noOfTyres, vehicleWeightInKGS, isSeatPushBack, isLuggageSpace, curtain, amenities
+            name, number, seatingCapacity, model, bodyType, chassisBrand, location, contactNumber, photos, isAC, isSleeper, isForRent, isForSell, sellDescription, type, noOfTyres, vehicleWeightInKGS, isSeatPushBack, isLuggageSpace, curtain, amenities
         })
 
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { vehicles: createdVehicle } }, { new: true })
