@@ -177,6 +177,7 @@ async function handleRenewSubcription(req, res) {
         foundSubscription.plan = plan;
         foundAgency.isSubsciptionValid = true
 
+        await foundAgency.save();
         await foundSubscription.save();
 
 
