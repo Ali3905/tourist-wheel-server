@@ -98,8 +98,8 @@ app.use("/api/tour", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENC
 
 app.listen(PORT, () => {
     console.log("Server is running on " + PORT);
-    // subscriptionCronJob()
-    // packageBookingCronJob()
+    subscriptionCronJob()
+    packageBookingCronJob()
 })
 
 
