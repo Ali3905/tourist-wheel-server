@@ -33,7 +33,6 @@ const vehicleSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
-    isSleeper: Boolean,
     isForRent: {
         type: Boolean,
         required: true
@@ -82,6 +81,7 @@ const truckSchema = mongoose.Schema({
 const busSchema = mongoose.Schema({
     isSeatPushBack: Boolean,
     isLuggageSpace: Boolean,
+    isSleeper: Boolean,
     curtain: Boolean,
     amenities: [],
 })
