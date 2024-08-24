@@ -165,7 +165,8 @@ async function handleRenewSubcription(req, res) {
 
 
         // Extend subscription end date based on new plan
-        foundSubscription.endDate.setSeconds(foundSubscription.endDate.getSeconds() + subscriptionPlan.duration);
+        const newEndDate = new Date(foundSubscription.endDate.getTime() + subscriptionPlan.duration * 1000);
+        foundSubscription.endDate = newEndDate;
 
         // Track renewals for each plan type
 
