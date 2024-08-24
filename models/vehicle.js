@@ -33,6 +33,7 @@ const vehicleSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
+    isSleeper: Boolean,
     isForRent: {
         type: Boolean,
         required: true
