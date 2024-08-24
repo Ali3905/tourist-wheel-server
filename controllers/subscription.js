@@ -175,10 +175,10 @@ async function handleRenewSubcription(req, res) {
 
         // Update the plan to the new plan
         foundSubscription.plan = plan;
+        foundAgency.isSubsciptionValid = true
 
         await foundSubscription.save();
 
-        foundAgency.isSubsciptionValid = true
 
         res.status(200).json({
             success: true,
