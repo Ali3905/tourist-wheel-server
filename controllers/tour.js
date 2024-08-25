@@ -5,8 +5,13 @@ async function handleCreateTour(req, res) {
     try {
         if (req.files) {
             for (const key of Object.keys(req.files)) {
-                if (req.files[key][0] && req.files[key][0].location) {
-                    req.body[key] = req.files[key][0].location; // Add the URL to req.body
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            req.body[key].push(file.location);
+                        }
+                    }
                 }
             }
         }
@@ -65,12 +70,16 @@ async function handleUpdateTour(req, res) {
         }
         if (req.files) {
             for (const key of Object.keys(req.files)) {
-                if (req.files[key][0] && req.files[key][0].location) {
-                    req.body[key] = req.files[key][0].location; // Add the URL to req.body
+                if (req.files[key] && req.files[key].length > 0) {
+                    req.body[key] = [];
+                    for (const file of req.files[key]) {
+                        if (file.location) {
+                            req.body[key].push(file.location);
+                        }
+                    }
                 }
             }
         }
-
         const updatedTour = await tour.findByIdAndUpdate(tourId, req.body, { new: true })
 
 
