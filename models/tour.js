@@ -7,7 +7,7 @@ const tourSchema = mongoose.Schema({
     agencyName: String,
     primaryMobileNumber: String,
     secondaryMobileNumber: String,
-    photo: String,
+    photos: [String],
 }, { timestamps: true })
 
 const tour = mongoose.model("tour", tourSchema)

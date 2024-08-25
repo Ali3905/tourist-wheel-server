@@ -76,7 +76,6 @@ app.post("/addBulkTechnicians", async (req, res) => {
         console.error('Error inserting data:', err);
         res.status(500).json({ error: err.message });
     }
-    // res.send("Home page of tourist wheel")
 })
 
 

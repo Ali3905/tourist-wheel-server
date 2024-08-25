@@ -58,7 +58,7 @@ async function handleGetAllEmptyVehicles(req, res) {
             { path: 'agency', select: 'companyName' }
         ]).sort({ createdAt: -1 })
 
-        if (!foundEmptyVehicles || foundEmptyVehicles.length < 1) {
+        if (!foundEmptyVehicles) {
             return res.status(400).json({
                 success: false,
                 message: "Could not find empty vehicles"

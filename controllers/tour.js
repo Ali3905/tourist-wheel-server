@@ -10,9 +10,9 @@ async function handleCreateTour(req, res) {
                 }
             }
         }
-        const { name, officeAddress, location, primaryMobileNumber, secondaryMobileNumber, photo } = req.body
+        const { name, officeAddress, location, primaryMobileNumber, secondaryMobileNumber, photos } = req.body
         const foundAgency = await user.findById(req.data._id)
-        const createdTour = await tour.create({ name, officeAddress, location, primaryMobileNumber, secondaryMobileNumber, agencyName: foundAgency.companyName, photo })
+        const createdTour = await tour.create({ name, officeAddress, location, primaryMobileNumber, secondaryMobileNumber, agencyName: foundAgency.companyName, photos })
 
         foundAgency.tours.push(createdTour)
         await foundAgency.save()
