@@ -1,5 +1,5 @@
 const emptyVehicle = require("../models/emptyVehicle")
-const { agency } = require("../models/user")
+const { agency, user } = require("../models/user")
 const { vehicle } = require("../models/vehicle")
 
 async function handleCreateEmptyVehicle(req, res) {
@@ -39,6 +39,7 @@ async function handleCreateEmptyVehicle(req, res) {
             })
         }
         const createdEmptyVehicle = await emptyVehicle.create({ vehicle: foundVehicle, agency: foundAgency, moreInformation, departurePlace, destinationPlace, departureTime, departureDate, mobileNumber, photos })
+        await user.findByIdAndUpdate(req.data._id, { $push: { emptyVehicles: createdEmptyVehicle } })
         return res.status(201).json({
             success: true,
             data: createdEmptyVehicle
@@ -52,6 +53,35 @@ async function handleCreateEmptyVehicle(req, res) {
 }
 
 async function handleGetAllEmptyVehicles(req, res) {
+    try {
+        const foundAgency = await user.findById(req.data._id).populate({
+            path: "emptyVehicles",
+            options: { sort: { createdAt: -1 } },
+            populate: [
+                { path: 'vehicle', select: 'number type' },
+                { path: 'agency', select: 'companyName' }
+            ]
+        })
+
+        if (!foundAgency || !foundAgency.emptyVehicles) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not find empty vehicles"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: foundAgency.emptyVehicles
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleGetAllAgenciesEmptyVehicles(req, res) {
     try {
         const foundEmptyVehicles = await emptyVehicle.find({}).populate([
             { path: 'vehicle', select: 'number type' },
@@ -157,6 +187,7 @@ async function handleUpdateEmptyVehicle(req, res) {
 module.exports = {
     handleCreateEmptyVehicle,
     handleGetAllEmptyVehicles,
+    handleGetAllAgenciesEmptyVehicles,
     handleDeleteEmptyVehicle,
     handleUpdateEmptyVehicle
 }
