@@ -4,7 +4,7 @@ const subscription = require('../models/subscription');
 
 
 module.exports = () => {
-    cron.schedule('*/10 * * * * *', async () => {
+    cron.schedule('0 1 * * *', async () => {
         try {
             const now = new Date();
             const expiredSubscriptions = await subscription.find({ endDate: { $lt: now }, isValid: true });

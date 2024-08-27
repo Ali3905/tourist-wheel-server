@@ -41,7 +41,7 @@ async function handleGetAllTours(req, res) {
             path: "tours",
             options: { sort: { createdAt: -1 } }
         })
-        if (!foundUser.tours || foundUser.tours.length < 1) {
+        if (!foundUser.tours) {
             return res.status(400).json({
                 success: false,
                 message: "Could not find tours of this agency"
