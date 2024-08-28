@@ -70,7 +70,7 @@ async function handleCreateDriver(req, res) {
 async function handleGetAllDrivers(req, res) {
     
     try {
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundDrivers = await user.findById(req.data._id).populate({
                 path: "drivers",
                 options: { sort: { createdAt: -1 } }

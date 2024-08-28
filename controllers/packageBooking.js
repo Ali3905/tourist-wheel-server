@@ -207,7 +207,7 @@ async function handleUpdatePackageBooking(req, res) {
 async function handleGetAllPackageBookings(req, res) {
     try {
 
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundUser = await user.findById(req.data._id).populate({
                 path: "packageBookings",
                 options: { sort: { createdAt: -1 } }, // Sort dailyRoutes by createdAt in descending order

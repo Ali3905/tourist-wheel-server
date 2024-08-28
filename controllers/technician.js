@@ -156,7 +156,7 @@ async function handleGetTechnicianById(req, res) {
                 message: "Provide the technician Id to find the technician"
             })
         }
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundUser = await user.findById(req.data._id).populate("technicians")
             const filteredTechnician = foundUser?.technicians.filter(technician => technician._id.toString() === technicianId)[0]
             return res.status(200).json({

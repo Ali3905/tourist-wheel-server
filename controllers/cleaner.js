@@ -5,7 +5,7 @@ async function handleGetAllCleaners(req, res) {
 
     try {
 
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundCleaners = await user.findById(req.data._id).populate({
                 path: "cleaners",
                 options: { sort: { createdAt: -1 } }

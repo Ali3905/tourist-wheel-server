@@ -129,7 +129,7 @@ async function handleFinalizeDailyRoute(req, res) {
 async function handleGetAllDailyRoutes(req, res) {
     try {
 
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundUser = await user.findById(req.data._id).populate({
                 path: "dailyRoutes",
                 options: { sort: { createdAt: -1 } }, // Sort dailyRoutes by createdAt in descending order

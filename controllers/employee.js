@@ -71,7 +71,7 @@ async function handleCreateEmployee(req, res) {
 
 async function handleGetAllEmployees(req, res) {
     try {
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundEmployees = await user.findById(req.data._id).populate({
                 path: "employees",
                 options: { sort: { createdAt: -1 } }

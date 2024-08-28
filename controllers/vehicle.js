@@ -67,7 +67,7 @@ async function handleCreateVehicle(req, res) {
 async function handleGetAllVehiclesByVehicleType(req, res) {
     try {
         const { vehicleType } = req.params
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundVehicles = await user.findById(req.data._id).populate("vehicles")
             const vehicles = foundVehicles?.vehicles?.filter(veh => veh.type === vehicleType)
             if (!foundVehicles) {
@@ -102,7 +102,7 @@ async function handleGetAllVehiclesByVehicleType(req, res) {
 
 async function handleGetAllVehicles(req, res) {
     try {
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundvehicles = await user.findById(req.data._id).populate({
                 path: "vehicles",
                 options: { sort: { updatedAt: -1 } }
@@ -141,7 +141,7 @@ async function handleGetAllVehicles(req, res) {
 }
 async function handleGetAllVehiclesImages(req, res) {
     try {
-        if (req.data.role === "AGENCY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
             const foundUser = await user.findById(req.data._id).populate({
                 path: "vehicles",
                 select: "photos",
