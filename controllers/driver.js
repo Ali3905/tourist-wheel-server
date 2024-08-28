@@ -1,4 +1,5 @@
 const driver = require("../models/driver");
+const employee = require("../models/employee");
 const { user } = require("../models/user");
 
 async function handleCreateDriver(req, res) {
@@ -20,8 +21,9 @@ async function handleCreateDriver(req, res) {
                 message: "Provide all the fields"
             })
         }
+        const alreadyEmployeeWithMobileNumber = await employee.findOne({ mobileNumber })
         const alreadyDriverWithMobileNumber = await driver.findOne({ mobileNumber })
-        if (alreadyDriverWithMobileNumber) {
+        if (alreadyEmployeeWithMobileNumber || alreadyDriverWithMobileNumber) {
             return res.status(400).json({
                 success: false,
                 message: "Driver with this phone number already exists"

@@ -381,10 +381,14 @@ async function handleGetUserById(req, res) {
         }
         const employeeId = req.data.employeeId
         const foundEmployee = await employee.findById(employeeId)
+        const foundAgency = await user.findById(req.data._id)
         if (foundEmployee) {
             return res.status(200).json({
                 success: true,
-                data: foundEmployee
+                data: {
+                    ...foundEmployee,
+                    isSubsciptionValid: foundAgency.isSubsciptionValid
+                }
             })
         }
         return res.status(400).json({

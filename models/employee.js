@@ -22,6 +22,9 @@ const employeeSchema = mongoose.Schema({
         type: String,
         required : true
     },
+    city: {
+        type: String,
+    },
     aadharCard: {
         type: String
     },

@@ -1,5 +1,6 @@
 const employee = require('../models/employee');
 const { user } = require('../models/user');
+const driver = require('../models/driver');
 
 async function handleCreateEmployee(req, res) {
 
@@ -13,8 +14,8 @@ async function handleCreateEmployee(req, res) {
             }
         }
 
-        const { name, mobileNumber, employeeType, state, photo, aadharCard, password } = req.body
-        console.log({ name, mobileNumber, employeeType, state, photo, aadharCard, password });
+        const { name, mobileNumber, employeeType, state, city, photo, aadharCard, password } = req.body
+        // console.log({ name, mobileNumber, employeeType, state, photo, aadharCard, password });
 
         if (!name || !mobileNumber || !employeeType || !state || !photo || !aadharCard || !password) {
             return res.status(400).json({
@@ -24,7 +25,8 @@ async function handleCreateEmployee(req, res) {
         }
 
         const alreadyEmployeeWithMobileNumber = await employee.findOne({ mobileNumber })
-        if (alreadyEmployeeWithMobileNumber) {
+        const alreadyDriverWithMobileNumber = await driver.findOne({ mobileNumber })
+        if (alreadyEmployeeWithMobileNumber || alreadyDriverWithMobileNumber) {
             return res.status(400).json({
                 success: false,
                 message: "Employee with this mobile number already exists"
@@ -49,7 +51,7 @@ async function handleCreateEmployee(req, res) {
         }
 
         const createdEmployee = await employee.create({
-            name, mobileNumber, employeeType, state, photo, password, aadharCard
+            name, mobileNumber, employeeType, state, city, photo, password, aadharCard
         })
 
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { employees: createdEmployee } }, { new: true })
