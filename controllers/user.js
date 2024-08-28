@@ -386,7 +386,7 @@ async function handleGetUserById(req, res) {
             return res.status(200).json({
                 success: true,
                 data: {
-                    ...foundEmployee,
+                    ...foundEmployee.toObject(),
                     isSubsciptionValid: foundAgency.isSubsciptionValid
                 }
             })
