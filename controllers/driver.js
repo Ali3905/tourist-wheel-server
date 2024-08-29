@@ -182,7 +182,7 @@ async function handleUpdateDriver(req, res) {
 
 async function handleGetAllAvailableDrivers(req, res) {
     try {
-        const foundDrivers = await driver.find({}).sort({ createdAt: -1 })
+        const foundDrivers = await driver.find({}).sort({ createdAt: 1 })
 
         if (!foundDrivers) {
             return res.status(400).json({
