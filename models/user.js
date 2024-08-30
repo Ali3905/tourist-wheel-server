@@ -91,6 +91,7 @@ const agencySchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'subscription',
     },
+    trialValidTill: Date,
     // razorpayCustomerId: String,
 })
 

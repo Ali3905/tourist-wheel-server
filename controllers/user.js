@@ -109,8 +109,11 @@ async function handleVerifyOtp(req, res) {
                 message: "Incorrect otp"
             })
         }
-        foundUser.isVerified = true
-        foundUser.verificationOtp = undefined
+        const currentDate = new Date();
+        foundUser.isVerified = true;
+        foundUser.verificationOtp = undefined;
+        foundUser.trialValidTill = new Date(currentDate.setDate(currentDate.getDate() + 5));
+
         await foundUser.save()
         const payload = {
             _id: foundUser._id,
