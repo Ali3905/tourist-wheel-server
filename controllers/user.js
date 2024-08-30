@@ -391,7 +391,8 @@ async function handleGetUserById(req, res) {
                 data: {
                     ...foundEmployee.toObject(),
                     isSubsciptionValid: foundAgency.isSubsciptionValid,
-                    subscription: foundAgency.subscription.toString()
+                    subscription: foundAgency.subscription.toString(),
+                    trialValidTill: foundAgency?.trialValidTill
                 }
             })
         }
