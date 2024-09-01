@@ -106,6 +106,35 @@ async function handleCreateOrder(req, res) {
     }
 }
 
+async function handleCreateRazorPaySubscription(req, res) {
+    try {
+        const subOptions = {
+            plan_id: process.env.RAZOR_PAY_TEST_PLAN_ID,
+            customer_notify: 1,
+            total_count: 12,
+        }
+
+        const createdRazorPaySubscription = await razorpay.subscriptions.create(subOptions);
+        if (!createdRazorPaySubscription) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not subscribe to plan"
+            })
+        }
+
+        return res.status(201).json({
+            success: true,
+            data: createdRazorPaySubscription
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error
+        })
+    }
+}
+
 async function handleVerifyOrder(req, res) {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
@@ -200,5 +229,6 @@ module.exports = {
     handleCreateSubscription,
     handleRenewSubcription,
     handleVerifyOrder,
-    handleCreateOrder
+    handleCreateOrder,
+    handleCreateRazorPaySubscription
 }
