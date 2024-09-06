@@ -1,5 +1,5 @@
 const express = require("express")
-const { handleSignUp, handleLogin, handleUpdateUser, handleGetUserById, handleGetUserByType, handleVerifyOtp, handleSendOtpForResetPassword, handleVerifyOtpForResetPassword, handleResetPassword } = require("../controllers/user")
+const { handleSignUp, handleLogin, handleUpdateUser, handleGetUserById, handleGetUserByType, handleVerifyOtp, handleSendOtpForResetPassword, handleVerifyOtpForResetPassword, handleResetPassword, handleDeleteUser } = require("../controllers/user")
 const { handleGetUserByAuthToken } = require("../middlewares/auth")
 const axios = require("axios")
 const router = express.Router()
@@ -13,6 +13,7 @@ router.post("/login", handleLogin)
 router.get("/", handleGetUserByAuthToken, handleGetUserById)
 router.get("/:userType", handleGetUserByAuthToken, handleGetUserByType)
 router.patch("/", handleGetUserByAuthToken, handleUpdateUser)
+router.delete("/", handleGetUserByAuthToken, handleDeleteUser)
 
 router.post('/send-otp', async (req, res) => {
     const { phoneNumber, otp } = req.body;
@@ -43,6 +44,5 @@ router.post('/send-otp', async (req, res) => {
         res.status(500).send(error.toString());
     }
 });
-
 
 module.exports = router

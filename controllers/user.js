@@ -460,6 +460,21 @@ async function handleGetUserByType(req, res) {
     }
 }
 
+async function handleDeleteUser(req, res) {
+    try {
+        await user.findByIdAndDelete(req.data._id)
+        return res.status(200).json({
+            success: true,
+            message: "Your account has been deleted"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
 
 module.exports = {
     handleSignUp,
@@ -470,5 +485,6 @@ module.exports = {
     handleVerifyOtp,
     handleSendOtpForResetPassword,
     handleVerifyOtpForResetPassword,
-    handleResetPassword
+    handleResetPassword,
+    handleDeleteUser
 }
