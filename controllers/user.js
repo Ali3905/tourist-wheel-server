@@ -10,7 +10,7 @@ const { sendSms } = require("../utils/sms")
 
 async function handleSignUp(req, res) {
     try {
-        const { userName, companyName, mobileNumber, whatsappNumber, state, city, email, password, type } = req.body
+        const { userName, mobileNumber, whatsappNumber, state, city, email, password, type } = req.body
         if (!userName || !companyName || !mobileNumber || !email || !password || !type) {
             return res.status(400).json({
                 success: false,
@@ -41,7 +41,7 @@ async function handleSignUp(req, res) {
                 message: "Password must contain atleast 5 characters"
             })
         }
-        if (!["ADMIN", "AGENCY"].includes(type)) {
+        if (!["ADMIN", "AGENCY", "CUSTOMER"].includes(type)) {
             return res.status(400).json({
                 success: false,
                 message: "Provide a valid user type"
