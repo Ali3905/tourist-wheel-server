@@ -10,8 +10,8 @@ const { sendSms } = require("../utils/sms")
 
 async function handleSignUp(req, res) {
     try {
-        const { userName, mobileNumber, whatsappNumber, state, city, email, password, type } = req.body
-        if (!userName || !companyName || !mobileNumber || !email || !password || !type) {
+        const { userName, companyName, mobileNumber, whatsappNumber, state, city, email, password, type } = req.body
+        if (!userName || !mobileNumber || !email || !password || !type) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
