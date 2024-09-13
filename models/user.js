@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema({
     },
     companyName: {
         type: String,
-        required: true
+        // required: true
     },
     mobileNumber: {
         type: String,
@@ -33,7 +33,7 @@ const userSchema = mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["ADMIN", "AGENCY"]
+        enum: ["ADMIN", "AGENCY", "CUSTOMER"]
     },
     drivers: {
         type: [{ type: mongoose.Types.ObjectId, ref: "driver" }],
@@ -100,8 +100,11 @@ userSchema.set("discriminatorKey", "type")
 const user = mongoose.model("user", userSchema);
 const agency = user.discriminator("AGENCY", agencySchema)
 const admin = user.discriminator("ADMIN", userSchema)
+const customer = user.discriminator("CUSTOMER", userSchema)
 
 module.exports = {
     user,
-    agency
+    agency,
+    admin,
+    customer
 }
