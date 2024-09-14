@@ -5,7 +5,7 @@ const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("../midd
 const router = express.Router()
 
 router.post("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), upload.fields([{ name: "bill", maxCount: 5 }]), handleCreateService)
-router.get("/", handleGetUserByAuthToken, handleAuthorizeUserByRole("AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"), handleGetAllServices)
+router.get("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), handleGetAllServices)
 router.delete("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), handleDeleteService)
 router.patch("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), upload.fields([{ name: "bill", maxCount: 5 }]), handleUpdateService)
 
