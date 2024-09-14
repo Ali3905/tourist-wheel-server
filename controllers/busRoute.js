@@ -387,6 +387,30 @@ async function handleGetDriverBusRoutes(req, res) {
     }
 }
 
+
+async function handleGetAllAgenciesBusRoutes(req, res) {
+    try {
+        const foundRoutes = await busRoute.find({}).populate("vehicle primaryDriver secondaryDriver cleaner").sort({ createdAt: -1 })
+        if (!foundRoutes) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not fetch the bus routes"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: foundRoutes
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleCreateBusRoute,
     handleGetAllBusRoutes,
@@ -397,5 +421,6 @@ module.exports = {
     handleStartBusRoute,
     handleCompleteBusRoute,
     handleGetDriverBusRoutes,
-    handleToggleIsActive
+    handleToggleIsActive,
+    handleGetAllAgenciesBusRoutes
 }

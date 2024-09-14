@@ -1,5 +1,5 @@
 const express = require("express")
-const { handleCreateBusRoute, handleGetAllBusRoutes, handleFinalizeBusRoute, handleDeleteBusRoute, handleStartBusRoute, handleUpdateBusRoute, handleGetDriverBusRoutes, handleCompleteBusRoute, handleToggleIsActive } = require("../controllers/busRoute")
+const { handleCreateBusRoute, handleGetAllBusRoutes, handleFinalizeBusRoute, handleDeleteBusRoute, handleStartBusRoute, handleUpdateBusRoute, handleGetDriverBusRoutes, handleCompleteBusRoute, handleToggleIsActive, handleGetAllAgenciesBusRoutes } = require("../controllers/busRoute")
 const { upload } = require("../middlewares/upload")
 const router = express.Router()
 
@@ -14,6 +14,7 @@ router.patch("/", upload.fields([{ name: "busPhotos", maxCount: 5 }, { name: "se
 router.patch("/start", upload.fields([{ name: "beforeJourneyPhotos", maxCount: 5 }]), handleStartBusRoute)
 router.patch("/complete", upload.fields([, { name: "afterJourneyPhotos", maxCount: 5 }]), handleCompleteBusRoute)
 router.get("/driver/:driverId", handleGetDriverBusRoutes)
+router.get("/all", handleGetAllAgenciesBusRoutes)
 
 
 module.exports = router

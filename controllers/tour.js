@@ -47,7 +47,7 @@ async function handleGetAllTours(req, res) {
                 message: "Could not find tours of this agency"
             })
         }
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: foundUser.tours
         })
@@ -141,11 +141,33 @@ async function handleGetTourByID(req, res) {
     }
 }
 
+async function handleGetAllAgenciesTours(req, res) {
+    try {
+        const foundTours = await tour.find({}).sort({ createdAt: -1 })
+        if (!foundTours) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not find tours"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: foundTours
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     handleCreateTour,
     handleGetAllTours,
     handleUpdateTour,
     handleDeleteTour,
-    handleGetTourByID
+    handleGetTourByID,
+    handleGetAllAgenciesTours
 }
