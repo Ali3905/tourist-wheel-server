@@ -1,5 +1,5 @@
 const tour = require("../models/tour")
-const { user } = require("../models/user")
+const { user, customer } = require("../models/user")
 
 async function handleCreateTour(req, res) {
     try {
@@ -162,6 +162,67 @@ async function handleGetAllAgenciesTours(req, res) {
     }
 }
 
+async function handleAddTourToFavourite(req, res) {
+    try {
+        const { tourId } = req.query
+        if (!tourid) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide the ID of tour to add to favourites"
+            })
+        }
+        const foundCustomer = await customer.findById(req.data._id)
+        if (!foundCustomer) {
+            return res.status(400).json({
+                success: false,
+                message: "Login creds not valid"
+            })
+        }
+        const isAlreadyInFavourites = foundCustomer.favouriteTours.filter((ele) => {
+            return ele._id.toString() === tourId
+        })
+        if (isAlreadyInFavourites.length > 0) {
+            return res.status(200).json({
+                success: true,
+                message: "Tour already Favourite"
+            })
+        }
+        foundCustomer.favouriteTours.push(tourId)
+        await foundCustomer.save()
+
+        return res.status(200).json({
+            success: true,
+            data: foundCustomer.favouriteTours
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleGetAllFavouriteTours(req, res) {
+    try {
+        const foundUser = await customer.findById(req.data._id).populate("favouriteTours")
+        if (!foundUser.favouriteTours) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not get the favourite tours"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: foundUser.favouriteTours
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     handleCreateTour,
@@ -169,5 +230,7 @@ module.exports = {
     handleUpdateTour,
     handleDeleteTour,
     handleGetTourByID,
-    handleGetAllAgenciesTours
+    handleGetAllAgenciesTours,
+    handleAddTourToFavourite,
+    handleGetAllFavouriteTours
 }

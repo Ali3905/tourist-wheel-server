@@ -3,11 +3,11 @@ const { handleGetAllTechnicians, handleCreateTechnician, handleDeleteTechnician,
 const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("../middlewares/auth")
 const router = express.Router()
 
-router.post("/", handleCreateTechnician)
+router.post("/",handleGetUserByAuthToken, handleCreateTechnician)
 router.get("/", handleGetAllTechnicians)
-router.get("/:technicianId", handleGetTechnicianById)
-router.delete("/", handleDeleteTechnician)
-router.patch("/", handleUpdateTechnician)
+router.get("/:technicianId",handleGetUserByAuthToken, handleGetTechnicianById)
+router.delete("/",handleGetUserByAuthToken, handleDeleteTechnician)
+router.patch("/",handleGetUserByAuthToken, handleUpdateTechnician)
 router.patch("/rating", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "MANAGER", "OFFICE-BOY"]), handleGiveRating)
 
 module.exports = router

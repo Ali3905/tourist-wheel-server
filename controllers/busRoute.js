@@ -1,7 +1,7 @@
 const busRoute = require("../models/busRoute");
 const cleaner = require("../models/cleaner");
 const driver = require("../models/driver");
-const { user, agency } = require("../models/user");
+const { user, agency, customer } = require("../models/user");
 const { vehicle } = require("../models/vehicle");
 const { formatTime } = require("../utils/others");
 const { sendSms } = require("../utils/sms");
@@ -411,6 +411,70 @@ async function handleGetAllAgenciesBusRoutes(req, res) {
     }
 }
 
+
+async function handleBusRouteAddToFavourite(req, res) {
+    try {
+        const { routeId } = req.query
+        if (!routeId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide the ID of route to add to favourites"
+            })
+        }
+        const foundCustomer = await customer.findById(req.data._id)
+        if (!foundCustomer) {
+            return res.status(400).json({
+                success: false,
+                message: "Login creds not valid"
+            })
+        }
+        const isAlreadyInFavourites = foundCustomer.favouriteBusRoutes.filter((ele) => {
+            return ele._id.toString() === routeId 
+        })
+        if (isAlreadyInFavourites.length > 0) {
+            return res.status(200).json({
+                success : true,
+                message : "Route already Favourite"
+            })
+        }
+        foundCustomer.favouriteBusRoutes.push(routeId)
+        await foundCustomer.save()
+
+        return res.status(200).json({
+            success: true,
+            data: foundCustomer.favouriteBusRoutes
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleGetAllFavouriteBusRoutes(req, res) {
+    try {
+        const foundUser = await customer.findById(req.data._id).populate("favouriteBusRoutes")
+        if (!foundUser.foundBusRoutes) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not get the favourite tours"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: foundUser.favouriteBusRoutes
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+
+
 module.exports = {
     handleCreateBusRoute,
     handleGetAllBusRoutes,
@@ -422,5 +486,7 @@ module.exports = {
     handleCompleteBusRoute,
     handleGetDriverBusRoutes,
     handleToggleIsActive,
-    handleGetAllAgenciesBusRoutes
+    handleGetAllAgenciesBusRoutes,
+    handleBusRouteAddToFavourite,
+    handleGetAllFavouriteBusRoutes
 }

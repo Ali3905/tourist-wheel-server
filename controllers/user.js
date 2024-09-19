@@ -1,10 +1,11 @@
-const { user } = require("../models/user")
+const { user, customer } = require("../models/user")
 const driver = require("../models/driver")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const employee = require("../models/employee")
 const axios = require("axios")
 const { sendSms } = require("../utils/sms")
+const data = require("../data")
 
 
 
@@ -470,7 +471,7 @@ async function handleDeleteUser(req, res) {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message
         })
     }
 }

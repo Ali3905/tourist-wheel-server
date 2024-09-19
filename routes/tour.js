@@ -1,13 +1,16 @@
 const express = require("express")
-const { handleCreateTour, handleGetAllTours, handleUpdateTour, handleDeleteTour, handleGetTourByID, handleGetAllAgenciesTours } = require("../controllers/tour")
+const { handleCreateTour, handleGetAllTours, handleUpdateTour, handleDeleteTour, handleGetTourByID, handleGetAllAgenciesTours, handleAddTourToFavourite, handleGetAllFavouriteTours } = require("../controllers/tour")
 const { upload } = require("../middlewares/upload")
+const { handleAuthorizeUserByRole, handleGetUserByAuthToken } = require("../middlewares/auth")
 const router = express.Router()
 
-router.post("/", upload.fields([{ name: "photos", maxCount: 5 }]), handleCreateTour)
-router.get("/", handleGetAllTours)
-router.get("/:tourId", handleGetTourByID)
-router.patch("/", upload.fields([{ name: "photos", maxCount: 5 }]), handleUpdateTour)
-router.delete("/", handleDeleteTour)
+router.post("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), upload.fields([{ name: "photos", maxCount: 5 }]), handleCreateTour)
+router.get("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), handleGetAllTours)
+router.get("/:tourId", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), handleGetTourByID)
+router.patch("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), upload.fields([{ name: "photos", maxCount: 5 }]), handleUpdateTour)
+router.delete("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), handleDeleteTour)
 router.get("/agency/all", handleGetAllAgenciesTours)
+router.patch("/addToFavourite", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleAddTourToFavourite)
+router.get("/favouriteTours", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleGetAllFavouriteTours)
 
 module.exports = router

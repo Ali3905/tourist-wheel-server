@@ -15,6 +15,7 @@ router.get("/:userType", handleGetUserByAuthToken, handleGetUserByType)
 router.patch("/", handleGetUserByAuthToken, handleUpdateUser)
 router.delete("/", handleGetUserByAuthToken, handleDeleteUser)
 
+
 router.post('/send-otp', async (req, res) => {
     const { phoneNumber, otp } = req.body;
 

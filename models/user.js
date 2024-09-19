@@ -95,12 +95,23 @@ const agencySchema = mongoose.Schema({
     // razorpayCustomerId: String,
 })
 
+const customerSchema = mongoose.Schema({
+    favouriteTours: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "tour" }],
+        default: [],
+    },
+    favouriteBusRoutes: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "busRoute" }],
+        default: [],
+    }
+})
+
 userSchema.set("discriminatorKey", "type")
 
 const user = mongoose.model("user", userSchema);
 const agency = user.discriminator("AGENCY", agencySchema)
 const admin = user.discriminator("ADMIN", userSchema)
-const customer = user.discriminator("CUSTOMER", userSchema)
+const customer = user.discriminator("CUSTOMER", customerSchema)
 
 module.exports = {
     user,

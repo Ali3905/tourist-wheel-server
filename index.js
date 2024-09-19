@@ -80,19 +80,19 @@ app.post("/addBulkTechnicians", async (req, res) => {
 
 
 // Routes
-app.use("/api/driver", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), driverRoute);
+app.use("/api/driver", driverRoute);
 app.use("/api/cleaner", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), cleanerRoute);
 app.use("/api/employee", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), employeeRoute);
 app.use("/api/user", authRoute);
-app.use("/api/technician", handleGetUserByAuthToken, technicianRoute);
+app.use("/api/technician", technicianRoute);
 app.use("/api/dailyRoute", dailyRouteRoute);
-app.use("/api/vehicle", handleGetUserByAuthToken, vehicleRoute);
+app.use("/api/vehicle", vehicleRoute);
 app.use("/api/packageBooking", packageBookingRoute)
 app.use("/api/service", serviceRoute);
 app.use("/api/subscription", subscriptionRoute);
 app.use("/api/emptyVehicle", emptyVehicleRoute);
-app.use("/api/busRoute", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), busRouteRoute);
-app.use("/api/tour", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), tourRoute)
+app.use("/api/busRoute", busRouteRoute);
+app.use("/api/tour", tourRoute)
 
 
 app.listen(PORT, () => {
