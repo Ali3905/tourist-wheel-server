@@ -204,6 +204,8 @@ async function handleAddTourToFavourite(req, res) {
 
 async function handleGetAllFavouriteTours(req, res) {
     try {
+        console.log("herer");
+        
         const foundUser = await customer.findById(req.data._id).populate("favouriteTours")
         if (!foundUser.favouriteTours) {
             return res.status(400).json({
