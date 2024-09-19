@@ -165,7 +165,7 @@ async function handleGetAllAgenciesTours(req, res) {
 async function handleAddTourToFavourite(req, res) {
     try {
         const { tourId } = req.query
-        if (!tourid) {
+        if (!tourId) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide the ID of tour to add to favourites"
