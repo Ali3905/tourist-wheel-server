@@ -455,10 +455,10 @@ async function handleBusRouteAddToFavourite(req, res) {
 async function handleGetAllFavouriteBusRoutes(req, res) {
     try {
         const foundUser = await customer.findById(req.data._id).populate("favouriteBusRoutes")
-        if (!foundUser.foundBusRoutes) {
+        if (!foundUser.favouriteBusRoutes) {
             return res.status(400).json({
                 success: false,
-                message: "Could not get the favourite tours"
+                message: "Could not get the favourite bus routes"
             })
         }
         return res.status(200).json({

@@ -11,7 +11,7 @@ router.patch("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY",
 router.delete("/", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), handleDeleteTour)
 router.get("/agency/all", handleGetAllAgenciesTours)
 router.patch("/addToFavourite", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleAddTourToFavourite)
-router.get("/agency/favouriteTours", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleGetAllFavouriteTours)
+router.get("/customer/favouriteTours", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleGetAllFavouriteTours)
 router.delete("/removeFromFavourite", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleRemoveTourFromFavourite)
 
 module.exports = router
