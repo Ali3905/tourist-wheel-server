@@ -29,7 +29,7 @@ async function handleCreateBusRoute(req, res) {
         const { vehicleNo, officeAddress, discount, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement } = req.body
         const foundVehicle = await vehicle.findOne({ number: vehicleNo })
         const createdBusRoute = await busRoute.create({
-            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement, status: "CREATED" 
+            vehicle: foundVehicle, officeAddress, discount, agencyName: foundUser.companyName, departurePlace, destinationPlace, departureTime, arrivalTime, pickupPoint, dropoffPoint, mobileNumbers, ticketFare, amenities, doesCarryTwoWheelers, doesProvideCourierService, doesBookTrainTickets, phonepeName, phonepeNumber, QR, seatingArrangement, status: "CREATED"
         })
         // await user.findByIdAndUpdate(req.data._id, { $push: { busRoutes: createdBusRoute } }, { new: true })
         foundUser.busRoutes.push(createdBusRoute)
@@ -225,8 +225,8 @@ async function handleStartBusRoute(req, res) {
         }
 
         const foundRoute = await busRoute.findById(routeId)
-        if(!foundRoute) {
-             return res.status(400).json({
+        if (!foundRoute) {
+            return res.status(400).json({
                 success: false,
                 message: "Could not find the route with this id"
             })
@@ -429,12 +429,12 @@ async function handleBusRouteAddToFavourite(req, res) {
             })
         }
         const isAlreadyInFavourites = foundCustomer.favouriteBusRoutes.filter((ele) => {
-            return ele._id.toString() === routeId 
+            return ele._id.toString() === routeId
         })
         if (isAlreadyInFavourites.length > 0) {
             return res.status(200).json({
-                success : true,
-                message : "Route already Favourite"
+                success: true,
+                message: "Route already Favourite"
             })
         }
         foundCustomer.favouriteBusRoutes.push(routeId)
@@ -473,6 +473,39 @@ async function handleGetAllFavouriteBusRoutes(req, res) {
     }
 }
 
+async function handleBusRouteRemoveFromFavourite(req, res) {
+    try {
+        const { routeId } = req.query
+        if (!routeId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide the ID of route to add to favourites"
+            })
+        }
+        const foundCustomer = await customer.findById(req.data._id)
+        if (!foundCustomer) {
+            return res.status(400).json({
+                success: false,
+                message: "Login creds not valid"
+            })
+        }
+        const updatedFavourites = foundCustomer.favouriteBusRoutes.filter((route) => {
+            return route._id.toString() !== routeId
+        })
+        foundCustomer.favouriteBusRoutes = updatedFavourites
+        await foundCustomer.save()
+
+        return res.status(200).json({
+            success: true,
+            data: foundCustomer.favouriteBusRoutes
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
 
 
 module.exports = {
@@ -488,5 +521,6 @@ module.exports = {
     handleToggleIsActive,
     handleGetAllAgenciesBusRoutes,
     handleBusRouteAddToFavourite,
-    handleGetAllFavouriteBusRoutes
+    handleGetAllFavouriteBusRoutes,
+    handleBusRouteRemoveFromFavourite
 }

@@ -1,5 +1,5 @@
 const express = require("express")
-const { handleCreateBusRoute, handleGetAllBusRoutes, handleFinalizeBusRoute, handleDeleteBusRoute, handleStartBusRoute, handleUpdateBusRoute, handleGetDriverBusRoutes, handleCompleteBusRoute, handleToggleIsActive, handleGetAllAgenciesBusRoutes, handleBusRouteAddToFavourite, handleGetAllFavouriteBusRoutes } = require("../controllers/busRoute")
+const { handleCreateBusRoute, handleGetAllBusRoutes, handleFinalizeBusRoute, handleDeleteBusRoute, handleStartBusRoute, handleUpdateBusRoute, handleGetDriverBusRoutes, handleCompleteBusRoute, handleToggleIsActive, handleGetAllAgenciesBusRoutes, handleBusRouteAddToFavourite, handleGetAllFavouriteBusRoutes, handleBusRouteRemoveFromFavourite } = require("../controllers/busRoute")
 const { upload } = require("../middlewares/upload")
 const { handleAuthorizeUserByRole, handleGetUserByAuthToken } = require("../middlewares/auth")
 const router = express.Router()
@@ -18,6 +18,7 @@ router.get("/driver/:driverId", handleGetUserByAuthToken, handleAuthorizeUserByR
 router.get("/all", handleGetAllAgenciesBusRoutes)
 router.patch("/addToFavourite", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleBusRouteAddToFavourite)
 router.get("/favouriteBusRoutes", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleGetAllFavouriteBusRoutes)
+router.delete("/removeFromFavourite", handleGetUserByAuthToken, handleAuthorizeUserByRole(["CUSTOMER"]), handleBusRouteRemoveFromFavourite)
 
 
 module.exports = router
