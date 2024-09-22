@@ -331,7 +331,7 @@ async function handleAddDocuments(req, res) {
                 message: "Provide the ID of vehicle to update"
             })
         }
-        if (!RC || !permit || !insurance || !fitness || !tax || !PUC) {
+        if (!RC || !insurance || !PUC) {
             return res.status(400).json({
                 success: false,
                 message: "Provide all the documents of vehicle"
