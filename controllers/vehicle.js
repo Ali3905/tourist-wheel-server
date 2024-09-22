@@ -102,7 +102,7 @@ async function handleGetAllVehiclesByVehicleType(req, res) {
 
 async function handleGetAllVehicles(req, res) {
     try {
-        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY") {
+        if (req.data.role === "AGENCY" || "MANAGER" || "OFFICE-BOY" || "CUSTOMER") {
             const foundvehicles = await user.findById(req.data._id).populate({
                 path: "vehicles",
                 options: { sort: { updatedAt: -1 } }

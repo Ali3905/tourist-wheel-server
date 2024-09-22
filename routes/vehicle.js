@@ -8,7 +8,7 @@ router.post("/",handleGetUserByAuthToken, upload.fields([{ name: "photos", maxCo
 router.get("/:vehicleType",handleGetUserByAuthToken, handleGetAllVehiclesByVehicleType)
 router.get("/purpose/RENT", handleGetRentVehicles)
 router.get("/purpose/SELL", handleGetSellVehicles)
-router.get("/", handleGetAllVehicles)
+router.get("/", handleGetUserByAuthToken, handleGetAllVehicles)
 router.get("/all/photos",handleGetUserByAuthToken, handleGetAllVehiclesImages)
 router.get("/id/:vehicleId",handleGetUserByAuthToken, handleGetVehicleById)
 router.delete("/",handleGetUserByAuthToken, handleDeleteVehicle),
