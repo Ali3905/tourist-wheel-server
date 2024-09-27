@@ -56,6 +56,9 @@ const userSchema = mongoose.Schema({
     busRoutes: {
         type: [{ type: mongoose.Types.ObjectId, ref: "busRoute" }],
     },
+    ticketRequests: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "ticketRequest" }]
+    },
     packageBookings: {
         type: [{ type: mongoose.Types.ObjectId, ref: "packageBooking" }],
     },
@@ -92,7 +95,6 @@ const agencySchema = mongoose.Schema({
         ref: 'subscription',
     },
     trialValidTill: Date,
-    // razorpayCustomerId: String,
 })
 
 const customerSchema = mongoose.Schema({

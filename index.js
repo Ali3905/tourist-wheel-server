@@ -18,6 +18,7 @@ const subscriptionRoute = require("./routes/subscription")
 const emptyVehicleRoute = require("./routes/emptyVehicle")
 const busRouteRoute = require("./routes/busRoute")
 const tourRoute = require("./routes/tour")
+const ticketRequestRoute = require("./routes/ticketRequest")
 
 const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("./middlewares/auth")
 const { connectToMongo } = require("./connections")
@@ -78,7 +79,6 @@ app.post("/addBulkTechnicians", async (req, res) => {
     }
 })
 
-
 // Routes
 app.use("/api/driver", driverRoute);
 app.use("/api/cleaner", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), cleanerRoute);
@@ -93,6 +93,7 @@ app.use("/api/subscription", subscriptionRoute);
 app.use("/api/emptyVehicle", emptyVehicleRoute);
 app.use("/api/busRoute", busRouteRoute);
 app.use("/api/tour", tourRoute)
+app.use("/api/ticketRequest", ticketRequestRoute)
 
 
 app.listen(PORT, () => {
