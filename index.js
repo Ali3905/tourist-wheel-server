@@ -24,44 +24,23 @@ const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("./middl
 const { connectToMongo } = require("./connections")
 const technician = require("./models/technician")
 
+// Connections
 const PORT = process.env.PORT || 5000
 const app = express()
 connectToMongo(process.env.MONGO_URL)
     .then(console.log("Mongo Connected"))
     .catch(err => console.log(err.message))
 
-
+// Middlewares
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())
-
-const SMARTPING_API_KEY = 'your-smartping-api-key';
-const SMARTPING_API_URL = 'https://api.smartping.io/send-otp';
 
 // For Testing
 app.get("/", async (req, res) => {
     res.send("Home page of tourist wheel")
 })
 
-app.post('/send-otp', async (req, res) => {
-    const { phoneNumber } = req.body;
-
-    try {
-        const response = await axios.post(SMARTPING_API_URL, {
-            apiKey: SMARTPING_API_KEY,
-            phone: phoneNumber
-        });
-
-        if (response.data.success) {
-            res.status(200).json({ message: 'OTP sent successfully.' });
-        } else {
-            res.status(500).json({ message: 'Failed to send OTP.' });
-        }
-    } catch (error) {
-        console.error('Error sending OTP:', error);
-        res.status(500).json({ message: 'Error sending OTP.' });
-    }
-});
 
 app.post("/addBulkTechnicians", async (req, res) => {
     try {

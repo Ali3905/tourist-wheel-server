@@ -33,7 +33,7 @@ async function handleCreateEmployee(req, res) {
             })
         }
 
-        if (!["MANAGER", "CLEANER", "OFFICE-BOY", "ACCOUNTANT", "TELECALLER"].includes(employeeType)) {
+        if (!["MANAGER", "CLEANER", "OFFICE-BOY", "ACCOUNTANT", "TELECALLER", "ADMINISTRATOR"].includes(employeeType)) {
             return res.status(400).json({
                 success: false,
                 message: "Provide a valid employee type"

@@ -306,7 +306,7 @@ async function handleLogin(req, res) {
                 })
             }
             const foundAgency = await user.findOne({ employees: foundEmployee._id })
-            if (foundEmployee && (foundEmployee.employeeType === "MANAGER" || foundEmployee.employeeType === "OFFICE-BOY")) {
+            if (foundEmployee && (foundEmployee.employeeType === "MANAGER" || foundEmployee.employeeType === "OFFICE-BOY" || foundEmployee.employeeType === "ADMINISTRATOR")) {
                 const payload = {
                     _id: foundAgency._id,
                     employeeId: foundEmployee._id,
