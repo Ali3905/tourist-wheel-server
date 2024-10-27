@@ -16,7 +16,7 @@ const employeeSchema = mongoose.Schema({
 
     employeeType: {
         type: String,
-        enum: ["MANAGER", "CLEANER", "OFFICE-BOY", "ACCOUNTANT", "TELECALLER", "ADMINISTRATOR"]
+        enum: ["MANAGER", "CLEANER", "OFFICE-BOY", "ACCOUNTANT", "TELECALLER", "ADMINISTRATOR", "HR", "BPO", "SALES-EXECUTIVE", "DIGITAL-MARKETER", "MARKETING-EXECUTIVE"]
     },
     state: {
         type: String,
