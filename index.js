@@ -61,7 +61,7 @@ app.post("/addBulkTechnicians", async (req, res) => {
 // Routes
 app.use("/api/driver", driverRoute);
 app.use("/api/cleaner", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), cleanerRoute);
-app.use("/api/employee", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER"]), employeeRoute);
+app.use("/api/employee", handleGetUserByAuthToken, handleAuthorizeUserByRole(["AGENCY", "ADMIN", "DRIVER", "MANAGER", "OFFICE-BOY", "CUSTOMER", "HR"]), employeeRoute);
 app.use("/api/user", authRoute);
 app.use("/api/technician", technicianRoute);
 app.use("/api/dailyRoute", dailyRouteRoute);
