@@ -166,10 +166,10 @@ async function handleUpdateDriver(req, res) {
                 message: "Provide the updated driver"
             })
         }
-        await driver.findByIdAndUpdate(driverId, req.body)
+        const updatedDriver = await driver.findByIdAndUpdate(driverId, req.body)
         return res.status(200).json({
             success: true,
-            message: "Driver updated",
+            data: updatedDriver
         })
     } catch (error) {
         return res.status(500).json({
