@@ -15,9 +15,9 @@ async function handleCreateTour(req, res) {
                 }
             }
         }
-        const { name, officeAddress, location, primaryMobileNumber, secondaryMobileNumber, photos } = req.body
+        const { name, location, departureDate, arrivalDate, description, amenities, travellingWith, lastDateToBook, experience, mobileNumbers, officeAddress, price, photos } = req.body;
         const foundAgency = await user.findById(req.data._id)
-        const createdTour = await tour.create({ name, officeAddress, location, primaryMobileNumber, secondaryMobileNumber, agencyName: foundAgency.companyName, photos })
+        const createdTour = await tour.create({ name, location, departureDate, arrivalDate, description, amenities, travellingWith, lastDateToBook, experience, mobileNumbers, officeAddress, price, photos, agencyName: foundAgency.companyName })
 
         foundAgency.tours.push(createdTour)
         await foundAgency.save()
@@ -150,10 +150,29 @@ async function handleGetAllAgenciesTours(req, res) {
                 message: "Could not find tours"
             })
         }
+        const customer = await user.findById(req.data._id)
+        if (!customer) {
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found",
+            });
+        }
+
+        // Default to an empty array if favouriteTours is undefined
+        const favoriteTourIds = new Set((customer?.favouriteTours || []).map(tour => tour.toString()));
+
+
+
+        // Map tours and add `isFavorite` field based on the presence in customer's favorite tours
+        const toursWithFavorite = foundTours.map(tour => ({
+            ...tour.toObject(),
+            isFavorite: favoriteTourIds.has(tour._id.toString())
+        }));
+
         return res.status(200).json({
             success: true,
-            data: foundTours
-        })
+            data: toursWithFavorite
+        });
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -171,7 +190,7 @@ async function handleAddTourToFavourite(req, res) {
                 message: "Please provide the ID of tour to add to favourites"
             })
         }
-        const foundCustomer = await customer.findById(req.data._id)
+        const foundCustomer = await user.findById(req.data._id)
         if (!foundCustomer) {
             return res.status(400).json({
                 success: false,
@@ -204,8 +223,6 @@ async function handleAddTourToFavourite(req, res) {
 
 async function handleGetAllFavouriteTours(req, res) {
     try {
-        console.log("herer");
-
         const foundUser = await customer.findById(req.data._id).populate("favouriteTours")
         if (!foundUser.favouriteTours) {
             return res.status(400).json({

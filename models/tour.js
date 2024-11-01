@@ -1,13 +1,35 @@
 const mongoose = require("mongoose")
 
+// const tourSchema = mongoose.Schema({
+//     name: String,
+//     location: String,
+//     officeAddress: String,
+//     agencyName: String,
+//     primaryMobileNumber: String,
+//     secondaryMobileNumber: String,
+//     photos: [String],
+// }, { timestamps: true })
+
 const tourSchema = mongoose.Schema({
     name: String,
     location: String,
-    officeAddress: String,
     agencyName: String,
-    primaryMobileNumber: String,
-    secondaryMobileNumber: String,
+    departureDate: Date,
+    arrivalDate: Date,
+    description: String,
+    amenities: {
+        type: [String],
+    },
+    travellingWith: {
+        type: [String],
+    },
+    lastDateToBook: Date,
+    experience: String,
+    mobileNumbers: [String],
+    officeAddress: String,
+    price: Number,
     photos: [String],
+
 }, { timestamps: true })
 
 const tour = mongoose.model("tour", tourSchema)
