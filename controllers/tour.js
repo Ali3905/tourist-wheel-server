@@ -15,9 +15,9 @@ async function handleCreateTour(req, res) {
                 }
             }
         }
-        const { name, location, departureDate, arrivalDate, description, amenities, travellingWith, lastDateToBook, experience, mobileNumbers, officeAddress, price, photos } = req.body;
+        const { name, location, departureDate, arrivalDate, description, amenities, travellingWith, lastDateToBook, experience, mobileNumbers, acceptedCities, officeAddress, price, photos } = req.body;
         const foundAgency = await user.findById(req.data._id)
-        const createdTour = await tour.create({ name, location, departureDate, arrivalDate, description, amenities, travellingWith, lastDateToBook, experience, mobileNumbers, officeAddress, price, photos, agencyName: foundAgency.companyName })
+        const createdTour = await tour.create({ name, location, departureDate, arrivalDate, description, amenities, travellingWith, lastDateToBook, experience, mobileNumbers, acceptedCities, officeAddress, price, photos, agencyName: foundAgency.companyName })
 
         foundAgency.tours.push(createdTour)
         await foundAgency.save()
