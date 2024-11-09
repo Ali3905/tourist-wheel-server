@@ -31,6 +31,7 @@ const tourSchema = mongoose.Schema({
         forPerson: Number,
         forCouple: Number,
     },
+    acceptedCities: [String],
     photos: [String],
 
 }, { timestamps: true })
