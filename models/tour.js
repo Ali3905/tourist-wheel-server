@@ -27,7 +27,10 @@ const tourSchema = mongoose.Schema({
     experience: String,
     mobileNumbers: [String],
     officeAddress: String,
-    price: Number,
+    price: {
+        forPerson: Number,
+        forCouple: Number,
+    },
     photos: [String],
 
 }, { timestamps: true })
