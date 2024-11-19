@@ -36,7 +36,6 @@ const packageBookingSchema = mongoose.Schema({
 
     alternateNumber: {
         type: String,
-        required: true
     },
 
     kmStarting: {
