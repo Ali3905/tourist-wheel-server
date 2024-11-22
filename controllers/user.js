@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 const employee = require("../models/employee")
 const axios = require("axios")
 const { sendSms } = require("../utils/sms")
-const data = require("../data")
+// const data = require("../data")
 
 
 
@@ -279,9 +279,7 @@ async function handleLogin(req, res) {
         }
         const foundUser = await user.findOne({ userName })
         if (!foundUser) {
-
             const foundDriver = await driver.findOne({ mobileNumber, password })
-
             if (foundDriver) {
                 const payload = {
                     _id: foundDriver._id,
@@ -306,7 +304,7 @@ async function handleLogin(req, res) {
                 })
             }
             const foundAgency = await user.findOne({ employees: foundEmployee._id })
-            if (foundEmployee && (foundEmployee.employeeType === ("MANAGER" || "OFFICE-BOY" || "ADMINISTRATOR" || "HR" ||"BPO" ||"SALES-EXECUTIVE" ||"DIGITAL-MARKETER" ||"MARKETING-EXECUTIVE"))) {
+            if (foundEmployee && (foundEmployee.employeeType === ("MANAGER" || "OFFICE-BOY" || "ADMINISTRATOR" || "HR" || "BPO" || "SALES-EXECUTIVE" || "DIGITAL-MARKETER" || "MARKETING-EXECUTIVE"))) {
                 const payload = {
                     _id: foundAgency._id,
                     employeeId: foundEmployee._id,
@@ -361,6 +359,54 @@ async function handleLogin(req, res) {
         })
     }
 
+}
+
+async function handleCustomerLogin(req, res) {
+    try {
+        const { password, mobileNumber } = req.body
+        if (!mobileNumber || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all the fields"
+            })
+        }
+        const foundUser = await customer.findOne({ mobileNumber })
+        if (!foundUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Creds"
+            })
+        }
+        if (!foundUser.isVerified) {
+            return res.status(400).json({
+                success: false,
+                message: "Your account is not verified yet"
+            })
+        }
+        const isPasswordCorrect = await bcrypt.compare(password, foundUser.password)
+        if (!isPasswordCorrect) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide correct creds"
+            })
+        }
+        const payload = {
+            _id: foundUser._id,
+            role: foundUser.type
+        }
+
+        const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+        return res.status(200).json({
+            success: true,
+            data: foundUser,
+            authToken
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
 }
 
 async function handleGetUserById(req, res) {
@@ -487,5 +533,6 @@ module.exports = {
     handleSendOtpForResetPassword,
     handleVerifyOtpForResetPassword,
     handleResetPassword,
-    handleDeleteUser
+    handleDeleteUser,
+    handleCustomerLogin
 }
