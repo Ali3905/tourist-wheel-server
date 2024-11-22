@@ -55,7 +55,9 @@ async function handleGetAllTicketRequests(req, res){
             options: {sort: { createdAt: -1 }},
             populate: [
                 {path: "customer", model: "user"},
-                {path: "route", model: "busRoute"}
+                {path: "route", model: "busRoute", populate: "vehicle"},
+                // {path: "vehicle", model: "vehicle"}
+
             ]
         })
 
