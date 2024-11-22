@@ -3,7 +3,6 @@ const driver = require("../models/driver")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const employee = require("../models/employee")
-const axios = require("axios")
 const { sendSms } = require("../utils/sms")
 // const data = require("../data")
 
@@ -48,19 +47,30 @@ async function handleSignUp(req, res) {
                 message: "Provide a valid user type"
             })
         }
-        const alreadyUserWithThisUserName = await user.findOne({ userName })
-        const alreadyUserWithThisMobileNumber = await user.findOne({ mobileNumber })
-        if (alreadyUserWithThisUserName) {
-            return res.status(400).json({
-                success: false,
-                message: "This username is taken"
-            })
-        }
-        if (alreadyUserWithThisMobileNumber) {
-            return res.status(400).json({
-                success: false,
-                message: "This mobile number is already in use"
-            })
+        if (type !== "CUSTOMER") {
+            const alreadyUserWithThisUserName = await user.findOne({ userName })
+            const alreadyUserWithThisMobileNumber = await user.findOne({ mobileNumber })
+            if (alreadyUserWithThisUserName) {
+                return res.status(400).json({
+                    success: false,
+                    message: "This username is taken"
+                })
+            }
+            if (alreadyUserWithThisMobileNumber) {
+                return res.status(400).json({
+                    success: false,
+                    message: "This mobile number is already in use"
+                })
+            }
+        } else if (type === "CUSTOMER") {
+            const alreadyUserWithThisMobileNumber = await customer.findOne({ mobileNumber })
+            if (alreadyUserWithThisMobileNumber) {
+                return res.status(400).json({
+                    success: false,
+                    message: "This mobile number is already in use"
+                })
+            }
+
         }
         const otp = Math.floor(1000 + Math.random() * 9000).toString()
         const hashedPassword = await bcrypt.hash(password, 10)
