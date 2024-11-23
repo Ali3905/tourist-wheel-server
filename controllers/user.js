@@ -78,7 +78,14 @@ async function handleSignUp(req, res) {
                 })
             }
         } else if (type === "CUSTOMER") {
+            const alreadyUserWithThisUserName = await customer.findOne({ userName })
             const alreadyUserWithThisMobileNumber = await customer.findOne({ mobileNumber })
+            if (alreadyUserWithThisUserName) {
+                return res.status(400).json({
+                    success: false,
+                    message: "This username is taken"
+                })
+            }
             if (alreadyUserWithThisMobileNumber) {
                 return res.status(400).json({
                     success: false,
