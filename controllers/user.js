@@ -1,4 +1,4 @@
-const { user, customer } = require("../models/user")
+const { user, customer, agency, admin } = require("../models/user")
 const driver = require("../models/driver")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
@@ -47,9 +47,24 @@ async function handleSignUp(req, res) {
                 message: "Provide a valid user type"
             })
         }
-        if (type !== "CUSTOMER") {
-            const alreadyUserWithThisUserName = await user.findOne({ userName })
-            const alreadyUserWithThisMobileNumber = await user.findOne({ mobileNumber })
+        if (type === "AGENCY") {
+            const alreadyUserWithThisUserName = await agency.findOne({ userName })
+            const alreadyUserWithThisMobileNumber = await agency.findOne({ mobileNumber })
+            if (alreadyUserWithThisUserName) {
+                return res.status(400).json({
+                    success: false,
+                    message: "This username is taken"
+                })
+            }
+            if (alreadyUserWithThisMobileNumber) {
+                return res.status(400).json({
+                    success: false,
+                    message: "This mobile number is already in use"
+                })
+            }
+        if (type === "ADMIN") {
+            const alreadyUserWithThisUserName = await admin.findOne({ userName })
+            const alreadyUserWithThisMobileNumber = await admin.findOne({ mobileNumber })
             if (alreadyUserWithThisUserName) {
                 return res.status(400).json({
                     success: false,
