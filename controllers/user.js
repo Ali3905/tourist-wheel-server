@@ -62,7 +62,7 @@ async function handleSignUp(req, res) {
                     message: "This mobile number is already in use"
                 })
             }
-        if (type === "ADMIN") {
+        } else if (type === "ADMIN") {
             const alreadyUserWithThisUserName = await admin.findOne({ userName })
             const alreadyUserWithThisMobileNumber = await admin.findOne({ mobileNumber })
             if (alreadyUserWithThisUserName) {
