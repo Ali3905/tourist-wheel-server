@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const userSchema = mongoose.Schema({
     userName: {
         type: String,
-        // unique: true,
+        unique: false,
         required: true
     },
     companyName: {
