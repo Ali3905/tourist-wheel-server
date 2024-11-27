@@ -309,7 +309,7 @@ async function handleLogin(req, res) {
                 message: "Please provide all the fields"
             })
         }
-        const foundUser = await user.findOne({ userName })
+        const foundUser = await admin.findOne({ userName })
         if (!foundUser) {
             const foundDriver = await driver.findOne({ mobileNumber, password })
             if (foundDriver) {
@@ -403,6 +403,54 @@ async function handleCustomerLogin(req, res) {
             })
         }
         const foundUser = await customer.findOne({ mobileNumber })
+        if (!foundUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Creds"
+            })
+        }
+        if (!foundUser.isVerified) {
+            return res.status(400).json({
+                success: false,
+                message: "Your account is not verified yet"
+            })
+        }
+        const isPasswordCorrect = await bcrypt.compare(password, foundUser.password)
+        if (!isPasswordCorrect) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide correct creds"
+            })
+        }
+        const payload = {
+            _id: foundUser._id,
+            role: foundUser.type
+        }
+
+        const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+        return res.status(200).json({
+            success: true,
+            data: foundUser,
+            authToken
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleAgencyLogin(req, res) {
+    try {
+        const { password, userName } = req.body
+        if (!userName || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all the fields"
+            })
+        }
+        const foundUser = await agency.findOne({ userName })
         if (!foundUser) {
             return res.status(400).json({
                 success: false,
@@ -566,5 +614,6 @@ module.exports = {
     handleVerifyOtpForResetPassword,
     handleResetPassword,
     handleDeleteUser,
-    handleCustomerLogin
+    handleCustomerLogin,
+    handleAgencyLogin
 }
