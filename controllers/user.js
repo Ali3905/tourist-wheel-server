@@ -590,6 +590,12 @@ async function handleGetUserByType(req, res) {
 async function handleDeleteUser(req, res) {
     try {
         const { userName, password } = req.body
+        if (!userName || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide all the fields"
+            })
+        }
         const foundAgency = await agency.findOne({ userName })
         const isPasswordCorrect = await bcrypt.compare(password, foundAgency.password)
         if (!isPasswordCorrect) {
