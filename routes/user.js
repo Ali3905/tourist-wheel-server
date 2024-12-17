@@ -15,7 +15,7 @@ router.post("/login/AGENCY", handleAgencyLogin)
 router.get("/", handleGetUserByAuthToken, handleGetUserById)
 router.get("/:userType", handleGetUserByAuthToken, handleGetUserByType)
 router.patch("/", handleGetUserByAuthToken, handleUpdateUser)
-router.delete("/", handleGetUserByAuthToken, handleDeleteUser)
+router.delete("/", handleDeleteUser)
 
 
 router.post('/send-otp', async (req, res) => {

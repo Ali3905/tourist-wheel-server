@@ -589,7 +589,16 @@ async function handleGetUserByType(req, res) {
 
 async function handleDeleteUser(req, res) {
     try {
-        await user.findByIdAndDelete(req.data._id)
+        const { userName, password } = req.body
+        const foundAgency = await agency.findOne({ userName })
+        const isPasswordCorrect = await bcrypt.compare(password, foundAgency.password)
+        if (!isPasswordCorrect) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide correct creds"
+            })
+        }
+        await agency.findByIdAndDelete(foundAgency._id)
         return res.status(200).json({
             success: true,
             message: "Your account has been deleted"
