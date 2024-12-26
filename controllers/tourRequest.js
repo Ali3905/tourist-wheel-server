@@ -1,11 +1,11 @@
-const busRoute = require("../models/busRoute")
-const ticketRequest = require("../models/ticketsRequest")
-const { user, customer } = require("../models/user")
+const tourRequest = require("../models/tourRequest")
+const tour = require("../models/tour")
+const { user } = require("../models/user")
 
-async function handleCreateTicketRequest(req, res) {
+async function handleCreateTourRequest(req, res) {
     try {
         const { dateOfJourney, numberOfPeople, passengerGender } = req.body
-        const { routeId } = req.query
+        const { tourId } = req.query
 
         if (!dateOfJourney || !numberOfPeople || !passengerGender) {
             return res.status(400).json({
@@ -14,30 +14,30 @@ async function handleCreateTicketRequest(req, res) {
             })
         }
 
-        if (!routeId) {
+        if (!tourId) {
             return res.status(400).json({
                 success: false,
-                message: "Provide the Route ID to request ticket"
+                message: "Provide the Route ID to request tour"
             })
         }
         const foundCustomer = await user.findById(req.data._id)
-        const foundRoute = await busRoute.findById(routeId)
+        const foundTour = await tour.findById(tourId)
 
-        if (!foundRoute) {
+        if (!foundTour) {
             return res.status(400).json({
                 success: false,
-                message: "Provide a valid route ID"
+                message: "Provide a valid tour ID"
             })
         }
 
-        const createdTicketRequest = await ticketRequest.create({ dateOfJourney, numberOfPeople, passengerGender, customer: foundCustomer, route: foundRoute })
+        const createdTourRequest = await tourRequest.create({ dateOfJourney, numberOfPeople, passengerGender, customer: foundCustomer, tour: foundTour })
         const foundAgency = await user.findOne({ busRoutes: routeId })
-        foundAgency.ticketRequests.push(createdTicketRequest)
+        foundAgency.ticketRequests.push(createdTourRequest)
         await foundAgency.save()
 
         return res.status(201).json({
             success: true,
-            data: createdTicketRequest
+            data: createdTourRequest
         })
 
     } catch (error) {
@@ -48,27 +48,28 @@ async function handleCreateTicketRequest(req, res) {
     }
 }
 
-async function handleGetAllTicketRequests(req, res){
+
+async function handleGetAllTourRequests(req, res){
     try {
         const foundUser = await user.findById(req.data._id).populate({
-            path: "ticketRequests",
+            path: "tourRequests",
             options: {sort: { createdAt: -1 }},
             populate: [
                 {path: "customer", model: "user"},
-                {path: "route", model: "busRoute", populate: "vehicle"},
+                {path: "tour", model: "tour", populate: "vehicle"},
             ]
         })
 
-        if (!foundUser.ticketRequests) {
+        if (!foundUser.tourRequests) {
             return res.status(500).json({
                 success: false,
-                message: "Could not fetch the ticket requests"
+                message: "Could not fetch the tour requests"
             })
         }
 
         return res.status(200).json({
             success: true,
-            data: foundUser.ticketRequests
+            data: foundUser.tourRequests
         })
 
     } catch (error) {
@@ -79,8 +80,7 @@ async function handleGetAllTicketRequests(req, res){
     }
 }
 
-
 module.exports = {
-    handleCreateTicketRequest,
-    handleGetAllTicketRequests
+    handleCreateTourRequest,
+    handleGetAllTourRequests
 }

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const ticketRequestSchema = mongoose.Schema({
+const tourRequestSchema = mongoose.Schema({
     customer: {
         type: mongoose.Types.ObjectId,
         ref: "user",
@@ -18,13 +18,12 @@ const ticketRequestSchema = mongoose.Schema({
         type: String,
         enum: ["MALE", "FEMALE", "FAMILY"],
     },
-    route: {
+    tour: {
         type: mongoose.Types.ObjectId,
-        ref: "busRoute",
+        ref: "tour",
         required: true
     }
-
 }, { timestamps: true })
 
-const ticketRequest = mongoose.model("ticketRequest", ticketRequestSchema)
-module.exports = ticketRequest
+const tourRequest = mongoose.model("tourRequest", tourRequestSchema)
+module.exports = tourRequest

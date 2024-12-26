@@ -441,6 +441,101 @@ async function handleGetVehicleById(req, res) {
     }
 }
 
+async function handleAddVehicleToFavourite(req, res) {
+    try {
+        const { vehicleId } = req.query
+        if (!vehicleId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide the ID of vehicle to add to favourites"
+            })
+        }
+        const foundCustomer = await user.findById(req.data._id)
+        if (!foundCustomer) {
+            return res.status(400).json({
+                success: false,
+                message: "Login creds not valid"
+            })
+        }
+        const isAlreadyInFavourites = foundCustomer.favouriteVehicles.filter((ele) => {
+            return ele._id.toString() === vehicleId
+        })
+        if (isAlreadyInFavourites.length > 0) {
+            return res.status(200).json({
+                success: true,
+                message: "Vehicle already Favourite"
+            })
+        }
+        foundCustomer.favouriteVehicles.push(vehicleId)
+        await foundCustomer.save()
+
+        return res.status(200).json({
+            success: true,
+            data: foundCustomer.favouriteVehicles
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleGetAllFavouriteVehicles(req, res) {
+    try {
+        const foundUser = await customer.findById(req.data._id).populate("favouriteVehicles")
+        if (!foundUser.favouriteVehicles) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not get the favourite vehicle"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: foundUser.favouriteVehicles
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+async function handleRemoveVehicleFromFavourite(req, res) {
+    try {
+        const { vehicleId } = req.query
+        if (!vehicleId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide the ID of vehicle to add to favourites"
+            })
+        }
+        const foundCustomer = await customer.findById(req.data._id)
+        if (!foundCustomer) {
+            return res.status(400).json({
+                success: false,
+                message: "Login creds not valid"
+            })
+        }
+        const updatedFavouriteVehicles = foundCustomer.favouriteVehicles.filter((ele) => {
+            return ele._id.toString() !== vehicleId
+        })
+        foundCustomer.favouriteVehicles = updatedFavouriteVehicles
+        await foundCustomer.save()
+
+        return res.status(200).json({
+            success: true,
+            data: foundCustomer.favouriteVehicles
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     handleCreateVehicle,
     handleGetAllVehicles,
@@ -453,5 +548,8 @@ module.exports = {
     handleAddDocuments,
     handleGetVehicleById,
     handleDeleteDocuments,
-    handleGetAllVehiclesImages
+    handleGetAllVehiclesImages,
+    handleAddVehicleToFavourite,
+    handleRemoveVehicleFromFavourite,
+    handleGetAllFavouriteVehicles
 }

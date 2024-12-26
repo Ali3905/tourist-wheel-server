@@ -105,6 +105,10 @@ const customerSchema = mongoose.Schema({
     favouriteBusRoutes: {
         type: [{ type: mongoose.Types.ObjectId, ref: "busRoute" }],
         default: [],
+    },
+    favouriteVehicles: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "vehicle" }],
+        default: [],
     }
 })
 
