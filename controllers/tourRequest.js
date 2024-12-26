@@ -4,10 +4,10 @@ const { user } = require("../models/user")
 
 async function handleCreateTourRequest(req, res) {
     try {
-        const { dateOfJourney, numberOfPeople, passengerGender } = req.body
+        const { numberOfPeople, passengerGender } = req.body
         const { tourId } = req.query
 
-        if (!dateOfJourney || !numberOfPeople || !passengerGender) {
+        if (!numberOfPeople || !passengerGender) {
             return res.status(400).json({
                 success: false,
                 message: "Kindly fill all the fields"
@@ -30,7 +30,7 @@ async function handleCreateTourRequest(req, res) {
             })
         }
 
-        const createdTourRequest = await tourRequest.create({ dateOfJourney, numberOfPeople, passengerGender, customer: foundCustomer, tour: foundTour })
+        const createdTourRequest = await tourRequest.create({ numberOfPeople, passengerGender, customer: foundCustomer, tour: foundTour })
         const foundAgency = await user.findOne({ busRoutes: routeId })
         foundAgency.ticketRequests.push(createdTourRequest)
         await foundAgency.save()

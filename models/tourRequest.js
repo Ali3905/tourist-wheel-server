@@ -6,10 +6,10 @@ const tourRequestSchema = mongoose.Schema({
         ref: "user",
         required: true
     },
-    dateOfJourney: {
-        type: Date,
-        required: true      
-    },
+    // dateOfJourney: {
+    //     type: Date,
+    //     required: true      
+    // },
     numberOfPeople: {
         type: Number,
         required: true
