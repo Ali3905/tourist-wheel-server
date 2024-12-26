@@ -31,7 +31,13 @@ async function handleCreateTourRequest(req, res) {
         }
 
         const createdTourRequest = await tourRequest.create({ numberOfPeople, passengerGender, customer: foundCustomer, tour: foundTour })
-        const foundAgency = await user.findOne({ busRoutes: tourId })
+        const foundAgency = await user.findOne({ tours: tourId })
+        if(!foundAgency){
+            return res.status(400).json({
+                success: false,
+                message: "Could not find the agency"
+            })
+        }
         foundAgency.tourRequests.push(createdTourRequest)
         await foundAgency.save()
 
