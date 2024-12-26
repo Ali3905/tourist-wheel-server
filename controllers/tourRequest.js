@@ -32,7 +32,7 @@ async function handleCreateTourRequest(req, res) {
 
         const createdTourRequest = await tourRequest.create({ numberOfPeople, passengerGender, customer: foundCustomer, tour: foundTour })
         const foundAgency = await user.findOne({ busRoutes: tourId })
-        foundAgency.ticketRequests.push(createdTourRequest)
+        foundAgency.tourRequests.push(createdTourRequest)
         await foundAgency.save()
 
         return res.status(201).json({

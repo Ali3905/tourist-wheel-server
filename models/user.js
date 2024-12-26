@@ -59,6 +59,9 @@ const userSchema = mongoose.Schema({
     ticketRequests: {
         type: [{ type: mongoose.Types.ObjectId, ref: "ticketRequest" }]
     },
+    tourRequests: {
+        type: [{ type: mongoose.Types.ObjectId, ref: "tourRequest" }]
+    },
     packageBookings: {
         type: [{ type: mongoose.Types.ObjectId, ref: "packageBooking" }],
     },
