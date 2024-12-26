@@ -1,7 +1,7 @@
 const express = require("express")
 const { handleCreateVehicle, handleGetAllVehicles, handleDeleteVehicle, handleUpdateVehicle, handleUpdateTruck, handleGetAllVehiclesByVehicleType, handleGetRentVehicles, handleGetSellVehicles, handleAddDocuments, handleGetVehicleById, handleDeleteDocuments, handleGetAllVehiclesImages, handleAddVehicleToFavourite, handleGetAllFavouriteVehicles, handleRemoveVehicleFromFavourite } = require("../controllers/vehicle")
 const { upload } = require("../middlewares/upload")
-const { handleGetUserByAuthToken } = require("../middlewares/auth")
+const { handleGetUserByAuthToken, handleAuthorizeUserByRole } = require("../middlewares/auth")
 const router = express.Router()
 
 router.post("/",handleGetUserByAuthToken, upload.fields([{ name: "photos", maxCount: 5 }]), handleCreateVehicle)
