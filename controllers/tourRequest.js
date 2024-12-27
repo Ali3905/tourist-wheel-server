@@ -62,7 +62,7 @@ async function handleGetAllTourRequests(req, res){
             options: {sort: { createdAt: -1 }},
             populate: [
                 {path: "customer", model: "user"},
-                {path: "tour", model: "tour", populate: "vehicle"},
+                {path: "tour", model: "tour"},
             ]
         })
 
