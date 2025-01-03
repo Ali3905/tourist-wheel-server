@@ -24,12 +24,12 @@ const ratingMessages = [
 const subscriptionPlans = {
     MONTHLY: {
         duration: 2592000, // seconds
-        price: 300, // price in your currency
+        price: 499, // price in your currency
         id: process.env.RAZOR_PAY_MONTHLY_PLAN_ID
     },
     YEARLY: {
         duration: 31536000, // seconds
-        price: 1000, // price in your currency
+        price: 1499, // price in your currency
         id: process.env.RAZOR_PAY_YEARLY_PLAN_ID
     }
 };

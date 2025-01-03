@@ -1,6 +1,7 @@
 const { ratingMessages } = require("../constants/constants");
 const technician = require("../models/technician");
 const { user, agency } = require("../models/user");
+const { sendSms } = require("../utils/sms");
 
 async function handleCreateTechnician(req, res) {
     try {
@@ -34,10 +35,12 @@ async function handleCreateTechnician(req, res) {
 
         const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType, state, city })
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { technicians: createdTechnician } }, { new: true })
+        const smsResponse = await sendSms(createdTechnician?.mobileNumber, `Dear ${createdTechnician?.name} टूरिस्ट जंक्शन में आपका स्वागत है ! आपका प्रोफाइल Technician के रूप में सफलतापूर्वक जोड़ा गया है। ट्रांसपोर्ट मालिकों से जुड़ें और अपने Business को बढ़ाएं!`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID)
 
         return res.status(201).json({
             success: true,
-            data: createdTechnician
+            data: createdTechnician,
+            smsResponse
         })
     } catch (error) {
         return res.status(500).json({

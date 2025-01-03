@@ -71,6 +71,7 @@ app.use("/api/packageBooking", packageBookingRoute)
 app.use("/api/service", serviceRoute);
 app.use("/api/subscription", subscriptionRoute);
 app.use("/api/emptyVehicle", emptyVehicleRoute);
+
 app.use("/api/busRoute", busRouteRoute);
 app.use("/api/tour", tourRoute)
 app.use("/api/ticketRequest", ticketRequestRoute)
