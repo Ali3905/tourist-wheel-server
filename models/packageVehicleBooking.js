@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const packageBookingSchema = mongoose.Schema({
     agencyName: String,
+    officeAddress: String,
     vehicle: {
         type: mongoose.Types.ObjectId,
         ref: "vehicle",
