@@ -20,7 +20,7 @@ async function handleCreateTechnician(req, res) {
             })
         }
 
-        if (!["MECHANIC", "ELECTICIAN", "SPAREPARTSHOP", "SPRINGWORK", "BATTERYSERVICES", "VEHICLEBODYREPAIR", "CRANESERVICES"].includes(technicianType)) {
+        if (!["MECHANIC", "ELECTRICIAN", "SPAREPARTSHOP", "SPRINGWORK", "BATTERYSERVICES", "VEHICLEBODYREPAIR", "CRANESERVICES"].includes(technicianType)) {
             return res.status(400).json({
                 success: false,
                 message: "Enter a valid technician type"
