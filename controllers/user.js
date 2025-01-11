@@ -443,8 +443,8 @@ async function handleCustomerLogin(req, res) {
 
 async function handleAgencyLogin(req, res) {
     try {
-        const { password, userName } = req.body
-        if (!userName || !password) {
+        const { password, userName, mobileNumber } = req.body
+        if ((!userName && !mobileNumber) || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the fields"
@@ -452,9 +452,34 @@ async function handleAgencyLogin(req, res) {
         }
         const foundUser = await agency.findOne({ userName })
         if (!foundUser) {
+            const foundEmployee = await employee.findOne({ mobileNumber, password })
+            if (!foundEmployee) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid Creds"
+                })
+            }
+            const foundAgency = await user.findOne({ employees: foundEmployee._id })
+            if (foundEmployee && (foundEmployee.employeeType === ("MANAGER" || "OFFICE-BOY" || "ADMINISTRATOR" || "HR" || "BPO" || "SALES-EXECUTIVE" || "DIGITAL-MARKETER" || "MARKETING-EXECUTIVE"))) {
+                const payload = {
+                    _id: foundAgency._id,
+                    employeeId: foundEmployee._id,
+                    role: foundEmployee.employeeType
+                }
+
+                const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+
+
+                return res.status(200).json({
+                    success: true,
+                    data: foundEmployee,
+                    authToken
+                })
+            }
+
             return res.status(400).json({
                 success: false,
-                message: "Invalid Creds"
+                message: "Please provide correct creds"
             })
         }
         if (!foundUser.isVerified) {
