@@ -35,7 +35,7 @@ async function handleCreateTechnician(req, res) {
 
         const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType, state, city })
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { technicians: createdTechnician } }, { new: true })
-        const smsResponse = await sendSms(createdTechnician?.mobileNumber, `Dear ${createdTechnician?.name} टूरिस्ट जंक्शन में आपका स्वागत है ! आपका प्रोफाइल Technician के रूप में सफलतापूर्वक जोड़ा गया है। ट्रांसपोर्ट मालिकों से जुड़ें और अपने Business को बढ़ाएं!`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID)
+        const smsResponse = await sendSms(createdTechnician?.mobileNumber, `Dear ${createdTechnician.name} टूरिस्ट जंक्शन में आपका स्वागत है ! आपका प्रोफाइल Technician के रूप में सफलतापूर्वक जोड़ा गया है। ट्रांसपोर्ट मालिकों से जुड़ें और अपने Business को बढ़ाएं!`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID, 8)
 
         return res.status(201).json({
             success: true,
@@ -52,20 +52,20 @@ async function handleCreateTechnician(req, res) {
 
 async function handleGetAllTechnicians(req, res) {
     try {
-        const { page = 1, vehicleType, city, state, technicianType } = req.query; // Default to page 1 if not provided
-        const pageSize = 100; // Define the number of records per page
+        const { page = 1, vehicleType, city, state, technicianType } = req.query; 
+        const pageSize = 100; 
 
-        // Construct the filter object
+        
         let filter = {};
 
         if (vehicleType) {
             filter.vehicleType = vehicleType;
         }
         if (city) {
-            filter.city = { $regex: city, $options: 'i' }; // Case-insensitive partial match
+            filter.city = { $regex: city, $options: 'i' };
         }
         if (state) {
-            filter.state = { $regex: state, $options: 'i' }; // Case-insensitive partial match
+            filter.state = { $regex: state, $options: 'i' }; 
         }
         if (technicianType) {
             filter.technicianType = { $regex: technicianType, $options: 'i' }

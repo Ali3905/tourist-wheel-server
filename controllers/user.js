@@ -523,8 +523,6 @@ async function handleGetUserById(req, res) {
             })
         }
         if (req.data._id && !req.data.employeeId) {
-
-
             const userId = req.data._id
             const foundUser = await user.findById(userId)
             if (foundUser) {

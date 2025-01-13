@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-async function sendSms(number, message, templateId) {
+async function sendSms(number, message, templateId, dcs = 0) {
     try {
         const res = await axios({
             method: "get",
@@ -9,7 +9,7 @@ async function sendSms(number, message, templateId) {
                 APIKey: process.env.DLT_API_KEY,
                 senderid: process.env.DLT_SENDER_ID,
                 channel: 2,
-                DCS: 0,
+                DCS: dcs,
                 flashsms: 0,
                 number: number,
                 text: message,
