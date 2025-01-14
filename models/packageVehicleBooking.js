@@ -51,7 +51,6 @@ const packageBookingSchema = mongoose.Schema({
         type: String,
         required: true
     },
-
     remainingAmountInINR: {
         type: String,
         required: true
