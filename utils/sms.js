@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-async function sendSms(number, message, templateId, dcs = 0) {
+async function sendSms(number, message, templateId, dcs = 0, route = 1) {
     try {
         const res = await axios({
             method: "get",
@@ -13,7 +13,7 @@ async function sendSms(number, message, templateId, dcs = 0) {
                 flashsms: 0,
                 number: number,
                 text: message,
-                route: "clickhere",
+                route,
                 EntityId: process.env.DLT_ENTITY_ID,
                 dlttemplateid: templateId
             }

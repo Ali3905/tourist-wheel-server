@@ -41,9 +41,12 @@ async function handleCreateTourRequest(req, res) {
         foundAgency.tourRequests.push(createdTourRequest)
         await foundAgency.save()
 
+        const smsResponse = await sendSms(foundAgency.mobileNumber, `"Dear ${foundAgency.userName}, You have received a tour inquiry from the customer. Details are as follows: Customer Name: ${foundCustomer.userName} Contact Number: ${foundCustomer?.mobileNumber} City: ${foundCustomer?.city} Selected Tour: ${foundTour.name} Please contact the customer to assist them further with their inquiry. Thank you!" Tourist Junction Team`, process.env.DLT_TOUR_REQUEST_TEMPLATE_ID)
+
         return res.status(201).json({
             success: true,
-            data: createdTourRequest
+            data: createdTourRequest,
+            smsResponse
         })
 
     } catch (error) {

@@ -154,9 +154,12 @@ async function handleVerifyOtp(req, res) {
         }
 
         const authToken = jwt.sign(payload, process.env.JWT_SECRET)
+        const smsResponse = await sendSms(foundUser.mobileNumber, `Dear ${foundUser.userName}, Aapka Tourist Junction par swagat hai! Aapka registration safal ho gaya hai. Ab aap hamare platform ke sabhi exclusive features ka faayda utha sakte hain. Tourist Junction ke Features: 1.Bus Tickets Booking: Travel agencies aur tour operators ke dwara add ki hui buses ka ticket asaani se book karein. 2.Vehicle on Rent: Buses, cars, aur trucks kiraye par lein aur sabhi vehicle details ko easily access karein. 3.Driver for Emergency: Apni private car ke liye emergency situation me experienced driver find karein. 4.Vehicle Buying: Aap apni zarurat ke hisaab se naye ya purane vehicles buy kar sakte hain. Ab aapka account ready hai aur aap hamare platform par yeh sabhi features ka upyog kar sakte hain. Shuru karein aur apne convenience ke hisaab se planning karein! Aapke safar ko aur asaan aur sukhad banane ki koshish me, Team Tourist Junction`, process.env.DLT_WELCOME_TEMPLATE_ID)
+
         return res.status(200).json({
             success: true,
             data: foundUser,
+            smsResponse,
             authToken
         })
     } catch (error) {
