@@ -1,6 +1,7 @@
 const tourRequest = require("../models/tourRequest")
 const tour = require("../models/tour")
 const { user } = require("../models/user")
+const { sendSms } = require("../utils/sms")
 
 async function handleCreateTourRequest(req, res) {
     try {
@@ -32,7 +33,7 @@ async function handleCreateTourRequest(req, res) {
 
         const createdTourRequest = await tourRequest.create({ numberOfPeople, passengerGender, customer: foundCustomer, tour: foundTour })
         const foundAgency = await user.findOne({ tours: tourId })
-        if(!foundAgency){
+        if (!foundAgency) {
             return res.status(400).json({
                 success: false,
                 message: "Could not find the agency"
@@ -58,14 +59,14 @@ async function handleCreateTourRequest(req, res) {
 }
 
 
-async function handleGetAllTourRequests(req, res){
+async function handleGetAllTourRequests(req, res) {
     try {
         const foundUser = await user.findById(req.data._id).populate({
             path: "tourRequests",
-            options: {sort: { createdAt: -1 }},
+            options: { sort: { createdAt: -1 } },
             populate: [
-                {path: "customer", model: "user"},
-                {path: "tour", model: "tour"},
+                { path: "customer", model: "user" },
+                { path: "tour", model: "tour" },
             ]
         })
 
