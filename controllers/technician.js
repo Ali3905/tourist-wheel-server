@@ -35,7 +35,7 @@ async function handleCreateTechnician(req, res) {
 
         const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType, state, city })
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { technicians: createdTechnician } }, { new: true })
-        const smsResponse = await sendSms(createdTechnician?.mobileNumber, `Dear ${createdTechnician.name} टूरिस्ट जंक्शन में आपका स्वागत है ! आपका प्रोफाइल Technician के रूप में सफलतापूर्वक जोड़ा गया है। ट्रांसपोर्ट मालिकों से जुड़ें और अपने Business को बढ़ाएं!`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID, 8)
+        const smsResponse = await sendSms(createdTechnician?.mobileNumber, `Congratulations on Joining Tourist Junction! Dear ${createdTechnician.name}, We are delighted to welcome you as a registered technician on Tourist Junction! Your expertise in [Service Type: Mechanic/Electrician/Spare Parts/Spring work/Crane Services/Body repair] is now a part of our platform, helping vehicle owners across India in times of need. With your successful registration, you’re now connected to a network of trusted service providers, ready to support our users whenever required. Thank you for partnering with us and being a valuable part of our journey. Let’s work together to make a difference! Warm regards, Team Tourist Junction.`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID)
 
         return res.status(201).json({
             success: true,
