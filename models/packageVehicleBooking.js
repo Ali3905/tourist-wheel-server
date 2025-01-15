@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const packageBookingSchema = mongoose.Schema({
     agencyName: String,
     officeAddress: String,
+    agencyNo: String,
+    customerNo: String,
     vehicle: {
         type: mongoose.Types.ObjectId,
         ref: "vehicle",
@@ -123,6 +125,14 @@ const packageBookingSchema = mongoose.Schema({
         enum: ["CREATED", "FINALIZED", "STARTED", "COMPLETED"]
     },
     isNotified: {
+        type: Boolean,
+        default: false
+    },
+    isAgencyNotified: {
+        type: Boolean,
+        default: false
+    },
+    isDriverNotified: {
         type: Boolean,
         default: false
     }

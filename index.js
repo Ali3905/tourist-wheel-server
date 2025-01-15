@@ -4,6 +4,8 @@ require("dotenv").config()
 const data = require("./data")
 const subscriptionCronJob = require("./cron/subscription")
 const packageBookingCronJob = require("./cron/packageBookingReminder")
+const packageBookingCronJobForAgency = require("./cron/packageBookingReminderForAgency")
+const packageBookingCronJobForDriver = require("./cron/packageBookingReminderForDriver")
 
 const driverRoute = require("./routes/driver")
 const cleanerRoute = require("./routes/cleaner")
@@ -82,6 +84,8 @@ app.listen(PORT, () => {
     console.log("Server is running on " + PORT);
     subscriptionCronJob()
     packageBookingCronJob()
+    packageBookingCronJobForAgency()
+    packageBookingCronJobForDriver()
 })
 
 
