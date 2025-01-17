@@ -1,6 +1,7 @@
 const busRoute = require("../models/busRoute")
 const ticketRequest = require("../models/ticketsRequest")
 const { user, customer } = require("../models/user")
+const { sendSms } = require("../utils/sms")
 
 async function handleCreateTicketRequest(req, res) {
     try {
@@ -21,7 +22,7 @@ async function handleCreateTicketRequest(req, res) {
             })
         }
         const foundCustomer = await user.findById(req.data._id)
-        const foundRoute = await busRoute.findById(routeId)
+        const foundRoute = await busRoute.findById(routeId).populate("vehicle")
 
         if (!foundRoute) {
             return res.status(400).json({
@@ -35,9 +36,12 @@ async function handleCreateTicketRequest(req, res) {
         foundAgency.ticketRequests.push(createdTicketRequest)
         await foundAgency.save()
 
+        const smsResponse = await sendSms(foundAgency.mobileNumber, `"Dear ${foundAgency.userName}, You have received a ticket booking interest from the customer. Details are as follows: Customer Name: ${foundCustomer?.userName} Contact Number: ${foundCustomer?.mobileNumber} Booking Date: ${dateOfJourney} Seats: ${numberOfPeople} Vehicle: ${foundRoute?.vehicle?.number} Route: ${foundRoute?.departurePlace} to ${foundRoute?.destinationPlace} Departure Time: ${foundRoute?.departureTime} Please review the request and proceed with the booking process. Thank you!" Tourist Junction Team`, process.env.DLT_TICKET_REQUEST_TEMPLATE_ID)
+
         return res.status(201).json({
             success: true,
-            data: createdTicketRequest
+            data: createdTicketRequest,
+            smsResponse
         })
 
     } catch (error) {
