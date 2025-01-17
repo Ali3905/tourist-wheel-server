@@ -35,7 +35,7 @@ async function handleCreateTechnician(req, res) {
 
         const createdTechnician = await technician.create({ technicianType, name, mobileNumber, alternateNumber, vehicleType, state, city })
         const updatedUser = await user.findByIdAndUpdate(req.data._id, { $push: { technicians: createdTechnician } }, { new: true })
-        const smsResponse = await sendSms(createdTechnician?.mobileNumber, `Congratulations on Joining Tourist Junction! Dear ${createdTechnician.name}, We are delighted to welcome you as a registered technician on Tourist Junction! Your expertise in [Service Type: Mechanic/Electrician/Spare Parts/Spring work/Crane Services/Body repair] is now a part of our platform, helping vehicle owners across India in times of need. With your successful registration, you’re now connected to a network of trusted service providers, ready to support our users whenever required. Thank you for partnering with us and being a valuable part of our journey. Let’s work together to make a difference! Warm regards, Team Tourist Junction.`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID)
+        const smsResponse = await sendSms(createdTechnician?.mobileNumber, `Tourist Junction mein aapka swagat hai! Dear ${createdTechnician.name}, We are delighted to welcome you as a registered technician on Tourist Junction! Your expertise in [Service Type: ${createdTechnician.technicianType}] is now part of our platform, supporting vehicle owners across India whenever needed. With your successful registration, you are now connected to a trusted network of service providers, always ready to assist our users. Thank you for joining us and becoming a valuable part of our journey. Lets work together to make a difference! If, for any reason, you do not wish to work with us, please WhatsApp us at 77448 04213. Warm regards, Team Tourist Junction`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID)
 
         return res.status(201).json({
             success: true,
@@ -138,9 +138,12 @@ async function handleUpdateTechnician(req, res) {
             })
         }
         const updatedTechnician = await technician.findByIdAndUpdate(technicianId, req.body, { new: true })
+        const smsResponse = await sendSms(updatedTechnician?.mobileNumber, `Tourist Junction mein aapka swagat hai! Dear ${updatedTechnician.name}, We are delighted to welcome you as a registered technician on Tourist Junction! Your expertise in [Service Type: ${updatedTechnician.technicianType}] is now part of our platform, supporting vehicle owners across India whenever needed. With your successful registration, you are now connected to a trusted network of service providers, always ready to assist our users. Thank you for joining us and becoming a valuable part of our journey. Lets work together to make a difference! If, for any reason, you do not wish to work with us, please WhatsApp us at 77448 04213. Warm regards, Team Tourist Junction`, process.env.DLT_TECHNICIAN_CREATION_TEMPLATE_ID)
+
         return res.status(200).json({
             success: true,
             data: updatedTechnician,
+            smsResponse,
         })
     } catch (error) {
         return res.status(500).json({
