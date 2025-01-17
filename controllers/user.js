@@ -128,18 +128,18 @@ async function handleVerifyOtp(req, res) {
                 message: "Please Provide all the fields"
             })
         }
-        const foundUser = await user.findOne({ mobileNumber })
+        const foundUser = await user.findOne({ mobileNumber, verificationOtp : otp })
+        // if (!foundUser) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "Provide a valid phone number"
+        //     })
+        // }
+        // const isOtpCorrect = foundUser.verificationOtp === otp
         if (!foundUser) {
             return res.status(400).json({
                 success: false,
-                message: "Provide a valid phone number"
-            })
-        }
-        const isOtpCorrect = foundUser.verificationOtp === otp
-        if (!isOtpCorrect) {
-            return res.status(400).json({
-                success: false,
-                message: "Incorrect otp"
+                message: "Check your otp or your phone number"
             })
         }
         const currentDate = new Date();
