@@ -164,7 +164,7 @@ async function handleVerifyOtp(req, res) {
         return res.status(200).json({
             success: true,
             data: foundUser,
-            smsResponse,
+            // smsResponse,
             authToken
         })
     } catch (error) {
