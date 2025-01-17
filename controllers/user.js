@@ -147,14 +147,19 @@ async function handleVerifyOtp(req, res) {
         foundUser.verificationOtp = undefined;
         foundUser.trialValidTill = new Date(currentDate.setDate(currentDate.getDate() + 3));
 
+        
         await foundUser.save()
         const payload = {
             _id: foundUser._id,
             role: foundUser.type
         }
-
+        
         const authToken = jwt.sign(payload, process.env.JWT_SECRET)
-        const smsResponse = await sendSms(foundUser.mobileNumber, `Dear ${foundUser.userName}, Aapka Tourist Junction par swagat hai! Aapka registration safal ho gaya hai. Ab aap hamare platform ke sabhi exclusive features ka faayda utha sakte hain. Tourist Junction ke Features: 1.Bus Tickets Booking: Travel agencies aur tour operators ke dwara add ki hui buses ka ticket asaani se book karein. 2.Vehicle on Rent: Buses, cars, aur trucks kiraye par lein aur sabhi vehicle details ko easily access karein. 3.Driver for Emergency: Apni private car ke liye emergency situation me experienced driver find karein. 4.Vehicle Buying: Aap apni zarurat ke hisaab se naye ya purane vehicles buy kar sakte hain. Ab aapka account ready hai aur aap hamare platform par yeh sabhi features ka upyog kar sakte hain. Shuru karein aur apne convenience ke hisaab se planning karein! Aapke safar ko aur asaan aur sukhad banane ki koshish me, Team Tourist Junction`, process.env.DLT_WELCOME_TEMPLATE_ID)
+        if (foundUser.type === "AGENCY") {
+            await sendSms(foundUser.mobileNumber, `Registration Successful! Dear ${foundUser.userName}, You are now a part of the Tourist Junction family! Your registration has been successfully completed. What’s next? Choose Your Subscription: Select a plan that suits your business needs and begin your journey with us. Add Your Vehicles (My Vehicle): Easily add all your fleet vehicles to the platform. Add Drivers: Update details of your drivers and take full advantage of all the advanced features. Tourist Junction’s features are designed to make your work easier and more productive. Start now and move forward with us! Warm regards, Team Tourist Junction.`, process.env.DLT_SUCCESSFULL_AGENCY_REGISTRATION_TEMPLATE_ID)
+        } else if (foundUser.type === "CUSTOMER") {
+            await sendSms(foundUser.mobileNumber, `Dear ${foundUser.userName}, Aapka Tourist Junction par swagat hai! Aapka registration safal ho gaya hai. Ab aap hamare platform ke sabhi exclusive features ka faayda utha sakte hain. Tourist Junction ke Features: 1.Bus Tickets Booking: Travel agencies aur tour operators ke dwara add ki hui buses ka ticket asaani se book karein. 2.Vehicle on Rent: Buses, cars, aur trucks kiraye par lein aur sabhi vehicle details ko easily access karein. 3.Driver for Emergency: Apni private car ke liye emergency situation me experienced driver find karein. 4.Vehicle Buying: Aap apni zarurat ke hisaab se naye ya purane vehicles buy kar sakte hain. Ab aapka account ready hai aur aap hamare platform par yeh sabhi features ka upyog kar sakte hain. Shuru karein aur apne convenience ke hisaab se planning karein! Aapke safar ko aur asaan aur sukhad banane ki koshish me, Team Tourist Junction`, process.env.DLT_SUCCESSFULL_CUSTOMER_REGISTRATION_TEMPLATE_ID)
+        }
 
         return res.status(200).json({
             success: true,
